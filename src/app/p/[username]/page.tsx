@@ -8,6 +8,30 @@ interface ProfilePageProps {
   params: Promise<{ username: string }>;
 }
 
+export async function generateViewport({ params }: ProfilePageProps) {
+  const { username } = await params;
+  const profile = await prisma.profile.findUnique({
+    where: { username },
+    include: { theme: true },
+  });
+  return {
+    themeColor: profile?.theme?.primaryColor || "#DCFF1E",
+  };
+}
+
+export async function generateMetadata({ params }: ProfilePageProps) {
+  const { username } = await params;
+  const profile = await prisma.profile.findUnique({
+    where: { username },
+  });
+  if (!profile) return { title: "Atleta não encontrado" };
+  
+  return {
+    title: `${profile.displayName} | Scouting Profile`,
+    description: `Veja os scouts, vídeos e trajetória de ${profile.displayName} no Futree.`,
+  };
+}
+
 interface ProfileWithStats {
     displayName: string;
     fullName?: string | null;
@@ -170,6 +194,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               {profile.displayName.split(" ")[0]} <br />{" "}
               <span className="text-primary">{profile.displayName.split(" ").slice(1).join(" ")}</span>
             </h1>
+            {profile.fullName && profile.fullName !== profile.displayName && (
+              <p className="text-[10px] text-white/40 font-stat uppercase tracking-[0.2em] mt-1 ml-1">
+                Nome Civil: {profile.fullName}
+              </p>
+            )}
             <div className="flex items-center gap-4 mt-2">
               {profile.jerseyNumber && (
                 <span className="font-display font-extrabold italic text-4xl text-white/40">

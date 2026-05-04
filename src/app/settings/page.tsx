@@ -550,7 +550,7 @@ export default function SettingsPage() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleFileUpload(e, "avatar")}
-                    className="flex-1 text-[10px] file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-white/10 file:text-white"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
                   />
                 </div>
               </div>
@@ -578,7 +578,7 @@ export default function SettingsPage() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleFileUpload(e, "hero")}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-xs file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:bg-primary file:text-black"
+                    className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
                   />
                   {uploadingHero && (
                     <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
