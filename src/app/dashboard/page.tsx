@@ -3,12 +3,48 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
+
+interface ProfileData {
+  username: string;
+  displayName: string;
+  jerseyNumber?: string;
+  position?: string;
+  avatarUrl?: string;
+  heroImageUrl?: string;
+  youtubeUrl?: string;
+  stats: {
+    goals: number;
+    assists: number;
+    pace: number;
+    shooting: number;
+    passing: number;
+    dribbling: number;
+    defending: number;
+    physical: number;
+  };
+  links: Array<{
+    id: string;
+    title: string;
+    url: string;
+    icon?: string;
+    imageUrl?: string;
+  }>;
+  theme: {
+    primaryColor: string;
+    secondaryColor: string;
+    backgroundColor: string;
+  };
+}
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [uploadingLinks, setUploadingLinks] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetch("/api/profile")
@@ -19,7 +55,45 @@ export default function DashboardPage() {
       });
   }, []);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "avatar" | "hero") => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (type === "avatar") setUploadingAvatar(true);
+    else setUploadingHero(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", type);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const { url } = await res.json();
+        setProfile((prev) => 
+          prev ? {
+            ...prev,
+            [type === "avatar" ? "avatarUrl" : "heroImageUrl"]: url,
+          } : null
+        );
+      } else {
+        const errorData = await res.json();
+        alert(`Erro no upload: ${errorData.details || errorData.error}`);
+      }
+    } catch {
+      alert("Erro ao enviar arquivo.");
+    } finally {
+      if (type === "avatar") setUploadingAvatar(false);
+      else setUploadingHero(false);
+    }
+  };
+
   const handleSave = async () => {
+    if (!profile) return;
     setSaving(true);
     try {
       const res = await fetch("/api/profile", {
@@ -31,7 +105,9 @@ export default function DashboardPage() {
           position: profile.position,
           avatarUrl: profile.avatarUrl,
           heroImageUrl: profile.heroImageUrl,
+          youtubeUrl: profile.youtubeUrl,
           stats: profile.stats,
+          links: profile.links,
           theme: profile.theme,
         }),
       });
@@ -40,14 +116,14 @@ export default function DashboardPage() {
         alert("Perfil atualizado!");
         router.refresh();
       }
-    } catch (error) {
+    } catch {
       alert("Erro ao salvar.");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <div className="p-8 text-white">Carregando...</div>;
+  if (loading || !profile) return <div className="p-8 text-white">Carregando...</div>;
 
   return (
     <div className="min-h-screen bg-[#121414] text-white p-6 pb-32">
@@ -107,22 +183,63 @@ export default function DashboardPage() {
               </div>
             </div>
             <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">URL Avatar (Portrait)</label>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Portrait)</label>
+              <div className="flex gap-4 items-center">
+                {profile.avatarUrl && (
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden border border-primary">
+                    <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
+                  </div>
+                )}
+                <div className="flex-1 relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, "avatar")}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer"
+                  />
+                  {uploadingAvatar && (
+                    <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-xs font-bold animate-pulse">
+                      UPLOADING...
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Vídeo de Highlights (YouTube)</label>
               <input
                 type="text"
-                value={profile.avatarUrl}
-                onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })}
+                value={profile.youtubeUrl || ""}
+                placeholder="https://www.youtube.com/watch?v=..."
+                onChange={(e) => setProfile({ ...profile, youtubeUrl: e.target.value })}
                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">URL Foto Hero (Ação)</label>
-              <input
-                type="text"
-                value={profile.heroImageUrl}
-                onChange={(e) => setProfile({ ...profile, heroImageUrl: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary"
-              />
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto Hero (Ação - Sem Fundo)</label>
+              <div className="flex gap-4 items-start">
+                {profile.heroImageUrl && (
+                  <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-black/40 border border-primary/20">
+                    <Image src={profile.heroImageUrl} alt="Hero" fill className="object-contain" />
+                  </div>
+                )}
+                <div className="flex-1 relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, "hero")}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer"
+                  />
+                  {uploadingHero && (
+                    <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-xs font-bold animate-pulse text-primary">
+                      REMOVENDO BACKGROUND...
+                    </div>
+                  )}
+                </div>
+              </div>
+              <p className="mt-2 text-[10px] text-white/30 uppercase tracking-tighter">
+                Dica: O background será removido automaticamente para o efeito de transparência.
+              </p>
             </div>
           </div>
         </section>
@@ -136,13 +253,107 @@ export default function DashboardPage() {
                 <label className="block text-[10px] uppercase font-stat text-white/50 mb-1">{stat}</label>
                 <input
                   type="number"
-                  value={profile.stats[stat]}
+                  value={profile.stats[stat as keyof typeof profile.stats]}
                   onChange={(e) => setProfile({
                     ...profile,
-                    stats: { ...profile.stats, [stat]: parseInt(e.target.value) }
+                    stats: { ...profile.stats, [stat]: parseInt(e.target.value) || 0 }
                   })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-center font-stat font-bold"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors"
                 />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Sessões / Links */}
+        <section className="glass-card p-6 rounded-2xl border-white/5">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Sessões & Storytelling</h2>
+          <div className="space-y-6">
+            {profile.links.map((link, index) => (
+              <div key={link.id} className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-5">
+                <div className="flex justify-between items-center">
+                   <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest">Sessão #{index + 1}</span>
+                </div>
+                <div className="grid gap-4">
+                  <div>
+                    <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Título da Sessão</label>
+                    <input
+                      type="text"
+                      placeholder="Título da Sessão"
+                      value={link.title}
+                      onChange={(e) => {
+                        const newLinks = [...profile.links];
+                        newLinks[index].title = e.target.value;
+                        setProfile({ ...profile, links: newLinks });
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">URL / Link</label>
+                    <input
+                      type="text"
+                      placeholder="URL de Destino"
+                      value={link.url}
+                      onChange={(e) => {
+                        const newLinks = [...profile.links];
+                        newLinks[index].url = e.target.value;
+                        setProfile({ ...profile, links: newLinks });
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                   <label className="block text-[10px] uppercase font-stat text-white/50 mb-2">Imagem de Impacto (Com Parallax)</label>
+                   <div className="flex gap-4 items-center">
+                     <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
+                       {link.imageUrl ? (
+                         <Image src={link.imageUrl} alt="Link Hero" fill className="object-contain" />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center opacity-20">
+                            <span className="material-symbols-outlined">image</span>
+                         </div>
+                       )}
+                       {uploadingLinks[link.id] && (
+                         <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                         </div>
+                       )}
+                     </div>
+                     <div className="flex-1 relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            
+                            setUploadingLinks(prev => ({ ...prev, [link.id]: true }));
+                            
+                            const formData = new FormData();
+                            formData.append("file", file);
+                            formData.append("type", "link");
+                            formData.append("linkId", link.id);
+                            
+                            try {
+                              const res = await fetch("/api/upload", { method: "POST", body: formData });
+                              if (res.ok) {
+                                const { url } = await res.json();
+                                const newLinks = [...profile.links];
+                                newLinks[index].imageUrl = url;
+                                setProfile({ ...profile, links: newLinks });
+                              }
+                            } finally {
+                              setUploadingLinks(prev => ({ ...prev, [link.id]: false }));
+                            }
+                          }}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                        />
+                     </div>
+                   </div>
+                </div>
               </div>
             ))}
           </div>

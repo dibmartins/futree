@@ -5,7 +5,7 @@
   --font-body: var(--font-lexend), ui-sans-serif;
   --font-stat: var(--font-space-grotesk), ui-monospace;
 
-  --color-primary: #DCFF1E;
+  --color-primary: var(--primary);
   --color-surface: #121414;
   --color-on-surface: #e2e2e2;
 }
@@ -14,6 +14,7 @@
   --background: #121414;
   --foreground: #e2e2e2;
   --primary: #DCFF1E;
+  --primary-rgb: 220, 255, 30;
 }
 
 @layer base {
@@ -28,12 +29,12 @@
   .glass-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(220, 255, 30, 0.1);
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
   }
 
   .text-neon {
     color: var(--primary);
-    text-shadow: 0 0 10px rgba(220, 255, 30, 0.4);
+    text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.4);
   }
 
   .bg-neon {

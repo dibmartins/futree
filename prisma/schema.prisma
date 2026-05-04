@@ -26,6 +26,7 @@ model Profile {
   bio          String?
   avatarUrl    String?
   heroImageUrl String?
+  youtubeUrl   String?
   
   theme        ThemeConfig?
   stats        Stats?
@@ -69,5 +70,6 @@ model Link {
   title     String
   url       String
   icon      String?
+  imageUrl  String?
   order     Int     @default(0)
 }
