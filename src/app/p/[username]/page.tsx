@@ -115,6 +115,28 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const category = calculateCategory(profile.birthDate);
   const location = profile.city && profile.state ? `${profile.city}, ${profile.state}` : profile.city || profile.state || "";
 
+  const getYoutubeEmbedUrl = (url: string | null | undefined) => {
+    if (!url) return null;
+    let videoId = "";
+    
+    try {
+      if (url.includes("youtu.be/")) {
+        videoId = url.split("youtu.be/")[1]?.split(/[?#]/)[0];
+      } else if (url.includes("youtube.com/embed/")) {
+        videoId = url.split("youtube.com/embed/")[1]?.split(/[?#]/)[0];
+      } else {
+        const urlParams = new URL(url).searchParams;
+        videoId = urlParams.get("v") || "";
+      }
+    } catch (e) {
+      console.error("Erro ao processar URL do YouTube:", e);
+    }
+    
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+  };
+
+  const embedUrl = getYoutubeEmbedUrl(profile.youtubeUrl);
+
   return (
     <main
       className="pb-32 font-body overflow-x-hidden bg-[#121414] text-[#e2e2e2]"
@@ -346,14 +368,14 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           </section>
       )}
 
-      {profile.youtubeUrl && (
+      {embedUrl && (
         <section className="mt-20 px-6">
           <h2 className="font-display font-black italic text-3xl mb-6 uppercase tracking-tighter">
             Skills & <span className="text-primary">Goals</span>
           </h2>
           <div className="relative aspect-video rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl shadow-primary/20">
             <iframe
-              src={profile.youtubeUrl.replace("watch?v=", "embed/").split("&")[0]}
+              src={embedUrl}
               className="absolute inset-0 w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
