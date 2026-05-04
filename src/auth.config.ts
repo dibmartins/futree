@@ -7,13 +7,13 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-      if (isOnDashboard) {
+      const isOnSettings = nextUrl.pathname.startsWith("/settings");
+      if (isOnSettings) {
         if (isLoggedIn) return true;
         return false;
       }
       return true;
     },
   },
-  providers: [], // Providers are added in auth.ts
+  providers: [],
 } satisfies NextAuthConfig;

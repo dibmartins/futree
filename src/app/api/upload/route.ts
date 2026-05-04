@@ -15,10 +15,10 @@ export async function POST(request: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     let processedBuffer = buffer;
-    // Se for hero ou link (sessão), removemos o background para manter o estilo
-    if (type === "hero" || type === "link") {
-      console.log(`Iniciando remoção de background para ${type}...`);
-      try {
+    
+    // Removemos o background de todas as imagens para manter a consistência visual solicitada
+    console.log(`Iniciando remoção de background para ${type}...`);
+    try {
         // Criamos um Blob nativo para forçar a biblioteca a usar o decodificador correto
         const imageBlob = new Blob([buffer], { type: file.type });
         
@@ -34,7 +34,6 @@ export async function POST(request: Request) {
         console.error("Erro detalhado no removeBackground:", err);
         throw err;
       }
-    }
 
     // Upload para o Vercel Blob
     const filename = `${type}-${Date.now()}-${Math.random().toString(36).substring(7)}.png`;

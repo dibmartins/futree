@@ -23,6 +23,15 @@ export async function GET() {
   return NextResponse.json(profile);
 }
 
+interface LinkInput {
+  id: string;
+  title: string;
+  url: string;
+  icon?: string;
+  imageUrl?: string;
+  order?: number;
+}
+
 export async function PATCH(request: Request) {
   try {
     const session = await auth();
@@ -32,42 +41,75 @@ export async function PATCH(request: Request) {
     }
 
     const body = await request.json();
-    const { displayName, jerseyNumber, position, avatarUrl, heroImageUrl, youtubeUrl, stats, theme, links } = body;
+    console.log("DEBUG: Recebendo atualização de perfil (v2) para:", session.user.id);
+    // Timestamp: 1777914000
 
+    const { 
+      username, displayName, fullName, nickname, birthDate, city, state, 
+      parentName, parentPhone, 
+      jerseyNumber, position, secondaryPosition, 
+      height, weight, preferredFoot, characteristics,
+      currentClub, history,
+      avatarUrl, heroImageUrl, youtubeUrl, stats, theme, links 
+    } = body;
+
+    // Fazemos o update ignorando campos que possam dar erro de validação temporariamente
     const profile = await prisma.profile.update({
       where: { userId: session.user.id },
+      include: {
+        stats: true,
+        theme: true,
+        links: {
+          orderBy: { order: "asc" },
+        },
+      },
       data: {
+        username,
         displayName,
+        fullName,
+        nickname,
+        birthDate: birthDate ? new Date(birthDate) : null,
+        city,
+        state,
+        parentName,
+        parentPhone,
         jerseyNumber,
         position,
+        secondaryPosition,
+        height: height ? parseFloat(String(height)) : null,
+        weight: weight ? parseFloat(String(weight)) : null,
+        preferredFoot,
+        characteristics: characteristics || [],
+        currentClub,
+        history,
         avatarUrl,
         heroImageUrl,
         youtubeUrl,
-        stats: {
+        stats: stats ? {
           upsert: {
             create: {
-              goals: stats.goals || 0,
-              assists: stats.assists || 0,
-              pace: stats.pace || 0,
-              shooting: stats.shooting || 0,
-              passing: stats.passing || 0,
-              dribbling: stats.dribbling || 0,
-              defending: stats.defending || 0,
-              physical: stats.physical || 0,
+              goals: Number(stats.goals) || 0,
+              assists: Number(stats.assists) || 0,
+              pace: Number(stats.pace) || 0,
+              shooting: Number(stats.shooting) || 0,
+              passing: Number(stats.passing) || 0,
+              dribbling: Number(stats.dribbling) || 0,
+              defending: Number(stats.defending) || 0,
+              physical: Number(stats.physical) || 0,
             },
             update: {
-              goals: stats.goals,
-              assists: stats.assists,
-              pace: stats.pace,
-              shooting: stats.shooting,
-              passing: stats.passing,
-              dribbling: stats.dribbling,
-              defending: stats.defending,
-              physical: stats.physical,
+              goals: Number(stats.goals) || 0,
+              assists: Number(stats.assists) || 0,
+              pace: Number(stats.pace) || 0,
+              shooting: Number(stats.shooting) || 0,
+              passing: Number(stats.passing) || 0,
+              dribbling: Number(stats.dribbling) || 0,
+              defending: Number(stats.defending) || 0,
+              physical: Number(stats.physical) || 0,
             },
           },
-        },
-        theme: {
+        } : undefined,
+        theme: theme ? {
           upsert: {
             create: {
               primaryColor: theme.primaryColor || "#DCFF1E",
@@ -75,37 +117,31 @@ export async function PATCH(request: Request) {
               backgroundColor: theme.backgroundColor || "#121414",
             },
             update: {
-              primaryColor: theme.primaryColor,
-              secondaryColor: theme.secondaryColor,
-              backgroundColor: theme.backgroundColor,
+              primaryColor: theme.primaryColor || "#DCFF1E",
+              secondaryColor: theme.secondaryColor || "#ffffff",
+              backgroundColor: theme.backgroundColor || "#121414",
             },
           },
-        },
+        } : undefined,
         links: {
-          upsert: links?.map((link: any) => ({
-            where: { id: link.id },
-            create: {
-              title: link.title || "",
-              url: link.url || "",
-              icon: link.icon,
-              imageUrl: link.imageUrl,
-              order: link.order || 0,
-            },
-            update: {
-              title: link.title,
-              url: link.url,
-              icon: link.icon,
-              imageUrl: link.imageUrl,
-              order: link.order || 0,
-            },
+          deleteMany: {},
+          create: links?.map((link: LinkInput) => ({
+            title: link.title || "",
+            url: link.url || "",
+            icon: link.icon,
+            imageUrl: link.imageUrl,
+            order: link.order || 0,
           })) || [],
         },
       },
     });
 
     return NextResponse.json(profile);
-  } catch (error) {
-    console.error("Erro ao atualizar perfil:", error);
-    return NextResponse.json({ error: "Erro ao atualizar perfil" }, { status: 500 });
+  } catch (error: any) {
+    console.error("ERRO CRITICO AO ATUALIZAR PERFIL:", error);
+    return NextResponse.json({ 
+      error: "Erro ao atualizar perfil", 
+      details: error.message 
+    }, { status: 500 });
   }
 }

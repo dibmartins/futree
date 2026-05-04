@@ -1,12 +1,54 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 
 export const revalidate = 0; // Desabilita o cache para esta página
 
 interface ProfilePageProps {
   params: Promise<{ username: string }>;
+}
+
+interface ProfileWithStats {
+    displayName: string;
+    fullName?: string | null;
+    nickname?: string | null;
+    birthDate?: Date | null;
+    city?: string | null;
+    state?: string | null;
+    parentName?: string | null;
+    parentPhone?: string | null;
+    avatarUrl?: string | null;
+    heroImageUrl?: string | null;
+    jerseyNumber?: string | null;
+    position?: string | null;
+    secondaryPosition?: string | null;
+    height?: number | null;
+    weight?: number | null;
+    preferredFoot?: string | null;
+    characteristics?: string[];
+    currentClub?: string | null;
+    history?: string | null;
+    theme?: {
+        primaryColor: string;
+    } | null;
+    stats?: {
+        goals: number;
+        assists: number;
+        pace: number;
+        shooting: number;
+        passing: number;
+        dribbling: number;
+        defending: number;
+        physical: number;
+    } | null;
+    links: Array<{
+        id: string;
+        title: string;
+        url: string;
+        icon?: string | null;
+        imageUrl?: string | null;
+    }>;
+    youtubeUrl?: string | null;
 }
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
@@ -21,7 +63,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       },
       theme: true,
     },
-  }) as any;
+  }) as unknown as ProfileWithStats;
 
   if (!profile) {
     notFound();
@@ -37,6 +79,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   };
 
   const primaryRgb = hexToRgb(primaryColor);
+
+  const calculateCategory = (birthDate: Date | null | undefined) => {
+    if (!birthDate) return "BASE";
+    const birthYear = new Date(birthDate).getFullYear();
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - birthYear;
+    return `SUB-${age}`;
+  };
+
+  const category = calculateCategory(profile.birthDate);
+  const location = profile.city && profile.state ? `${profile.city}, ${profile.state}` : profile.city || profile.state || "";
 
   return (
     <main
@@ -111,7 +164,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         <div className="absolute inset-0 z-20 flex flex-col justify-end p-8 bg-gradient-to-t from-black via-transparent to-transparent">
           <div className="space-y-0">
             <span className="inline-block px-3 py-1 bg-primary text-black font-display font-black italic text-xs mb-2 angled-accent uppercase">
-              PROMESSA DE ELITE
+              {category} • {profile.nickname || "PROMESSA"}
             </span>
             <h1 className="font-display font-black italic text-6xl text-white leading-none tracking-tighter uppercase">
               {profile.displayName.split(" ")[0]} <br />{" "}
@@ -124,16 +177,57 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                 </span>
               )}
               <span className="h-6 w-[2px] bg-primary/30"></span>
-              <span className="font-stat font-bold text-white text-xl tracking-widest uppercase">
-                {profile.position}
-              </span>
+              <div className="flex flex-col">
+                <span className="font-stat font-bold text-white text-xl tracking-widest uppercase leading-none">
+                  {profile.position}
+                </span>
+                {profile.secondaryPosition && (
+                    <span className="text-[10px] text-white/40 font-stat uppercase tracking-widest mt-1">
+                        Alt: {profile.secondaryPosition}
+                    </span>
+                )}
+              </div>
             </div>
+            {location && (
+                <div className="flex items-center gap-2 mt-4 text-white/60 font-stat text-xs uppercase tracking-widest">
+                    <span className="material-symbols-outlined text-sm text-primary">location_on</span>
+                    {location}
+                </div>
+            )}
           </div>
         </div>
       </section>
 
-      {profile.stats && (
-        <section className="px-6 -mt-16 relative z-30">
+      {/* Perfil Físico & Técnico */}
+      <section className="px-6 mt-8 relative z-30">
+        <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="glass-card rounded-2xl p-4 border-white/5 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-white/40 font-stat uppercase mb-1">Altura</span>
+                <span className="text-xl font-stat font-bold text-white">{profile.height || "--"}</span>
+                <span className="text-[8px] text-primary font-bold uppercase mt-1">Metros</span>
+            </div>
+            <div className="glass-card rounded-2xl p-4 border-white/5 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-white/40 font-stat uppercase mb-1">Peso</span>
+                <span className="text-xl font-stat font-bold text-white">{profile.weight || "--"}</span>
+                <span className="text-[8px] text-primary font-bold uppercase mt-1">Kg</span>
+            </div>
+            <div className="glass-card rounded-2xl p-4 border-white/5 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-white/40 font-stat uppercase mb-1">Pé</span>
+                <span className="text-sm font-stat font-bold text-white uppercase">{profile.preferredFoot || "--"}</span>
+            </div>
+        </div>
+
+        {profile.characteristics && profile.characteristics.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-8">
+                {profile.characteristics.map(char => (
+                    <span key={char} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-stat uppercase tracking-widest text-white/70">
+                        {char}
+                    </span>
+                ))}
+            </div>
+        )}
+
+        {profile.stats && (
           <div className="glass-card rounded-[2rem] p-8 overflow-hidden relative border-white/10">
             <div className="absolute -right-10 -bottom-10 font-display font-black italic text-[200px] text-white/[0.03] leading-none select-none">
               {profile.jerseyNumber}
@@ -195,7 +289,32 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               ))}
             </div>
           </div>
-        </section>
+        )}
+      </section>
+
+      {/* Trajetória & Histórico */}
+      {(profile.currentClub || profile.history) && (
+          <section className="mt-20 px-6">
+            <h2 className="font-display font-black italic text-3xl mb-6 uppercase tracking-tighter">
+                Trajetória <span className="text-primary">Esportiva</span>
+            </h2>
+            <div className="glass-card rounded-[2rem] p-8 border-white/10 relative overflow-hidden">
+                {profile.currentClub && (
+                    <div className="mb-6">
+                        <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest block mb-2">Clube Atual</span>
+                        <p className="text-2xl font-display font-black italic text-white uppercase">{profile.currentClub}</p>
+                    </div>
+                )}
+                {profile.history && (
+                    <div className="prose prose-invert max-w-none">
+                        <span className="text-[10px] font-stat text-white/30 font-bold uppercase tracking-widest block mb-4 border-t border-white/5 pt-4">Histórico & Conquistas</span>
+                        <p className="text-white/70 font-body text-sm leading-relaxed whitespace-pre-wrap">
+                            {profile.history}
+                        </p>
+                    </div>
+                )}
+            </div>
+          </section>
       )}
 
       {profile.youtubeUrl && (
@@ -232,6 +351,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                     transform: "scale(1.1)",
                     objectPosition: "center 20%" 
                   }}
+                  unoptimized
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-zinc-900 to-black">
@@ -267,9 +387,13 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
       <footer className="mt-20 px-6 pb-20 text-center">
         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-        <button className="w-full bg-primary text-black font-display font-black italic py-5 rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb), 0.3)] active:scale-95 transition-transform uppercase tracking-widest">
-          Entrar em Contato
-        </button>
+        <a 
+          href={`https://wa.me/${profile.parentPhone?.replace(/\D/g, "")}?text=Olá! Gostaria de saber mais sobre o atleta ${profile.displayName} que vi no Futree.`}
+          target="_blank"
+          className="inline-block w-full bg-primary text-black font-display font-black italic py-5 rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb), 0.3)] active:scale-95 transition-transform uppercase tracking-widest text-center"
+        >
+          Entrar em Contato ({profile.parentName || "Responsável"})
+        </a>
         <p className="mt-8 text-[10px] font-stat text-white/30 tracking-widest uppercase">
           © 2024 {profile.displayName} | TODOS OS DIREITOS RESERVADOS
         </p>

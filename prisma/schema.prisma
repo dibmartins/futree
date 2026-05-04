@@ -7,33 +7,75 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  profile   Profile?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  accounts      Account[]
+  profile       Profile?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 model Profile {
-  id           String      @id @default(cuid())
-  userId       String      @unique
-  user         User        @relation(fields: [userId], references: [id])
-  username     String      @unique
-  displayName  String
-  jerseyNumber String?
-  position     String?
-  bio          String?
-  avatarUrl    String?
-  heroImageUrl String?
-  youtubeUrl   String?
+  id                String      @id @default(cuid())
+  userId            String      @unique
+  user              User        @relation(fields: [userId], references: [id])
+  username          String      @unique
+  displayName       String
+  fullName          String?
+  nickname          String?
+  birthDate         DateTime?
+  city              String?
+  state             String?
   
-  theme        ThemeConfig?
-  stats        Stats?
-  links        Link[]
+  parentName        String?
+  parentPhone       String?
+
+  jerseyNumber      String?
+  position          String?
+  secondaryPosition String?
   
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  height            Float?
+  weight            Float?
+  preferredFoot     String? // Destro, Canhoto, Ambidestro
+  characteristics   String[]
+
+  currentClub       String?
+  history           String?   @db.Text // Trajetória e conquistas
+
+  bio               String?
+  avatarUrl         String?
+  heroImageUrl      String?
+  youtubeUrl        String?
+  
+  theme             ThemeConfig?
+  stats             Stats?
+  links             Link[]
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 }
 
 model ThemeConfig {

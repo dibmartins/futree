@@ -1,0 +1,747 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import Image from "next/image";
+
+interface ProfileData {
+  username: string;
+  displayName: string;
+  fullName?: string;
+  nickname?: string;
+  birthDate?: string;
+  city?: string;
+  state?: string;
+  parentName?: string;
+  parentPhone?: string;
+  jerseyNumber?: string;
+  position?: string;
+  secondaryPosition?: string;
+  height?: number;
+  weight?: number;
+  preferredFoot?: string;
+  characteristics: string[];
+  currentClub?: string;
+  history?: string;
+  avatarUrl?: string;
+  heroImageUrl?: string;
+  youtubeUrl?: string;
+  stats: {
+    goals: number;
+    assists: number;
+    pace: number;
+    shooting: number;
+    passing: number;
+    dribbling: number;
+    defending: number;
+    physical: number;
+  };
+  links: Array<{
+    id: string;
+    title: string;
+    url: string;
+    icon?: string;
+    imageUrl?: string;
+    order?: number;
+  }>;
+  theme: {
+    primaryColor: string;
+    secondaryColor: string;
+    backgroundColor: string;
+  };
+}
+
+export default function SettingsPage() {
+  const router = useRouter();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [uploadingLinks, setUploadingLinks] = useState<Record<string, boolean>>({});
+  
+  // Username check states
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+  const [checkingUsername, setCheckingUsername] = useState(false);
+
+  // Onboarding states
+  const [isOnboarding, setIsOnboarding] = useState(false);
+  const [username, setUsername] = useState("");
+  const [displayName, setDisplayName] = useState("");
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((res) => {
+        if (res.status === 401) {
+            router.push("/login");
+            return null;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!data || data.error) {
+            setIsOnboarding(true);
+        } else {
+            setProfile(data);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setIsOnboarding(true);
+        setLoading(false);
+      });
+  }, [router]);
+
+  const handleOnboarding = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+        const res = await fetch("/api/profile/onboarding", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, displayName }),
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setProfile(data);
+            setIsOnboarding(false);
+        } else {
+            const err = await res.json();
+            alert(err.error || "Erro no onboarding");
+        }
+    } catch {
+        alert("Erro ao processar onboarding");
+    } finally {
+        setSaving(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "avatar" | "hero") => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (type === "avatar") setUploadingAvatar(true);
+    else setUploadingHero(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", type);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const { url } = await res.json();
+        setProfile((prev) => 
+          prev ? {
+            ...prev,
+            [type === "avatar" ? "avatarUrl" : "heroImageUrl"]: url,
+          } : null
+        );
+      } else {
+        const errorData = await res.json();
+        alert(`Erro no upload: ${errorData.details || errorData.error}`);
+      }
+    } catch {
+      alert("Erro ao enviar arquivo.");
+    } finally {
+      if (type === "avatar") setUploadingAvatar(false);
+      else setUploadingHero(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!profile) return;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...profile,
+          // Garante que campos numéricos sejam números
+          height: profile.height ? parseFloat(String(profile.height)) : null,
+          weight: profile.weight ? parseFloat(String(profile.weight)) : null,
+        }),
+      });
+
+      if (res.ok) {
+        const updated = await res.json();
+        setProfile(updated);
+        alert("Perfil atualizado!");
+        router.refresh();
+      } else {
+        const error = await res.json();
+        alert(`Erro ao salvar: ${error.error || "Erro desconhecido"}`);
+      }
+    } catch (err) {
+      console.error("Erro ao salvar:", err);
+      alert("Erro ao salvar.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const removeLink = (id: string) => {
+    if (!profile) return;
+    setProfile({
+      ...profile,
+      links: profile.links.filter(l => l.id !== id)
+    });
+  };
+
+  const checkUsernameAvailability = async (u: string) => {
+    if (!u) {
+        setUsernameAvailable(null);
+        return;
+    }
+    if (u === profile?.username) {
+        setUsernameAvailable(true);
+        return;
+    }
+    setCheckingUsername(true);
+    try {
+        const res = await fetch(`/api/profile/check-username?username=${u}`);
+        const data = await res.json();
+        setUsernameAvailable(data.available);
+    } catch {
+        setUsernameAvailable(null);
+    } finally {
+        setCheckingUsername(false);
+    }
+  };
+
+  if (loading) return <div className="p-8 text-white">Carregando...</div>;
+
+  if (isOnboarding) {
+    return (
+        <div className="min-h-screen bg-[#121414] text-white p-6 flex items-center justify-center">
+            <div className="w-full max-w-md glass-card p-8 rounded-[2rem]">
+                <h2 className="text-2xl font-display font-black italic text-primary uppercase mb-6">Comece sua Jornada</h2>
+                <form onSubmit={handleOnboarding} className="space-y-6">
+                    <div>
+                        <label className="block text-xs uppercase font-stat text-white/50 mb-2">Username (URL do Perfil)</label>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                required
+                                value={username}
+                                onChange={(e) => {
+                                    const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
+                                    setUsername(val);
+                                    checkUsernameAvailability(val);
+                                }}
+                                className={`w-full bg-white/5 border ${usernameAvailable === false ? "border-red-500" : usernameAvailable === true ? "border-primary" : "border-white/10"} rounded-xl p-4 focus:outline-none text-white`}
+                                placeholder="ex: neymarjr"
+                            />
+                            {checkingUsername && (
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex justify-between mt-1 px-1">
+                            <p className="text-[10px] text-white/30 italic">futree.com/p/{username || "..."}</p>
+                            {usernameAvailable === false && <p className="text-[10px] text-red-500 font-bold uppercase">Indisponível</p>}
+                            {usernameAvailable === true && <p className="text-[10px] text-primary font-bold uppercase">Disponível</p>}
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-xs uppercase font-stat text-white/50 mb-2">Nome de Exibição</label>
+                        <input
+                            type="text"
+                            required
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:outline-none focus:border-primary text-white"
+                            placeholder="ex: Neymar Jr"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="w-full bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest disabled:opacity-50"
+                    >
+                        {saving ? "Configurando..." : "Criar Meu Perfil"}
+                    </button>
+                    <button onClick={() => signOut()} type="button" className="w-full text-white/30 text-[10px] uppercase font-stat hover:text-white transition-colors">Sair</button>
+                </form>
+            </div>
+        </div>
+    );
+  }
+
+  if (!profile) return null;
+
+  return (
+    <div className="min-h-screen bg-[#121414] text-white p-6 pb-32">
+      <header className="mb-8 flex justify-between items-center">
+        <h1 className="text-2xl font-display font-black italic text-primary uppercase">
+          Elite Settings
+        </h1>
+        <div className="flex gap-4">
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="text-white/50 hover:text-white font-stat text-xs uppercase tracking-widest px-4"
+          >
+            Sair
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving || usernameAvailable === false}
+            className="bg-primary text-black px-6 py-2 rounded-lg font-display font-bold italic uppercase disabled:opacity-50"
+          >
+            {saving ? "Salvando..." : "Salvar"}
+          </button>
+        </div>
+      </header>
+
+      <div className="space-y-8 max-w-2xl mx-auto">
+        {/* Identidade de Base */}
+        <section className="glass-card p-6 rounded-2xl">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Identidade</h2>
+          <div className="grid gap-4">
+            <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Username (@ na URL)</label>
+                <div className="relative">
+                    <input
+                        type="text"
+                        value={profile.username}
+                        onChange={(e) => {
+                            const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
+                            setProfile({ ...profile, username: val });
+                            checkUsernameAvailability(val);
+                        }}
+                        className={`w-full bg-white/5 border ${usernameAvailable === false ? "border-red-500" : usernameAvailable === true ? "border-primary" : "border-white/10"} rounded-lg p-3 focus:outline-none text-sm font-bold`}
+                    />
+                    {checkingUsername && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    )}
+                </div>
+                {usernameAvailable === false && <p className="mt-1 text-[10px] text-red-500 font-bold uppercase px-1">Username já está sendo usado</p>}
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de Exibição (Curto)</label>
+                <input
+                  type="text"
+                  value={profile.displayName}
+                  onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                  placeholder="Ex: Neymar Jr"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Apelido (Se houver)</label>
+                <input
+                  type="text"
+                  value={profile.nickname || ""}
+                  onChange={(e) => setProfile({ ...profile, nickname: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                  placeholder="Ex: Menino Ney"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome Completo</label>
+              <input
+                type="text"
+                value={profile.fullName || ""}
+                onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Data de Nascimento</label>
+                <input
+                  type="date"
+                  value={profile.birthDate ? new Date(profile.birthDate).toISOString().split("T")[0] : ""}
+                  onChange={(e) => setProfile({ ...profile, birthDate: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                 <div>
+                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
+                    <input
+                      type="text"
+                      value={profile.city || ""}
+                      onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                    />
+                 </div>
+                 <div>
+                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">UF</label>
+                    <input
+                      type="text"
+                      maxLength={2}
+                      value={profile.state || ""}
+                      onChange={(e) => setProfile({ ...profile, state: e.target.value.toUpperCase() })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm text-center"
+                      placeholder="SP"
+                    />
+                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Responsáveis */}
+        <section className="glass-card p-6 rounded-2xl">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Responsáveis (Contatos)</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome do Responsável</label>
+              <input
+                type="text"
+                value={profile.parentName || ""}
+                onChange={(e) => setProfile({ ...profile, parentName: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                placeholder="Ex: Pai ou Mãe"
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Telefone / WhatsApp</label>
+              <input
+                type="text"
+                value={profile.parentPhone || ""}
+                onChange={(e) => setProfile({ ...profile, parentPhone: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                placeholder="(00) 00000-0000"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Perfil Físico & Técnico */}
+        <section className="glass-card p-6 rounded-2xl">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Perfil Físico & Técnico</h2>
+          <div className="grid gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Altura (m)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={profile.height || ""}
+                  onChange={(e) => setProfile({ ...profile, height: parseFloat(e.target.value) })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                  placeholder="1.75"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Peso (kg)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={profile.weight || ""}
+                  onChange={(e) => setProfile({ ...profile, weight: parseFloat(e.target.value) })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                  placeholder="65.0"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Pé Dominante</label>
+                <select
+                  value={profile.preferredFoot || ""}
+                  onChange={(e) => setProfile({ ...profile, preferredFoot: e.target.value })}
+                  className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                >
+                  <option value="">Selecione...</option>
+                  <option value="Destro">Destro</option>
+                  <option value="Canhoto">Canhoto</option>
+                  <option value="Ambidestro">Ambidestro</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Principal</label>
+                <input
+                  type="text"
+                  value={profile.position || ""}
+                  onChange={(e) => setProfile({ ...profile, position: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                  placeholder="Ex: Camisa 10"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Secundária</label>
+                <input
+                  type="text"
+                  value={profile.secondaryPosition || ""}
+                  onChange={(e) => setProfile({ ...profile, secondaryPosition: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Características (Separe por vírgula)</label>
+              <input
+                type="text"
+                value={profile.characteristics?.join(", ") || ""}
+                onChange={(e) => {
+                  const vals = e.target.value.split(",").map(s => s.trim()).filter(s => s !== "");
+                  setProfile({ ...profile, characteristics: vals });
+                }}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                placeholder="Ex: Visão de Jogo, Bola Parada, Velocidade"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Trajetória Esportiva */}
+        <section className="glass-card p-6 rounded-2xl">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Trajetória Esportiva</h2>
+          <div className="grid gap-4">
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Clube ou Escolinha Atual</label>
+              <input
+                type="text"
+                value={profile.currentClub || ""}
+                onChange={(e) => setProfile({ ...profile, currentClub: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Histórico e Conquistas</label>
+              <textarea
+                rows={4}
+                value={profile.history || ""}
+                onChange={(e) => setProfile({ ...profile, history: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm resize-none"
+                placeholder="Fale sobre seus clubes anteriores e principais títulos..."
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Media & Design */}
+        <section className="glass-card p-6 rounded-2xl">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Mídia & Visual</h2>
+          <div className="grid gap-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Número da Camisa</label>
+                <input
+                  type="text"
+                  value={profile.jerseyNumber || ""}
+                  onChange={(e) => setProfile({ ...profile, jerseyNumber: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Portrait)</label>
+                <div className="flex gap-3 items-center mt-1">
+                  {profile.avatarUrl && (
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-primary">
+                      <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, "avatar")}
+                    className="flex-1 text-[10px] file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-white/10 file:text-white"
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Vídeo de Highlights (YouTube)</label>
+              <input
+                type="text"
+                value={profile.youtubeUrl || ""}
+                placeholder="https://www.youtube.com/watch?v=..."
+                onChange={(e) => setProfile({ ...profile, youtubeUrl: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto de Impacto (Remover Background)</label>
+              <div className="flex gap-4 items-start mt-1">
+                {profile.heroImageUrl && (
+                  <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-black/40 border border-primary/20">
+                    <Image src={profile.heroImageUrl} alt="Hero" fill className="object-contain" />
+                  </div>
+                )}
+                <div className="flex-1 relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, "hero")}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-xs file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:bg-primary file:text-black"
+                  />
+                  {uploadingHero && (
+                    <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
+                      REMOVENDO BACKGROUND...
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Estatísticas */}
+        <section className="glass-card p-6 rounded-2xl">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Atributos (0-99)</h2>
+          <div className="grid grid-cols-3 gap-4">
+            {["pace", "shooting", "passing", "dribbling", "defending", "physical"].map((stat) => (
+              <div key={stat}>
+                <label className="block text-[10px] uppercase font-stat text-white/50 mb-1">{stat}</label>
+                <input
+                  type="number"
+                  value={profile.stats?.[stat as keyof typeof profile.stats] || 0}
+                  onChange={(e) => setProfile({
+                    ...profile,
+                    stats: { ...(profile.stats || {}), [stat]: parseInt(e.target.value) || 0 }
+                  } as any)}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Sessões / Links */}
+        <section className="glass-card p-6 rounded-2xl border-white/5">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Sessões & Storytelling</h2>
+          <div className="space-y-6">
+            {profile.links.map((link, index) => (
+              <div key={link.id} className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-5">
+                <div className="flex justify-between items-center">
+                   <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest">Sessão #{index + 1}</span>
+                   <button 
+                     onClick={() => removeLink(link.id)}
+                     className="text-[10px] uppercase font-stat text-white/20 hover:text-red-500 transition-colors"
+                   >
+                     Remover Sessão
+                   </button>
+                </div>
+                <div className="grid gap-4">
+                  <div>
+                    <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Título da Sessão</label>
+                    <input
+                      type="text"
+                      placeholder="Título da Sessão"
+                      value={link.title}
+                      onChange={(e) => {
+                        const newLinks = [...profile.links];
+                        newLinks[index].title = e.target.value;
+                        setProfile({ ...profile, links: newLinks });
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">URL / Link</label>
+                    <input
+                      type="text"
+                      placeholder="URL de Destino"
+                      value={link.url}
+                      onChange={(e) => {
+                        const newLinks = [...profile.links];
+                        newLinks[index].url = e.target.value;
+                        setProfile({ ...profile, links: newLinks });
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                   <label className="block text-[10px] uppercase font-stat text-white/50 mb-2">Imagem de Impacto (Com Parallax)</label>
+                   <div className="flex gap-4 items-center">
+                     <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
+                       {link.imageUrl ? (
+                         <Image src={link.imageUrl} alt="Link Hero" fill className="object-contain" />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center opacity-20">
+                            <span className="material-symbols-outlined">image</span>
+                         </div>
+                       )}
+                       {uploadingLinks[link.id] && (
+                         <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                         </div>
+                       )}
+                     </div>
+                     <div className="flex-1 relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            
+                            setUploadingLinks(prev => ({ ...prev, [link.id]: true }));
+                            
+                            const formData = new FormData();
+                            formData.append("file", file);
+                            formData.append("type", "link");
+                            formData.append("linkId", link.id);
+                            
+                            try {
+                              const res = await fetch("/api/upload", { method: "POST", body: formData });
+                              if (res.ok) {
+                                const { url } = await res.json();
+                                const newLinks = [...profile.links];
+                                newLinks[index].imageUrl = url;
+                                setProfile({ ...profile, links: newLinks });
+                              }
+                            } finally {
+                              setUploadingLinks(prev => ({ ...prev, [link.id]: false }));
+                            }
+                          }}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                        />
+                     </div>
+                   </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Cores */}
+        <section className="glass-card p-6 rounded-2xl">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Personalização</h2>
+          <div>
+            <label className="block text-xs uppercase font-stat text-white/50 mb-2">Cor Primária (Neon)</label>
+            <div className="flex gap-4 items-center">
+              <input
+                type="color"
+                value={profile.theme.primaryColor}
+                onChange={(e) => setProfile({
+                  ...profile,
+                  theme: { ...profile.theme, primaryColor: e.target.value }
+                })}
+                className="h-10 w-20 bg-transparent border-none cursor-pointer"
+              />
+              <span className="font-stat text-sm">{profile.theme.primaryColor}</span>
+            </div>
+          </div>
+        </section>
+
+        <div className="text-center">
+          <a
+            href={`/p/${profile.username}`}
+            target="_blank"
+            className="text-white/40 hover:text-primary transition-colors font-stat text-xs uppercase tracking-widest"
+          >
+            Visualizar Perfil Público ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
