@@ -464,22 +464,39 @@ export default function SettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Principal</label>
-                <input
-                  type="text"
+                <select
                   value={profile.position || ""}
                   onChange={(e) => setProfile({ ...profile, position: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                  placeholder="Ex: Camisa 10"
-                />
+                  className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                >
+                  <option value="">Selecione...</option>
+                  <option value="Goleiro">Goleiro</option>
+                  <option value="Zagueiro">Zagueiro</option>
+                  <option value="Lateral Direito">Lateral Direito</option>
+                  <option value="Lateral Esquerdo">Lateral Esquerdo</option>
+                  <option value="Volante">Volante</option>
+                  <option value="Meia">Meia</option>
+                  <option value="Ponta">Ponta</option>
+                  <option value="Centroavante">Centroavante</option>
+                </select>
               </div>
               <div>
                 <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Secundária</label>
-                <input
-                  type="text"
+                <select
                   value={profile.secondaryPosition || ""}
                   onChange={(e) => setProfile({ ...profile, secondaryPosition: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                />
+                  className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                >
+                  <option value="">Selecione...</option>
+                  <option value="Goleiro">Goleiro</option>
+                  <option value="Zagueiro">Zagueiro</option>
+                  <option value="Lateral Direito">Lateral Direito</option>
+                  <option value="Lateral Esquerdo">Lateral Esquerdo</option>
+                  <option value="Volante">Volante</option>
+                  <option value="Meia">Meia</option>
+                  <option value="Ponta">Ponta</option>
+                  <option value="Centroavante">Centroavante</option>
+                </select>
               </div>
             </div>
             <div>
@@ -604,7 +621,7 @@ export default function SettingsPage() {
                   onChange={(e) => setProfile({
                     ...profile,
                     stats: { ...(profile.stats || {}), [stat]: parseInt(e.target.value) || 0 }
-                  } as any)}
+                  } as unknown as ProfileData)}
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors"
                 />
               </div>

@@ -137,11 +137,11 @@ export async function PATCH(request: Request) {
     });
 
     return NextResponse.json(profile);
-  } catch (error: any) {
+  } catch (error) {
     console.error("ERRO CRITICO AO ATUALIZAR PERFIL:", error);
     return NextResponse.json({ 
       error: "Erro ao atualizar perfil", 
-      details: error.message 
+      details: error instanceof Error ? error.message : String(error)
     }, { status: 500 });
   }
 }
