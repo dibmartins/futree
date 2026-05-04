@@ -54,6 +54,7 @@ interface ProfileWithStats {
     history?: string | null;
     theme?: {
         primaryColor: string;
+        secondaryColor: string;
     } | null;
     stats?: {
         goals: number;
@@ -94,6 +95,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   }
 
   const primaryColor = profile.theme?.primaryColor || "#DCFF1E";
+  const secondaryColor = profile.theme?.secondaryColor || "#000000";
   
   const hexToRgb = (hex: string) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -103,6 +105,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   };
 
   const primaryRgb = hexToRgb(primaryColor);
+  const secondaryRgb = hexToRgb(secondaryColor);
 
   const calculateCategory = (birthDate: Date | null | undefined) => {
     if (!birthDate) return "BASE";
@@ -143,8 +146,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       style={{ 
         "--primary": primaryColor,
         "--primary-rgb": primaryRgb,
+        "--secondary": secondaryColor,
+        "--secondary-rgb": secondaryRgb,
         "--color-primary": primaryColor,      // Injeção para Tailwind v4
         "--color-primary-rgb": primaryRgb,  // Injeção para Tailwind v4
+        "--color-secondary": secondaryColor,
+        "--color-secondary-rgb": secondaryRgb,
         color: "#e2e2e2" 
       } as React.CSSProperties}
     >
@@ -426,7 +433,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               </h3>
               <a
                 href={link.url}
-                className="inline-flex items-center gap-3 bg-white text-black font-display font-black italic px-8 py-4 rounded-xl hover:bg-primary transition-all active:scale-95 uppercase tracking-widest text-sm"
+                className="inline-flex items-center gap-3 bg-primary text-[var(--secondary)] font-display font-black italic px-8 py-4 rounded-xl hover:opacity-90 transition-all active:scale-95 uppercase tracking-widest text-sm"
               >
                 Acessar Conteúdo
                 <span className="material-symbols-outlined text-sm">open_in_new</span>
@@ -436,14 +443,51 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         ))}
       </div>
 
+      {/* Growth Hacking CTA */}
+      <section className="mt-20 px-6">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 p-10 text-center">
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+                <span className="material-symbols-outlined text-[120px]">verified_user</span>
+            </div>
+            
+            <h2 className="font-display font-black italic text-3xl md:text-4xl text-white uppercase mb-4 tracking-tighter leading-tight">
+                Quer ter um perfil <span className="text-primary underline decoration-2 underline-offset-8">Elite</span> como este?
+            </h2>
+            <p className="text-white/60 font-body text-sm md:text-base max-w-md mx-auto mb-10 leading-relaxed">
+                Mostre seu talento para o mundo. Crie sua vitrine profissional em menos de 2 minutos e entre no radar dos principais captadores.
+            </p>
+            
+            <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <a 
+                    href="/login"
+                    className="inline-flex items-center gap-2 bg-white text-black font-display font-black italic px-8 py-4 rounded-xl hover:bg-primary transition-all active:scale-95 uppercase tracking-widest text-sm"
+                >
+                    Criar Meu Perfil Grátis
+                    <span className="material-symbols-outlined">bolt</span>
+                </a>
+                <div className="flex -space-x-2">
+                    {[1,2,3].map(i => (
+                        <div key={i} className="w-8 h-8 rounded-full border-2 border-black bg-zinc-800 flex items-center justify-center overflow-hidden">
+                            <span className="material-symbols-outlined text-xs text-primary/50">person</span>
+                        </div>
+                    ))}
+                    <span className="ml-3 text-[10px] font-stat text-white/40 uppercase self-center tracking-widest">+500 Atletas Inscritos</span>
+                </div>
+            </div>
+        </div>
+      </section>
+
       <footer className="mt-20 px-6 pb-20 text-center">
         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
         <a 
-          href={`https://wa.me/${profile.parentPhone?.replace(/\D/g, "")}?text=Olá! Gostaria de saber mais sobre o atleta ${profile.displayName} que vi no Futree.`}
+          href={`https://wa.me/55${profile.parentPhone?.replace(/\D/g, "")}?text=Olá! Gostaria de saber mais sobre o atleta ${profile.displayName} que vi no Futree.`}
           target="_blank"
-          className="inline-block w-full bg-primary text-black font-display font-black italic py-5 rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb), 0.3)] active:scale-95 transition-transform uppercase tracking-widest text-center"
+          className="inline-flex items-center justify-center gap-3 w-full bg-primary text-[var(--secondary)] font-display font-black italic py-5 rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb), 0.3)] active:scale-95 transition-transform uppercase tracking-widest text-center"
         >
-          Entrar em Contato ({profile.parentName || "Responsável"})
+          <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.143c1.589.943 3.385 1.44 5.216 1.441h.005c5.676 0 10.294-4.618 10.297-10.296.002-2.751-1.071-5.337-3.023-7.291-1.953-1.953-4.54-3.027-7.292-3.028-5.678 0-10.296 4.617-10.299 10.294-.001 1.815.474 3.589 1.378 5.147l-1.05 3.832 3.931-1.031zm11.034-7.462c-.302-.15-.1.45-.4.45-.3 0-1.43-.54-2.31-1.32-.88-.78-1.52-1.88-1.52-1.88s-.18-.32.06-.52c.24-.2.3-.34.46-.54.16-.2.12-.32.06-.46-.06-.14-.52-1.26-.72-1.74-.2-.48-.44-.4-.6-.4h-.5c-.18 0-.48.06-.72.32-.24.26-.94.92-.94 2.24s.96 2.6 1.1 2.78c.14.18 1.9 2.9 4.6 4.06.64.28 1.14.44 1.54.56.64.2 1.22.18 1.68.12.52-.08 1.6-.66 1.82-1.28.22-.62.22-1.16.16-1.28-.06-.12-.22-.18-.52-.33z"/>
+          </svg>
+          Falar com o Atleta
         </a>
         <p className="mt-8 text-[10px] font-stat text-white/30 tracking-widest uppercase">
           © 2024 {profile.displayName} | TODOS OS DIREITOS RESERVADOS

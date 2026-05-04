@@ -373,28 +373,30 @@ export default function SettingsPage() {
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
-                  <input
-                    type="text"
-                    value={profile.city || ""}
-                    onChange={(e) => setProfile({ ...profile, city: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
+                    <input
+                      type="text"
+                      value={profile.city || ""}
+                      onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">UF</label>
+                    <select
+                      value={profile.state || ""}
+                      onChange={(e) => setProfile({ ...profile, state: e.target.value })}
+                      className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                    >
+                      <option value="">Selecione...</option>
+                      {["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"].map(uf => (
+                        <option key={uf} value={uf}>{uf}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs uppercase font-stat text-white/50 mb-1">UF</label>
-                  <input
-                    type="text"
-                    maxLength={2}
-                    value={profile.state || ""}
-                    onChange={(e) => setProfile({ ...profile, state: e.target.value.toUpperCase() })}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm text-center"
-                    placeholder="SP"
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -415,13 +417,18 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Telefone / WhatsApp</label>
-              <input
-                type="text"
-                value={profile.parentPhone || ""}
-                onChange={(e) => setProfile({ ...profile, parentPhone: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                placeholder="(00) 00000-0000"
-              />
+              <div className="relative flex">
+                <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-white/10 bg-white/5 text-white/50 text-sm font-stat">
+                  +55
+                </span>
+                <input
+                  type="text"
+                  value={profile.parentPhone || ""}
+                  onChange={(e) => setProfile({ ...profile, parentPhone: e.target.value.replace(/\D/g, "") })}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-r-lg p-3 focus:outline-none focus:border-primary text-sm"
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -506,17 +513,44 @@ export default function SettingsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Características (Separe por vírgula)</label>
-              <input
-                type="text"
-                value={profile.characteristics?.join(", ") || ""}
-                onChange={(e) => {
-                  const vals = e.target.value.split(",").map(s => s.trim()).filter(s => s !== "");
-                  setProfile({ ...profile, characteristics: vals });
-                }}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                placeholder="Ex: Visão de Jogo, Bola Parada, Velocidade"
-              />
+              <label className="block text-xs uppercase font-stat text-white/50 mb-2">Características & Habilidades</label>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 focus-within:border-primary transition-colors">
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {profile.characteristics?.map((char, i) => (
+                    <span key={i} className="px-3 py-1 bg-primary text-black font-stat font-bold text-[10px] uppercase rounded-full flex items-center gap-2">
+                      {char}
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          const newChars = profile.characteristics?.filter((_, idx) => idx !== i);
+                          setProfile({ ...profile, characteristics: newChars });
+                        }}
+                        className="hover:text-red-600 transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">close</span>
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Digite e pressione Enter ou vírgula..."
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === ",") {
+                      e.preventDefault();
+                      const val = (e.target as HTMLInputElement).value.trim();
+                      if (val && !profile.characteristics?.includes(val)) {
+                        setProfile({ 
+                          ...profile, 
+                          characteristics: [...(profile.characteristics || []), val] 
+                        });
+                        (e.target as HTMLInputElement).value = "";
+                      }
+                    }
+                  }}
+                  className="w-full bg-transparent border-none focus:outline-none text-sm text-white/80"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -562,19 +596,26 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Portrait)</label>
-                <div className="flex gap-3 items-center mt-1">
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Retrato)</label>
+                <div className="flex flex-col md:flex-row gap-3 items-start md:items-center mt-1">
                   {profile.avatarUrl && (
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-primary">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden border border-primary flex-shrink-0">
                       <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
                     </div>
                   )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload(e, "avatar")}
-                    className="flex-1 bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
-                  />
+                  <div className="flex-1 w-full relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, "avatar")}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                    />
+                    {uploadingAvatar && (
+                      <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
+                        PROCESSANDO...
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -589,14 +630,14 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto de Impacto (Remover Background)</label>
-              <div className="flex gap-4 items-start mt-1">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto de Impacto (Herói)</label>
+              <div className="flex flex-col md:flex-row gap-4 items-start mt-1">
                 {profile.heroImageUrl && (
-                  <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-black/40 border border-primary/20">
+                  <div className="relative w-full md:w-24 h-48 md:h-24 rounded-lg overflow-hidden bg-black/40 border border-primary/20 flex-shrink-0">
                     <Image src={profile.heroImageUrl} alt="Hero" fill className="object-contain" />
                   </div>
                 )}
-                <div className="flex-1 relative">
+                <div className="flex-1 w-full relative">
                   <input
                     type="file"
                     accept="image/*"
@@ -616,17 +657,26 @@ export default function SettingsPage() {
 
         {/* Estatísticas */}
         <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Atributos (0-99)</h2>
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Atributos de Performance</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {["pace", "shooting", "passing", "dribbling", "defending", "physical"].map((stat) => (
-              <div key={stat}>
-                <label className="block text-[10px] uppercase font-stat text-white/50 mb-1">{stat}</label>
+            {[
+              { id: "pace", label: "Ritmo" },
+              { id: "shooting", label: "Finalização" },
+              { id: "passing", label: "Passe" },
+              { id: "dribbling", label: "Drible" },
+              { id: "defending", label: "Defesa" },
+              { id: "physical", label: "Físico" }
+            ].map((stat) => (
+              <div key={stat.id}>
+                <label className="block text-[10px] uppercase font-stat text-white/50 mb-1">{stat.label}</label>
                 <input
                   type="number"
-                  value={profile.stats?.[stat as keyof typeof profile.stats] || 0}
+                  min="0"
+                  max="99"
+                  value={profile.stats?.[stat.id as keyof typeof profile.stats] || 0}
                   onChange={(e) => setProfile({
                     ...profile,
-                    stats: { ...(profile.stats || {}), [stat]: parseInt(e.target.value) || 0 }
+                    stats: { ...(profile.stats || {}), [stat.id]: parseInt(e.target.value) || 0 }
                   } as unknown as ProfileData)}
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors"
                 />
@@ -738,19 +788,52 @@ export default function SettingsPage() {
         {/* Cores */}
         <section className="glass-card p-6 rounded-2xl">
           <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Personalização</h2>
-          <div>
-            <label className="block text-xs uppercase font-stat text-white/50 mb-2">Cor Primária (Neon)</label>
-            <div className="flex gap-4 items-center">
-              <input
-                type="color"
-                value={profile.theme.primaryColor}
-                onChange={(e) => setProfile({
-                  ...profile,
-                  theme: { ...profile.theme, primaryColor: e.target.value }
-                })}
-                className="h-10 w-20 bg-transparent border-none cursor-pointer"
-              />
-              <span className="font-stat text-sm">{profile.theme.primaryColor}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor Primária (Identidade)</label>
+              <div className="flex gap-4 items-center">
+                <input
+                  type="color"
+                  value={profile.theme?.primaryColor || "#DCFF1E"}
+                  onChange={(e) => setProfile({
+                    ...profile,
+                    theme: { ...(profile.theme || {}), primaryColor: e.target.value }
+                  } as unknown as ProfileData)}
+                  className="w-12 h-12 rounded-lg bg-transparent border-none cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={profile.theme?.primaryColor || "#DCFF1E"}
+                  onChange={(e) => setProfile({
+                    ...profile,
+                    theme: { ...(profile.theme || {}), primaryColor: e.target.value }
+                  } as unknown as ProfileData)}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg p-3 text-sm font-stat uppercase"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor dos Botões (Texto)</label>
+              <div className="flex gap-4 items-center">
+                <input
+                  type="color"
+                  value={profile.theme?.secondaryColor || "#000000"}
+                  onChange={(e) => setProfile({
+                    ...profile,
+                    theme: { ...(profile.theme || {}), secondaryColor: e.target.value }
+                  } as unknown as ProfileData)}
+                  className="w-12 h-12 rounded-lg bg-transparent border-none cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={profile.theme?.secondaryColor || "#000000"}
+                  onChange={(e) => setProfile({
+                    ...profile,
+                    theme: { ...(profile.theme || {}), secondaryColor: e.target.value }
+                  } as unknown as ProfileData)}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg p-3 text-sm font-stat uppercase"
+                />
+              </div>
             </div>
           </div>
         </section>
