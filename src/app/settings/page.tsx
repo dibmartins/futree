@@ -70,6 +70,9 @@ export default function SettingsPage() {
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
 
+  // UI states
+  const [menuOpen, setMenuOpen] = useState(false);
+
   useEffect(() => {
     fetch("/api/profile")
       .then((res) => {
@@ -279,28 +282,31 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-[#121414] text-white p-6 pb-32">
-      <header className="mb-8 flex justify-between items-center">
-        <h1 className="text-2xl font-display font-black italic text-primary uppercase">
-          Elite Settings
+      <header className="mb-8 flex justify-between items-center relative">
+        <h1 className="text-2xl font-display font-black italic text-primary uppercase tracking-widest">
+          Pitch Elite
         </h1>
-        <div className="flex gap-4">
+        <div>
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="text-white/50 hover:text-white font-stat text-xs uppercase tracking-widest px-4"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-white hover:text-primary transition-colors flex items-center justify-center p-2"
           >
-            Sair
+            <span className="material-symbols-outlined text-3xl">menu</span>
           </button>
-          <button
-            onClick={handleSave}
-            disabled={saving || usernameAvailable === false}
-            className="bg-primary text-black px-6 py-2 rounded-lg font-display font-bold italic uppercase disabled:opacity-50"
-          >
-            {saving ? "Salvando..." : "Salvar"}
-          </button>
+          {menuOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-[#1e2121] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
+              <button
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                className="w-full text-left px-4 py-3 text-sm font-stat uppercase tracking-widest text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Sair / Logout
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
-      <div className="space-y-8 max-w-2xl mx-auto">
+      <div className="space-y-8 max-w-4xl mx-auto">
         {/* Identidade de Base */}
         <section className="glass-card p-6 rounded-2xl">
           <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Identidade</h2>
@@ -326,7 +332,7 @@ export default function SettingsPage() {
               </div>
               {usernameAvailable === false && <p className="mt-1 text-[10px] text-red-500 font-bold uppercase px-1">Username já está sendo usado</p>}
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de Exibição</label>
                 <input
@@ -357,7 +363,7 @@ export default function SettingsPage() {
                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase font-stat text-white/50 mb-1">Data de Nascimento</label>
                 <input
@@ -367,7 +373,7 @@ export default function SettingsPage() {
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
                   <input
@@ -396,7 +402,7 @@ export default function SettingsPage() {
         {/* Responsáveis */}
         <section className="glass-card p-6 rounded-2xl">
           <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Responsáveis (Contatos)</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome do Responsável</label>
               <input
@@ -424,7 +430,7 @@ export default function SettingsPage() {
         <section className="glass-card p-6 rounded-2xl">
           <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Perfil Físico & Técnico</h2>
           <div className="grid gap-4">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs uppercase font-stat text-white/50 mb-1">Altura (m)</label>
                 <input
@@ -461,7 +467,7 @@ export default function SettingsPage() {
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Principal</label>
                 <select
@@ -545,7 +551,7 @@ export default function SettingsPage() {
         <section className="glass-card p-6 rounded-2xl">
           <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Mídia & Visual</h2>
           <div className="grid gap-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase font-stat text-white/50 mb-1">Número da Camisa</label>
                 <input
@@ -611,7 +617,7 @@ export default function SettingsPage() {
         {/* Estatísticas */}
         <section className="glass-card p-6 rounded-2xl">
           <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Atributos (0-99)</h2>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {["pace", "shooting", "passing", "dribbling", "defending", "physical"].map((stat) => (
               <div key={stat}>
                 <label className="block text-[10px] uppercase font-stat text-white/50 mb-1">{stat}</label>
@@ -677,10 +683,10 @@ export default function SettingsPage() {
 
                 <div>
                   <label className="block text-[10px] uppercase font-stat text-white/50 mb-2">Imagem de Impacto (Com Parallax)</label>
-                  <div className="flex gap-4 items-center">
-                    <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
+                  <div className="flex flex-col md:flex-row gap-4 md:items-center">
+                    <div className="relative w-full md:w-24 h-32 md:h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
                       {link.imageUrl ? (
-                        <Image src={link.imageUrl} alt="Link Hero" fill className="object-contain" />
+                        <Image src={link.imageUrl} alt="Link Hero" fill className="object-cover md:object-contain" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center opacity-20">
                           <span className="material-symbols-outlined">image</span>
@@ -749,7 +755,15 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <div className="text-center">
+        <div className="pt-8 flex flex-col gap-6 items-center">
+          <button
+            onClick={handleSave}
+            disabled={saving || usernameAvailable === false}
+            className="w-full max-w-md bg-primary text-black px-6 py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform tracking-widest"
+          >
+            {saving ? "Salvando..." : "Salvar Alterações"}
+          </button>
+
           <a
             href={`/p/${profile.username}`}
             target="_blank"
