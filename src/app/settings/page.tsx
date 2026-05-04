@@ -60,7 +60,7 @@ export default function SettingsPage() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingHero, setUploadingHero] = useState(false);
   const [uploadingLinks, setUploadingLinks] = useState<Record<string, boolean>>({});
-  
+
   // Username check states
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
@@ -74,16 +74,16 @@ export default function SettingsPage() {
     fetch("/api/profile")
       .then((res) => {
         if (res.status === 401) {
-            router.push("/login");
-            return null;
+          router.push("/login");
+          return null;
         }
         return res.json();
       })
       .then((data) => {
         if (!data || data.error) {
-            setIsOnboarding(true);
+          setIsOnboarding(true);
         } else {
-            setProfile(data);
+          setProfile(data);
         }
         setLoading(false);
       })
@@ -97,23 +97,23 @@ export default function SettingsPage() {
     e.preventDefault();
     setSaving(true);
     try {
-        const res = await fetch("/api/profile/onboarding", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, displayName }),
-        });
-        if (res.ok) {
-            const data = await res.json();
-            setProfile(data);
-            setIsOnboarding(false);
-        } else {
-            const err = await res.json();
-            alert(err.error || "Erro no onboarding");
-        }
+      const res = await fetch("/api/profile/onboarding", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, displayName }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setProfile(data);
+        setIsOnboarding(false);
+      } else {
+        const err = await res.json();
+        alert(err.error || "Erro no onboarding");
+      }
     } catch {
-        alert("Erro ao processar onboarding");
+      alert("Erro ao processar onboarding");
     } finally {
-        setSaving(false);
+      setSaving(false);
     }
   };
 
@@ -136,7 +136,7 @@ export default function SettingsPage() {
 
       if (res.ok) {
         const { url } = await res.json();
-        setProfile((prev) => 
+        setProfile((prev) =>
           prev ? {
             ...prev,
             [type === "avatar" ? "avatarUrl" : "heroImageUrl"]: url,
@@ -196,22 +196,22 @@ export default function SettingsPage() {
 
   const checkUsernameAvailability = async (u: string) => {
     if (!u) {
-        setUsernameAvailable(null);
-        return;
+      setUsernameAvailable(null);
+      return;
     }
     if (u === profile?.username) {
-        setUsernameAvailable(true);
-        return;
+      setUsernameAvailable(true);
+      return;
     }
     setCheckingUsername(true);
     try {
-        const res = await fetch(`/api/profile/check-username?username=${u}`);
-        const data = await res.json();
-        setUsernameAvailable(data.available);
+      const res = await fetch(`/api/profile/check-username?username=${u}`);
+      const data = await res.json();
+      setUsernameAvailable(data.available);
     } catch {
-        setUsernameAvailable(null);
+      setUsernameAvailable(null);
     } finally {
-        setCheckingUsername(false);
+      setCheckingUsername(false);
     }
   };
 
@@ -219,59 +219,59 @@ export default function SettingsPage() {
 
   if (isOnboarding) {
     return (
-        <div className="min-h-screen bg-[#121414] text-white p-6 flex items-center justify-center">
-            <div className="w-full max-w-md glass-card p-8 rounded-[2rem]">
-                <h2 className="text-2xl font-display font-black italic text-primary uppercase mb-6">Comece sua Jornada</h2>
-                <form onSubmit={handleOnboarding} className="space-y-6">
-                    <div>
-                        <label className="block text-xs uppercase font-stat text-white/50 mb-2">Username (URL do Perfil)</label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                required
-                                value={username}
-                                onChange={(e) => {
-                                    const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
-                                    setUsername(val);
-                                    checkUsernameAvailability(val);
-                                }}
-                                className={`w-full bg-white/5 border ${usernameAvailable === false ? "border-red-500" : usernameAvailable === true ? "border-primary" : "border-white/10"} rounded-xl p-4 focus:outline-none text-white`}
-                                placeholder="ex: neymarjr"
-                            />
-                            {checkingUsername && (
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex justify-between mt-1 px-1">
-                            <p className="text-[10px] text-white/30 italic">futree.com/p/{username || "..."}</p>
-                            {usernameAvailable === false && <p className="text-[10px] text-red-500 font-bold uppercase">Indisponível</p>}
-                            {usernameAvailable === true && <p className="text-[10px] text-primary font-bold uppercase">Disponível</p>}
-                        </div>
-                    </div>
-                    <div>
-                        <label className="block text-xs uppercase font-stat text-white/50 mb-2">Nome de Exibição</label>
-                        <input
-                            type="text"
-                            required
-                            value={displayName}
-                            onChange={(e) => setDisplayName(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:outline-none focus:border-primary text-white"
-                            placeholder="ex: Neymar Jr"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        disabled={saving}
-                        className="w-full bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest disabled:opacity-50"
-                    >
-                        {saving ? "Configurando..." : "Criar Meu Perfil"}
-                    </button>
-                    <button onClick={() => signOut()} type="button" className="w-full text-white/30 text-[10px] uppercase font-stat hover:text-white transition-colors">Sair</button>
-                </form>
+      <div className="min-h-screen bg-[#121414] text-white p-6 flex items-center justify-center">
+        <div className="w-full max-w-md glass-card p-8 rounded-[2rem]">
+          <h2 className="text-2xl font-display font-black italic text-primary uppercase mb-6">Comece sua Jornada</h2>
+          <form onSubmit={handleOnboarding} className="space-y-6">
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-2">Nome de usuário (Ficará visivel na url do seu perfil)</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => {
+                    const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
+                    setUsername(val);
+                    checkUsernameAvailability(val);
+                  }}
+                  className={`w-full bg-white/5 border ${usernameAvailable === false ? "border-red-500" : usernameAvailable === true ? "border-primary" : "border-white/10"} rounded-xl p-4 focus:outline-none text-white`}
+                  placeholder="ex: neymarjr"
+                />
+                {checkingUsername && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-between mt-1 px-1">
+                <p className="text-[10px] text-white/30 italic">futree.com/p/{username || "..."}</p>
+                {usernameAvailable === false && <p className="text-[10px] text-red-500 font-bold uppercase">Indisponível</p>}
+                {usernameAvailable === true && <p className="text-[10px] text-primary font-bold uppercase">Disponível</p>}
+              </div>
             </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-2">Nome de Exibição</label>
+              <input
+                type="text"
+                required
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:outline-none focus:border-primary text-white"
+                placeholder="ex: Neymar Jr"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest disabled:opacity-50"
+            >
+              {saving ? "Configurando..." : "Criar Meu Perfil"}
+            </button>
+            <button onClick={() => signOut()} type="button" className="w-full text-white/30 text-[10px] uppercase font-stat hover:text-white transition-colors">Sair</button>
+          </form>
         </div>
+      </div>
     );
   }
 
@@ -306,29 +306,29 @@ export default function SettingsPage() {
           <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Identidade</h2>
           <div className="grid gap-4">
             <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Username (@ na URL)</label>
-                <div className="relative">
-                    <input
-                        type="text"
-                        value={profile.username}
-                        onChange={(e) => {
-                            const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
-                            setProfile({ ...profile, username: val });
-                            checkUsernameAvailability(val);
-                        }}
-                        className={`w-full bg-white/5 border ${usernameAvailable === false ? "border-red-500" : usernameAvailable === true ? "border-primary" : "border-white/10"} rounded-lg p-3 focus:outline-none text-sm font-bold`}
-                    />
-                    {checkingUsername && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                            <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                    )}
-                </div>
-                {usernameAvailable === false && <p className="mt-1 text-[10px] text-red-500 font-bold uppercase px-1">Username já está sendo usado</p>}
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de usuário (Ficará visivel na url do seu perfil)</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profile.username}
+                  onChange={(e) => {
+                    const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
+                    setProfile({ ...profile, username: val });
+                    checkUsernameAvailability(val);
+                  }}
+                  className={`w-full bg-white/5 border ${usernameAvailable === false ? "border-red-500" : usernameAvailable === true ? "border-primary" : "border-white/10"} rounded-lg p-3 focus:outline-none text-sm font-bold`}
+                />
+                {checkingUsername && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                )}
+              </div>
+              {usernameAvailable === false && <p className="mt-1 text-[10px] text-red-500 font-bold uppercase px-1">Username já está sendo usado</p>}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de Exibição (Curto)</label>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de Exibição</label>
                 <input
                   type="text"
                   value={profile.displayName}
@@ -338,7 +338,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Apelido (Se houver)</label>
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Apelido (Opcional)</label>
                 <input
                   type="text"
                   value={profile.nickname || ""}
@@ -368,26 +368,26 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                 <div>
-                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
-                    <input
-                      type="text"
-                      value={profile.city || ""}
-                      onChange={(e) => setProfile({ ...profile, city: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                    />
-                 </div>
-                 <div>
-                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">UF</label>
-                    <input
-                      type="text"
-                      maxLength={2}
-                      value={profile.state || ""}
-                      onChange={(e) => setProfile({ ...profile, state: e.target.value.toUpperCase() })}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm text-center"
-                      placeholder="SP"
-                    />
-                 </div>
+                <div>
+                  <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
+                  <input
+                    type="text"
+                    value={profile.city || ""}
+                    onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase font-stat text-white/50 mb-1">UF</label>
+                  <input
+                    type="text"
+                    maxLength={2}
+                    value={profile.state || ""}
+                    onChange={(e) => setProfile({ ...profile, state: e.target.value.toUpperCase() })}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm text-center"
+                    placeholder="SP"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -619,13 +619,13 @@ export default function SettingsPage() {
             {profile.links.map((link, index) => (
               <div key={link.id} className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-5">
                 <div className="flex justify-between items-center">
-                   <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest">Sessão #{index + 1}</span>
-                   <button 
-                     onClick={() => removeLink(link.id)}
-                     className="text-[10px] uppercase font-stat text-white/20 hover:text-red-500 transition-colors"
-                   >
-                     Remover Sessão
-                   </button>
+                  <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest">Sessão #{index + 1}</span>
+                  <button
+                    onClick={() => removeLink(link.id)}
+                    className="text-[10px] uppercase font-stat text-white/20 hover:text-red-500 transition-colors"
+                  >
+                    Remover Sessão
+                  </button>
                 </div>
                 <div className="grid gap-4">
                   <div>
@@ -657,55 +657,55 @@ export default function SettingsPage() {
                     />
                   </div>
                 </div>
-                
+
                 <div>
-                   <label className="block text-[10px] uppercase font-stat text-white/50 mb-2">Imagem de Impacto (Com Parallax)</label>
-                   <div className="flex gap-4 items-center">
-                     <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
-                       {link.imageUrl ? (
-                         <Image src={link.imageUrl} alt="Link Hero" fill className="object-contain" />
-                       ) : (
-                         <div className="w-full h-full flex items-center justify-center opacity-20">
-                            <span className="material-symbols-outlined">image</span>
-                         </div>
-                       )}
-                       {uploadingLinks[link.id] && (
-                         <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                         </div>
-                       )}
-                     </div>
-                     <div className="flex-1 relative">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-                            
-                            setUploadingLinks(prev => ({ ...prev, [link.id]: true }));
-                            
-                            const formData = new FormData();
-                            formData.append("file", file);
-                            formData.append("type", "link");
-                            formData.append("linkId", link.id);
-                            
-                            try {
-                              const res = await fetch("/api/upload", { method: "POST", body: formData });
-                              if (res.ok) {
-                                const { url } = await res.json();
-                                const newLinks = [...profile.links];
-                                newLinks[index].imageUrl = url;
-                                setProfile({ ...profile, links: newLinks });
-                              }
-                            } finally {
-                              setUploadingLinks(prev => ({ ...prev, [link.id]: false }));
+                  <label className="block text-[10px] uppercase font-stat text-white/50 mb-2">Imagem de Impacto (Com Parallax)</label>
+                  <div className="flex gap-4 items-center">
+                    <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
+                      {link.imageUrl ? (
+                        <Image src={link.imageUrl} alt="Link Hero" fill className="object-contain" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center opacity-20">
+                          <span className="material-symbols-outlined">image</span>
+                        </div>
+                      )}
+                      {uploadingLinks[link.id] && (
+                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+
+                          setUploadingLinks(prev => ({ ...prev, [link.id]: true }));
+
+                          const formData = new FormData();
+                          formData.append("file", file);
+                          formData.append("type", "link");
+                          formData.append("linkId", link.id);
+
+                          try {
+                            const res = await fetch("/api/upload", { method: "POST", body: formData });
+                            if (res.ok) {
+                              const { url } = await res.json();
+                              const newLinks = [...profile.links];
+                              newLinks[index].imageUrl = url;
+                              setProfile({ ...profile, links: newLinks });
                             }
-                          }}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
-                        />
-                     </div>
-                   </div>
+                          } finally {
+                            setUploadingLinks(prev => ({ ...prev, [link.id]: false }));
+                          }
+                        }}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
