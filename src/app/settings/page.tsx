@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
+import { removeBackground } from "@imgly/background-removal";
 
 interface ProfileData {
   username: string;
@@ -120,18 +121,35 @@ export default function SettingsPage() {
     }
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "avatar" | "hero") => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "avatar" | "hero" | "link", linkId?: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (type === "avatar") setUploadingAvatar(true);
-    else setUploadingHero(true);
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("type", type);
+    else if (type === "hero") setUploadingHero(true);
+    else if (type === "link" && linkId) setUploadingLinks(prev => ({ ...prev, [linkId]: true }));
 
     try {
+      let fileToUpload: File | Blob = file;
+
+      // Processa remoção de fundo no cliente se for hero
+      if (type === "hero") {
+        console.log("Iniciando remoção de background no client-side...");
+        const imageBlob = new Blob([await file.arrayBuffer()], { type: file.type });
+        const resultBlob = await removeBackground(imageBlob, {
+          model: "medium",
+          progress: (step, current, total) => {
+             console.log(`Progresso BG: ${step} - ${current}/${total}`);
+          }
+        });
+        fileToUpload = resultBlob;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileToUpload);
+      formData.append("type", type);
+      if (linkId) formData.append("linkId", linkId);
+
       const res = await fetch("/api/upload", {
         method: "POST",
         body: formData,
@@ -139,21 +157,29 @@ export default function SettingsPage() {
 
       if (res.ok) {
         const { url } = await res.json();
-        setProfile((prev) =>
-          prev ? {
-            ...prev,
-            [type === "avatar" ? "avatarUrl" : "heroImageUrl"]: url,
-          } : null
-        );
+        setProfile((prev) => {
+          if (!prev) return null;
+          if (type === "avatar") return { ...prev, avatarUrl: url };
+          if (type === "hero") return { ...prev, heroImageUrl: url };
+          if (type === "link" && linkId) {
+             const newLinks = [...prev.links];
+             const index = newLinks.findIndex(l => l.id === linkId);
+             if (index !== -1) newLinks[index].imageUrl = url;
+             return { ...prev, links: newLinks };
+          }
+          return prev;
+        });
       } else {
         const errorData = await res.json();
         alert(`Erro no upload: ${errorData.details || errorData.error}`);
       }
-    } catch {
-      alert("Erro ao enviar arquivo.");
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao enviar arquivo. O processamento de imagem pode ser pesado para o seu dispositivo.");
     } finally {
       if (type === "avatar") setUploadingAvatar(false);
-      else setUploadingHero(false);
+      else if (type === "hero") setUploadingHero(false);
+      else if (type === "link" && linkId) setUploadingLinks(prev => ({ ...prev, [linkId]: false }));
     }
   };
 
