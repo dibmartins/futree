@@ -116,7 +116,7 @@ export default function LoginPage() {
         <p className="mt-8 text-center text-xs font-stat text-white/30 uppercase tracking-widest">
           Não tem uma conta?{" "}
           <Link href="/register" className="text-primary hover:underline font-bold">
-            Cadastre-se
+            Crie seu perfil
           </Link>
         </p>
       </div>
