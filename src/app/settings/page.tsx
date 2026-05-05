@@ -310,7 +310,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-[#121414] text-white p-6 pb-32">
       <header className="mb-8 flex justify-between items-center relative">
         <h1 className="text-2xl font-display font-black italic text-primary uppercase tracking-widest">
-          Pitch Elite
+          Futree
         </h1>
         <div>
           <button

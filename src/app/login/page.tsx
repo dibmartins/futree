@@ -40,7 +40,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#121414] p-6">
       <div className="w-full max-w-md glass-card p-8 rounded-[2rem] border-primary/20">
         <h1 className="text-3xl font-display font-black italic text-primary text-center mb-8 uppercase tracking-widest">
-          Pitch Elite <br /> <span className="text-white text-sm opacity-40 font-stat not-italic tracking-[0.3em]">Login</span>
+          Futree <br /> <span className="text-white text-sm opacity-40 font-stat not-italic tracking-[0.3em]">Login</span>
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -51,7 +51,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:outline-none focus:border-primary text-white"
-              placeholder="atleta@pitch.elite"
+              placeholder="atleta@futree.com"
             />
           </div>
 

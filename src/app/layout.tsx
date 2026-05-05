@@ -23,7 +23,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Pitch Elite | Football Player Bio",
+  title: "Futree | Football Player Bio",
   description: "High-performance link-in-bio for football players.",
 };
 
