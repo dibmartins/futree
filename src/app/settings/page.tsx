@@ -137,7 +137,7 @@ export default function SettingsPage() {
         console.log("Iniciando remoção de background no client-side...");
         const imageBlob = new Blob([await file.arrayBuffer()], { type: file.type });
         const resultBlob = await removeBackground(imageBlob, {
-          model: "medium",
+          model: "isnet_fp16",
           progress: (step, current, total) => {
              console.log(`Progresso BG: ${step} - ${current}/${total}`);
           }
