@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import UserMenu from "@/components/UserMenu";
+import SilhouetteBorderBeam from "@/components/SilhouetteBorderBeam";
 
 export const revalidate = 0; // Desabilita o cache para esta página
 
@@ -184,19 +185,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         <div className="absolute inset-0 z-10 flex items-end justify-center">
           <div className="relative w-full h-full translate-y-10">
             {profile.heroImageUrl ? (
-              <>
-                <div className="absolute top-1/2 left-10 w-32 h-32 bg-primary/20 angled-accent blur-xl animate-pulse"></div>
-                <div className="absolute top-1/3 right-10 w-24 h-48 bg-primary/10 angled-accent blur-2xl"></div>
-                <Image
-                  src={profile.heroImageUrl}
-                  alt={profile.displayName}
-                  fill
-                  className="object-cover object-center brightness-110 contrast-125"
-                  style={{ filter: "drop-shadow(0 0 30px rgba(var(--primary-rgb), 0.3))" }}
-                  priority
-                  unoptimized
-                />
-              </>
+              <SilhouetteBorderBeam
+                src={profile.heroImageUrl}
+                alt={profile.displayName}
+                primaryColor={primaryColor}
+                primaryRgb={primaryRgb}
+              />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white/10 font-display font-black italic text-8xl uppercase select-none opacity-20">
                 PITCH ELITE
