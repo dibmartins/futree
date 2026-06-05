@@ -63,6 +63,33 @@ interface ProfileData {
   clubs: Club[];
 }
 
+const menuCategories = [
+  {
+    title: "Conta & Identidade",
+    items: [
+      { id: "identity", label: "Identidade", subtitle: "Username, nome, apelido, cidade e estado", icon: "badge" },
+      { id: "contacts", label: "Responsáveis", subtitle: "Contatos de emergência e pais", icon: "contacts" },
+      { id: "media", label: "Mídia & Visual", subtitle: "Camisa, avatar, fotos e destaques", icon: "photo_camera" },
+    ]
+  },
+  {
+    title: "Desempenho & Histórico",
+    items: [
+      { id: "physical", label: "Perfil Físico & Técnico", subtitle: "Altura, peso, perna, posições e habilidades", icon: "sports_soccer" },
+      { id: "history", label: "Trajetória", subtitle: "Resumo da sua história no futebol", icon: "timeline" },
+      { id: "clubs", label: "Clubes & Escolinhas", subtitle: "Seus clubes anteriores e atual", icon: "shield" },
+      { id: "stats", label: "Estatísticas da Temporada", subtitle: "Número de jogos e gols", icon: "leaderboard" },
+    ]
+  },
+  {
+    title: "Conteúdo & Estilo",
+    items: [
+      { id: "storytelling", label: "Sessões & Storytelling", subtitle: "Abas e links adicionais no perfil", icon: "layers" },
+      { id: "theme", label: "Personalização", subtitle: "Cores e visual do perfil", icon: "palette" },
+    ]
+  }
+];
+
 export default function SettingsPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -84,6 +111,7 @@ export default function SettingsPage() {
 
   // UI states
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -357,41 +385,29 @@ export default function SettingsPage() {
     );
   }
 
-  if (!profile) return null;
+  const getSectionTitle = () => {
+    switch (activeSection) {
+      case "identity": return "Identidade";
+      case "contacts": return "Responsáveis (Contatos)";
+      case "media": return "Mídia & Visual";
+      case "physical": return "Perfil Físico & Técnico";
+      case "history": return "Trajetória";
+      case "clubs": return "Clubes & Escolinhas";
+      case "stats": return "Estatísticas da Temporada";
+      case "storytelling": return "Sessões & Storytelling";
+      case "theme": return "Personalização";
+      default: return "";
+    }
+  };
 
-  return (
-    <div className="min-h-screen bg-[#121414] text-white p-6 pb-32">
-      <header className="mb-8 flex justify-between items-center relative">
-        <h1 className="text-2xl font-display font-black italic text-primary uppercase tracking-widest">
-          Futree
-        </h1>
-        <div>
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-white hover:text-primary transition-colors flex items-center justify-center p-2"
-          >
-            <span className="material-symbols-outlined text-3xl">menu</span>
-          </button>
-          {menuOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-[#1e2121] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
-              <button
-                onClick={() => signOut({ callbackUrl: "/login" })}
-                className="w-full text-left px-4 py-3 text-sm font-stat uppercase tracking-widest text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-              >
-                Sair / Logout
-              </button>
-            </div>
-          )}
-        </div>
-      </header>
-
-      <div className="space-y-8 max-w-4xl mx-auto">
-        {/* Identidade de Base */}
-        <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Identidade</h2>
-          <div className="grid gap-4">
-            <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de usuário (Ficará visivel na url do seu perfil)</label>
+  const renderSectionContent = () => {
+    if (!profile) return null;
+    switch (activeSection) {
+      case "identity":
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de usuário (Ficará visível na url do seu perfil)</label>
               <div className="relative">
                 <input
                   type="text"
@@ -411,29 +427,30 @@ export default function SettingsPage() {
               </div>
               {usernameAvailable === false && <p className="mt-1 text-[10px] text-red-500 font-bold uppercase px-1">Username já está sendo usado</p>}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de Exibição</label>
-                <input
-                  type="text"
-                  value={profile.displayName}
-                  onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                  placeholder="Ex: Neymar Jr"
-                />
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Apelido (Opcional)</label>
-                <input
-                  type="text"
-                  value={profile.nickname || ""}
-                  onChange={(e) => setProfile({ ...profile, nickname: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                  placeholder="Ex: Menino Ney"
-                />
-              </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de Exibição</label>
+              <input
+                type="text"
+                value={profile.displayName}
+                onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                placeholder="Ex: Neymar Jr"
+              />
             </div>
-            <div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Apelido (Opcional)</label>
+              <input
+                type="text"
+                value={profile.nickname || ""}
+                onChange={(e) => setProfile({ ...profile, nickname: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                placeholder="Ex: Menino Ney"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome Completo</label>
               <input
                 type="text"
@@ -442,49 +459,47 @@ export default function SettingsPage() {
                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Data de Nascimento</label>
-                <input
-                  type="date"
-                  value={profile.birthDate ? new Date(profile.birthDate).toISOString().split("T")[0] : ""}
-                  onChange={(e) => setProfile({ ...profile, birthDate: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                />
-              </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
-                    <input
-                      type="text"
-                      value={profile.city || ""}
-                      onChange={(e) => setProfile({ ...profile, city: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">UF</label>
-                    <select
-                      value={profile.state || ""}
-                      onChange={(e) => setProfile({ ...profile, state: e.target.value })}
-                      className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                    >
-                      <option value="">Selecione...</option>
-                      {["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"].map(uf => (
-                        <option key={uf} value={uf}>{uf}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Data de Nascimento</label>
+              <input
+                type="date"
+                value={profile.birthDate ? new Date(profile.birthDate).toISOString().split("T")[0] : ""}
+                onChange={(e) => setProfile({ ...profile, birthDate: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
+              <input
+                type="text"
+                value={profile.city || ""}
+                onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">UF (Estado)</label>
+              <select
+                value={profile.state || ""}
+                onChange={(e) => setProfile({ ...profile, state: e.target.value })}
+                className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              >
+                <option value="">Selecione...</option>
+                {["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"].map(uf => (
+                  <option key={uf} value={uf}>{uf}</option>
+                ))}
+              </select>
             </div>
           </div>
-        </section>
+        );
 
-        {/* Responsáveis */}
-        <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Responsáveis (Contatos)</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+      case "contacts":
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome do Responsável</label>
               <input
                 type="text"
@@ -494,7 +509,8 @@ export default function SettingsPage() {
                 placeholder="Ex: Pai ou Mãe"
               />
             </div>
-            <div>
+
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Telefone / WhatsApp</label>
               <div className="relative flex">
                 <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-white/10 bg-white/5 text-white/50 text-sm font-stat">
@@ -504,94 +520,168 @@ export default function SettingsPage() {
                   type="text"
                   value={profile.parentPhone || ""}
                   onChange={(e) => setProfile({ ...profile, parentPhone: e.target.value.replace(/\D/g, "") })}
-                  className="flex-1 bg-white/5 border border-white/10 rounded-r-lg p-3 focus:outline-none focus:border-primary text-sm"
+                  className="flex-grow w-full bg-white/5 border border-white/10 rounded-r-lg p-3 focus:outline-none focus:border-primary text-sm"
                   placeholder="(00) 00000-0000"
                 />
               </div>
             </div>
           </div>
-        </section>
+        );
 
-        {/* Perfil Físico & Técnico */}
-        <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Perfil Físico & Técnico</h2>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Altura (m)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={profile.height || ""}
-                  onChange={(e) => setProfile({ ...profile, height: parseFloat(e.target.value) })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                  placeholder="1.75"
-                />
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Peso (kg)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={profile.weight || ""}
-                  onChange={(e) => setProfile({ ...profile, weight: parseFloat(e.target.value) })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                  placeholder="65.0"
-                />
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Pé Dominante</label>
-                <select
-                  value={profile.preferredFoot || ""}
-                  onChange={(e) => setProfile({ ...profile, preferredFoot: e.target.value })}
-                  className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                >
-                  <option value="">Selecione...</option>
-                  <option value="Destro">Destro</option>
-                  <option value="Canhoto">Canhoto</option>
-                  <option value="Ambidestro">Ambidestro</option>
-                </select>
+      case "media":
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Número da Camisa</label>
+              <input
+                type="text"
+                value={profile.jerseyNumber || ""}
+                onChange={(e) => setProfile({ ...profile, jerseyNumber: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Retrato)</label>
+              <div className="flex flex-col gap-3 items-start mt-1">
+                {profile.avatarUrl && (
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden border border-primary flex-shrink-0">
+                    <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
+                  </div>
+                )}
+                <div className="w-full relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, "avatar")}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                  />
+                  {uploadingAvatar && (
+                    <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
+                      PROCESSANDO...
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Principal</label>
-                <select
-                  value={profile.position || ""}
-                  onChange={(e) => setProfile({ ...profile, position: e.target.value })}
-                  className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                >
-                  <option value="">Selecione...</option>
-                  <option value="Goleiro">Goleiro</option>
-                  <option value="Zagueiro">Zagueiro</option>
-                  <option value="Lateral Direito">Lateral Direito</option>
-                  <option value="Lateral Esquerdo">Lateral Esquerdo</option>
-                  <option value="Volante">Volante</option>
-                  <option value="Meia">Meia</option>
-                  <option value="Ponta">Ponta</option>
-                  <option value="Centroavante">Centroavante</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Secundária</label>
-                <select
-                  value={profile.secondaryPosition || ""}
-                  onChange={(e) => setProfile({ ...profile, secondaryPosition: e.target.value })}
-                  className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                >
-                  <option value="">Selecione...</option>
-                  <option value="Goleiro">Goleiro</option>
-                  <option value="Zagueiro">Zagueiro</option>
-                  <option value="Lateral Direito">Lateral Direito</option>
-                  <option value="Lateral Esquerdo">Lateral Esquerdo</option>
-                  <option value="Volante">Volante</option>
-                  <option value="Meia">Meia</option>
-                  <option value="Ponta">Ponta</option>
-                  <option value="Centroavante">Centroavante</option>
-                </select>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Vídeo de Highlights (YouTube)</label>
+              <input
+                type="text"
+                value={profile.youtubeUrl || ""}
+                placeholder="https://www.youtube.com/watch?v=..."
+                onChange={(e) => setProfile({ ...profile, youtubeUrl: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto de Impacto (Herói)</label>
+              <div className="flex flex-col gap-4 items-start mt-1">
+                {profile.heroImageUrl && (
+                  <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-black/40 border border-primary/20 flex-shrink-0">
+                    <Image src={profile.heroImageUrl} alt="Hero" fill className="object-contain" />
+                  </div>
+                )}
+                <div className="w-full relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, "hero")}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                  />
+                  {uploadingHero && (
+                    <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
+                      REMOVENDO BACKGROUND...
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <div>
+          </div>
+        );
+
+      case "physical":
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Altura (m)</label>
+              <input
+                type="number"
+                step="0.01"
+                value={profile.height || ""}
+                onChange={(e) => setProfile({ ...profile, height: parseFloat(e.target.value) })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                placeholder="1.75"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Peso (kg)</label>
+              <input
+                type="number"
+                step="0.1"
+                value={profile.weight || ""}
+                onChange={(e) => setProfile({ ...profile, weight: parseFloat(e.target.value) })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                placeholder="65.0"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Pé Dominante</label>
+              <select
+                value={profile.preferredFoot || ""}
+                onChange={(e) => setProfile({ ...profile, preferredFoot: e.target.value })}
+                className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              >
+                <option value="">Selecione...</option>
+                <option value="Destro">Destro</option>
+                <option value="Canhoto">Canhoto</option>
+                <option value="Ambidestro">Ambidestro</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Principal</label>
+              <select
+                value={profile.position || ""}
+                onChange={(e) => setProfile({ ...profile, position: e.target.value })}
+                className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              >
+                <option value="">Selecione...</option>
+                <option value="Goleiro">Goleiro</option>
+                <option value="Zagueiro">Zagueiro</option>
+                <option value="Lateral Direito">Lateral Direito</option>
+                <option value="Lateral Esquerdo">Lateral Esquerdo</option>
+                <option value="Volante">Volante</option>
+                <option value="Meia">Meia</option>
+                <option value="Ponta">Ponta</option>
+                <option value="Centroavante">Centroavante</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Posição Secundária</label>
+              <select
+                value={profile.secondaryPosition || ""}
+                onChange={(e) => setProfile({ ...profile, secondaryPosition: e.target.value })}
+                className="w-full bg-[#1e2121] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+              >
+                <option value="">Selecione...</option>
+                <option value="Goleiro">Goleiro</option>
+                <option value="Zagueiro">Zagueiro</option>
+                <option value="Lateral Direito">Lateral Direito</option>
+                <option value="Lateral Esquerdo">Lateral Esquerdo</option>
+                <option value="Volante">Volante</option>
+                <option value="Meia">Meia</option>
+                <option value="Ponta">Ponta</option>
+                <option value="Centroavante">Centroavante</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-2">Características & Habilidades</label>
               <div className="bg-white/5 border border-white/10 rounded-xl p-3 focus-within:border-primary transition-colors">
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -632,16 +722,15 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
-        </section>
+        );
 
-        {/* Trajetória */}
-        <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Trajetória</h2>
-          <div className="grid gap-4">
-            <div>
+      case "history":
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Histórico e Conquistas</label>
               <textarea
-                rows={4}
+                rows={8}
                 value={profile.history || ""}
                 onChange={(e) => setProfile({ ...profile, history: e.target.value })}
                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm resize-none"
@@ -649,12 +738,10 @@ export default function SettingsPage() {
               />
             </div>
           </div>
-        </section>
+        );
 
-        {/* Clubes & Escolinhas */}
-        <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Clubes & Escolinhas</h2>
-          
+      case "clubs":
+        return (
           <div className="space-y-6">
             {(profile.clubs || []).map((club, index) => (
               <div key={club.id} className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-4">
@@ -671,8 +758,8 @@ export default function SettingsPage() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-1.5">
                     <label className="block text-xs uppercase font-stat text-white/40 mb-1">Nome do Clube/Escolinha</label>
                     <input
                       type="text"
@@ -686,7 +773,7 @@ export default function SettingsPage() {
                       placeholder="Ex: Pádua Academy"
                     />
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-1.5">
                     <label className="block text-xs uppercase font-stat text-white/40 mb-1">Link Redes Sociais (Instagram, Facebook...)</label>
                     <input
                       type="text"
@@ -702,33 +789,35 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
-                  <div className="relative w-16 h-16 rounded-full overflow-hidden bg-black/40 border border-white/10 flex-shrink-0 flex items-center justify-center p-2">
-                    {club.logoUrl ? (
-                      <Image src={club.logoUrl} alt="Club Logo" width={48} height={48} className="object-contain" />
-                    ) : (
-                      <div className="opacity-20">
-                        <span className="material-symbols-outlined text-2xl">sports_soccer</span>
-                      </div>
-                    )}
-                    {uploadingClubs[club.id] && (
-                      <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-                        <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="flex-grow w-full">
-                    <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Escudo / Logo do Clube</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleFileUpload(e, "club", club.id)}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
-                    />
+                <div className="flex flex-col gap-4 border-t border-white/5 pt-4">
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden bg-black/40 border border-white/10 flex-shrink-0 flex items-center justify-center p-2">
+                      {club.logoUrl ? (
+                        <Image src={club.logoUrl} alt="Club Logo" width={48} height={48} className="object-contain" />
+                      ) : (
+                        <div className="opacity-20">
+                          <span className="material-symbols-outlined text-2xl">sports_soccer</span>
+                        </div>
+                      )}
+                      {uploadingClubs[club.id] && (
+                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex-grow">
+                      <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Escudo / Logo do Clube</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, "club", club.id)}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                      />
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 mt-4 md:mt-0 self-center">
+                  <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
                       id={`current-${club.id}`}
@@ -753,87 +842,12 @@ export default function SettingsPage() {
               Adicionar Clube/Escolinha
             </button>
           </div>
-        </section>
+        );
 
-        {/* Media & Design */}
-        <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Mídia & Visual</h2>
-          <div className="grid gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Número da Camisa</label>
-                <input
-                  type="text"
-                  value={profile.jerseyNumber || ""}
-                  onChange={(e) => setProfile({ ...profile, jerseyNumber: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Retrato)</label>
-                <div className="flex flex-col md:flex-row gap-3 items-start md:items-center mt-1">
-                  {profile.avatarUrl && (
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden border border-primary flex-shrink-0">
-                      <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
-                    </div>
-                  )}
-                  <div className="flex-1 w-full relative">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleFileUpload(e, "avatar")}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
-                    />
-                    {uploadingAvatar && (
-                      <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
-                        PROCESSANDO...
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Vídeo de Highlights (YouTube)</label>
-              <input
-                type="text"
-                value={profile.youtubeUrl || ""}
-                placeholder="https://www.youtube.com/watch?v=..."
-                onChange={(e) => setProfile({ ...profile, youtubeUrl: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto de Impacto (Herói)</label>
-              <div className="flex flex-col md:flex-row gap-4 items-start mt-1">
-                {profile.heroImageUrl && (
-                  <div className="relative w-full md:w-24 h-48 md:h-24 rounded-lg overflow-hidden bg-black/40 border border-primary/20 flex-shrink-0">
-                    <Image src={profile.heroImageUrl} alt="Hero" fill className="object-contain" />
-                  </div>
-                )}
-                <div className="flex-1 w-full relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload(e, "hero")}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
-                  />
-                  {uploadingHero && (
-                    <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
-                      REMOVENDO BACKGROUND...
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Estatísticas da Temporada */}
-        <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Estatísticas da Temporada</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+      case "stats":
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Jogos</label>
               <input
                 type="number"
@@ -846,7 +860,8 @@ export default function SettingsPage() {
                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
               />
             </div>
-            <div>
+
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">
                 {profile.position === "Goleiro" ? "Gols Sofridos" : "Gols"}
               </label>
@@ -862,11 +877,10 @@ export default function SettingsPage() {
               />
             </div>
           </div>
-        </section>
+        );
 
-        {/* Sessões / Links */}
-        <section className="glass-card p-6 rounded-2xl border-white/5">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Sessões & Storytelling</h2>
+      case "storytelling":
+        return (
           <div className="space-y-6">
             {profile.links.map((link, index) => (
               <div key={link.id} className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-5">
@@ -879,8 +893,9 @@ export default function SettingsPage() {
                     Remover Sessão
                   </button>
                 </div>
-                <div className="grid gap-4">
-                  <div>
+                
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-1.5">
                     <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Título da Sessão</label>
                     <input
                       type="text"
@@ -894,7 +909,7 @@ export default function SettingsPage() {
                       className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary focus:outline-none transition-colors"
                     />
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-1.5">
                     <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">URL / Link</label>
                     <input
                       type="text"
@@ -910,12 +925,12 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                <div>
+                <div className="space-y-3 border-t border-white/5 pt-4">
                   <label className="block text-[10px] uppercase font-stat text-white/50 mb-2">Imagem de Impacto (Com Parallax)</label>
-                  <div className="flex flex-col md:flex-row gap-4 md:items-center">
-                    <div className="relative w-full md:w-24 h-32 md:h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
+                  <div className="flex flex-col gap-4">
+                    <div className="relative w-full h-32 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
                       {link.imageUrl ? (
-                        <Image src={link.imageUrl} alt="Link Hero" fill className="object-cover md:object-contain" />
+                        <Image src={link.imageUrl} alt="Link Hero" fill className="object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center opacity-20">
                           <span className="material-symbols-outlined">image</span>
@@ -927,7 +942,7 @@ export default function SettingsPage() {
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 relative">
+                    <div className="relative">
                       <input
                         type="file"
                         accept="image/*"
@@ -962,13 +977,12 @@ export default function SettingsPage() {
               </div>
             ))}
           </div>
-        </section>
+        );
 
-        {/* Cores */}
-        <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Personalização</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+      case "theme":
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor Primária (Identidade)</label>
               <div className="flex gap-4 items-center">
                 <input
@@ -991,7 +1005,8 @@ export default function SettingsPage() {
                 />
               </div>
             </div>
-            <div>
+
+            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor dos Botões (Texto)</label>
               <div className="flex gap-4 items-center">
                 <input
@@ -1015,25 +1030,129 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
-        </section>
+        );
 
-        <div className="pt-8 flex flex-col gap-6 items-center">
-          <button
-            onClick={handleSave}
-            disabled={saving || usernameAvailable === false}
-            className="w-full max-w-md bg-primary text-black px-6 py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform tracking-widest"
-          >
-            {saving ? "Salvando..." : "Salvar Alterações"}
-          </button>
+      default:
+        return null;
+    }
+  };
 
-          <a
-            href={`/p/${profile.username}`}
-            target="_blank"
-            className="text-white/40 hover:text-primary transition-colors font-stat text-xs uppercase tracking-widest"
-          >
-            Visualizar Perfil Público ↗
-          </a>
-        </div>
+  if (!profile) return null;
+
+  return (
+    <div className="min-h-screen bg-[#121414] text-white p-6 pb-32 flex justify-center">
+      <div className="w-full max-w-2xl">
+        <header className="mb-8 flex justify-between items-center relative">
+          <div className="flex items-center gap-3">
+            <a
+              href={`/p/${profile.username}`}
+              className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-primary transition-all active:scale-95"
+              title="Voltar ao Perfil"
+            >
+              <span className="material-symbols-outlined">arrow_back</span>
+            </a>
+            <h1 className="text-xl font-display font-black italic text-primary uppercase tracking-widest">
+              Configurações
+            </h1>
+          </div>
+          <div>
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400 font-stat text-xs uppercase tracking-widest transition-all active:scale-95 flex items-center gap-1.5 text-white/60"
+            >
+              <span className="material-symbols-outlined text-sm">logout</span>
+              Sair
+            </button>
+          </div>
+        </header>
+
+        {activeSection === null ? (
+          <div className="space-y-8 animate-fadeIn">
+            {menuCategories.map((cat, catIdx) => (
+              <div key={catIdx} className="space-y-3">
+                <h3 className="text-xs font-stat font-bold text-white/30 uppercase tracking-[0.2em] px-2">
+                  {cat.title}
+                </h3>
+                <div className="grid grid-cols-1 gap-2">
+                  {cat.items.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveSection(item.id)}
+                      className="w-full text-left bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between hover:bg-white/10 hover:border-primary/20 active:scale-[0.99] transition-all group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/50 group-hover:text-primary group-hover:bg-primary/5 transition-all">
+                          <span className="material-symbols-outlined text-xl">{item.icon}</span>
+                        </div>
+                        <div>
+                          <h4 className="font-display font-bold text-sm text-white group-hover:text-primary transition-colors">
+                            {item.label}
+                          </h4>
+                          <p className="text-xs text-white/40 mt-0.5 font-stat">
+                            {item.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="material-symbols-outlined text-white/20 group-hover:text-primary group-hover:translate-x-1 transition-all">
+                        chevron_right
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            <div className="pt-8 border-t border-white/5 flex flex-col gap-4 items-center">
+              <a
+                href={`/p/${profile.username}`}
+                target="_blank"
+                className="text-white/40 hover:text-primary transition-colors font-stat text-xs uppercase tracking-widest flex items-center gap-1.5"
+              >
+                Visualizar Perfil Público
+                <span className="material-symbols-outlined text-sm">open_in_new</span>
+              </a>
+              <span className="text-[9px] font-stat text-white/20 uppercase tracking-widest">Futree v1.0.0</span>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="flex items-center gap-4 mb-4">
+              <button
+                onClick={() => setActiveSection(null)}
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-primary transition-all active:scale-95"
+              >
+                <span className="material-symbols-outlined">arrow_back</span>
+              </button>
+              <div>
+                <span className="text-[10px] font-stat font-bold uppercase tracking-widest text-white/40">Seção</span>
+                <h2 className="text-lg font-display font-black italic uppercase tracking-wider text-primary">
+                  {getSectionTitle()}
+                </h2>
+              </div>
+            </div>
+
+            <div className="glass-card p-6 rounded-3xl border border-white/5 space-y-6">
+              {renderSectionContent()}
+
+              <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={handleSave}
+                  disabled={saving || usernameAvailable === false}
+                  className="flex-1 bg-primary text-black py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2"
+                >
+                  {saving && <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>}
+                  {saving ? "Salvando..." : "Salvar Alterações"}
+                </button>
+                <button
+                  onClick={() => setActiveSection(null)}
+                  className="px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl font-stat font-bold text-xs uppercase tracking-widest text-white/60 hover:text-white transition-all active:scale-95 text-center"
+                >
+                  Voltar ao Menu
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

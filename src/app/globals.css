@@ -18,9 +18,21 @@
   --color-on-surface-variant: #c6c9ac;
   --color-outline-variant: #454933;
 
-  --color-primary: var(--primary);
   --color-surface: #121414;
   --color-on-surface: #e2e2e2;
+
+  --animate-fadeIn: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 :root {
