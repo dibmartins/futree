@@ -848,7 +848,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">
-                {profile.position === "Goleiro" ? "Gols Sofridos" : "Gols Marcados"}
+                {profile.position === "Goleiro" ? "Gols Sofridos" : "Gols"}
               </label>
               <input
                 type="number"

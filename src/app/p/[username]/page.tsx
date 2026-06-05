@@ -334,7 +334,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                   {profile.stats.goals || 0}
                 </span>
                 <span className="font-stat text-xs font-semibold text-white/50 tracking-[0.2em] uppercase mt-2">
-                  {isGoalkeeper ? "Gols Sofridos" : "Gols Marcados"}
+                  {isGoalkeeper ? "Gols Sofridos" : "Gols"}
                 </span>
               </div>
             </div>
