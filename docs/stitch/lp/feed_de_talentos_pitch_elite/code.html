@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pitch Elite - Feed de Talentos</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts based on Style Guidance -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,800;0,900;1,800;1,900&amp;family=Lexend:wght@400&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#cff100",
+                        "surface-variant": "#333535",
+                        "on-secondary-fixed-variant": "#92001e",
+                        "on-surface": "#e2e2e2",
+                        "inverse-on-surface": "#2f3131",
+                        "tertiary-container": "#e5e2e1",
+                        "surface-bright": "#37393a",
+                        "secondary-fixed-dim": "#ffb3b2",
+                        "surface-container-low": "#1a1c1c",
+                        "on-secondary": "#680012",
+                        "surface": "#121414",
+                        "primary-container": "#cff100",
+                        "outline-variant": "#454933",
+                        "on-surface-variant": "#c6c9ac",
+                        "on-secondary-fixed": "#410008",
+                        "surface-tint": "#b5d300",
+                        "surface-container-high": "#282a2b",
+                        "surface-container-highest": "#333535",
+                        "on-primary-fixed-variant": "#404c00",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary": "#ffffff",
+                        "outline": "#909379",
+                        "error": "#ffb4ab",
+                        "surface-container": "#1e2020",
+                        "surface-dim": "#121414",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "secondary-container": "#ff525c",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#e5e2e1",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-primary-container": "#5b6b00",
+                        "background": "#121414",
+                        "on-error": "#690005",
+                        "on-background": "#e2e2e2",
+                        "surface-container-lowest": "#0c0f0f",
+                        "primary": "#ffffff",
+                        "secondary-fixed": "#ffdad8",
+                        "on-tertiary": "#313030",
+                        "secondary": "#ffb3b2",
+                        "on-tertiary-container": "#656464",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "primary-fixed-dim": "#b5d300",
+                        "on-primary": "#2b3400",
+                        "inverse-primary": "#566500",
+                        "on-primary-fixed": "#181e00",
+                        "on-secondary-container": "#5b000f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-stack-offset": "0.5rem",
+                        "section-margin": "2.5rem",
+                        "container-padding": "1.25rem",
+                        "element-gap": "1rem"
+                    },
+                    "fontFamily": {
+                        "stat-value": ["Space Grotesk"],
+                        "body-md": ["Lexend"],
+                        "headline-card": ["Epilogue"],
+                        "label-caps": ["Space Grotesk"],
+                        "display-hero": ["Epilogue"]
+                    },
+                    "fontSize": {
+                        "stat-value": ["32px", { "lineHeight": "1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-card": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "display-hero": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "900" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- TopAppBar Shared Component -->
+<header class="bg-surface/80 backdrop-blur-xl dark:bg-surface/80 font-headline-card text-headline-card italic uppercase fixed top-0 w-full z-50 border-b border-white/10 flex justify-between items-center px-container-padding py-4 max-w-7xl mx-auto left-0 right-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="sports_soccer">sports_soccer</span>
+<span class="font-display-hero text-headline-card italic font-black text-primary-fixed tracking-tighter">PITCH ELITE</span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed font-headline-card text-body-md italic px-4 py-2 rounded-DEFAULT active:scale-95 transition-transform hover:bg-surface-tint border border-transparent shadow-[0_0_10px_rgba(207,241,0,0.3)]">
+            CREATE PROFILE
+        </button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-32 pb-section-margin px-container-padding max-w-7xl mx-auto w-full">
+<!-- Page Header -->
+<div class="mb-element-gap">
+<h1 class="font-display-hero text-display-hero italic uppercase text-on-background tracking-tighter drop-shadow-md">
+                FEED DE <span class="text-primary-fixed drop-shadow-[0_0_15px_rgba(207,241,0,0.5)]">TALENTOS</span>
+</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-2xl">
+                Discover the next generation of football prodigies. High-fidelity scouting profiles optimized for elite recruiters and academies.
+            </p>
+</div>
+<!-- Search & Filter Bar (Glassmorphism) -->
+<div class="bg-surface-container/60 backdrop-blur-2xl border border-surface-variant rounded-lg p-4 mb-section-margin shadow-lg">
+<div class="flex flex-col md:flex-row gap-4">
+<!-- Search Input -->
+<div class="flex-1 relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-container-highest border border-outline-variant rounded-DEFAULT pl-12 pr-4 py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:ring-1 focus:ring-primary-fixed focus:border-primary-fixed focus:outline-none transition-colors shadow-inner bg-opacity-50" placeholder="Search players by name or club..." type="text"/>
+</div>
+<!-- Filters Cluster -->
+<div class="flex flex-wrap md:flex-nowrap gap-4">
+<select class="bg-surface-container-highest border border-outline-variant rounded-DEFAULT px-4 py-3 font-label-caps text-label-caps text-on-surface focus:ring-1 focus:ring-primary-fixed focus:outline-none appearance-none cursor-pointer hover:bg-surface-bright transition-colors shadow-inner flex-1 md:flex-none min-w-[120px]">
+<option value="">POSITION</option>
+<option value="st">ST</option>
+<option value="cam">CAM</option>
+<option value="cb">CB</option>
+<option value="gk">GK</option>
+</select>
+<select class="bg-surface-container-highest border border-outline-variant rounded-DEFAULT px-4 py-3 font-label-caps text-label-caps text-on-surface focus:ring-1 focus:ring-primary-fixed focus:outline-none appearance-none cursor-pointer hover:bg-surface-bright transition-colors shadow-inner flex-1 md:flex-none min-w-[120px]">
+<option value="">AGE GROUP</option>
+<option value="u15">U15</option>
+<option value="u17">U17</option>
+<option value="u19">U19</option>
+</select>
+<select class="bg-surface-container-highest border border-outline-variant rounded-DEFAULT px-4 py-3 font-label-caps text-label-caps text-on-surface focus:ring-1 focus:ring-primary-fixed focus:outline-none appearance-none cursor-pointer hover:bg-surface-bright transition-colors shadow-inner flex-1 md:flex-none min-w-[120px]">
+<option value="">REGION</option>
+<option value="eu">EUROPE</option>
+<option value="sa">S. AMERICA</option>
+<option value="na">N. AMERICA</option>
+</select>
+<button class="bg-surface-variant text-on-surface font-label-caps text-label-caps px-4 py-3 rounded-DEFAULT hover:bg-surface-bright transition-colors flex items-center justify-center border border-outline-variant flex-none">
+<span class="material-symbols-outlined mr-2" data-icon="tune">tune</span> MORE
+                    </button>
+</div>
+</div>
+</div>
+<!-- Talent Grid (Player Cards) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-element-gap">
+<!-- Player Card 1 -->
+<div class="relative bg-surface-container border border-surface-variant rounded-xl overflow-hidden group cursor-pointer hover:border-primary-fixed transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(207,241,0,0.15)] flex flex-col h-full">
+<!-- Background Gradient/Noise -->
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-highest via-surface-container to-surface-container-lowest opacity-90 z-0"></div>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-20 z-0"></div>
+<!-- Giant Jersey Number Watermark -->
+<div class="absolute top-4 right-4 font-display-hero text-[140px] leading-none text-surface-variant/40 italic font-black select-none pointer-events-none z-0 tracking-tighter">09</div>
+<!-- Dynamic Overlay Badge -->
+<div class="absolute top-4 left-4 bg-primary-fixed text-on-primary-fixed font-label-caps text-label-caps px-3 py-1 -rotate-6 transform shadow-[0_0_15px_rgba(207,241,0,0.4)] z-20 border border-white/20">
+                    TOP PROSPECT
+                </div>
+<!-- Player Image Cutout Area -->
+<div class="relative h-64 w-full mt-8 flex justify-center items-end z-10">
+<img alt="Player Cutout" class="h-[110%] object-contain object-bottom filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-105" data-alt="A highly stylized, high-contrast digital cutout of a young male football player in an aggressive, dynamic pose. The background is completely transparent or deeply crushed black, allowing the player's form to pop perfectly against a dark UI card. The lighting is dramatic, with rim lights highlighting his athletic build, resembling premium Ultimate Team digital trading card art." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwqOZo1hc_YaE9oHp08UtiVCyjXd1qftj0GZdJv4h_OHeQJtxe1Cc0BVLJcDXg_CQVTYZr5j7uezBDMdhrpO_d6c5gs82ZzXwecz508YKKDCqpiPyk9UdELA4a8PGDmZRK1hFmKwT7LwZ8InABhkFha5vzBe13687Hl16r5PHJUmeIZ6SdLLrBjqg9P4J4ktbvDTSY2FJoUuOLmRR_tq4AbQQSL54JMkCzRTK0oomn-AjVKZom35zhAkmCG5zlJM1UpzgOTkCU3ZM"/>
+</div>
+<!-- Card Content / Glass Bottom -->
+<div class="relative z-20 p-5 bg-gradient-to-t from-surface via-surface/95 to-surface/40 backdrop-blur-sm border-t border-white/5 flex-grow flex flex-col justify-end">
+<!-- Identity -->
+<div class="text-center mb-4 border-b border-surface-variant pb-3 relative">
+<!-- Shard of light accent -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-primary-fixed shadow-[0_0_10px_rgba(207,241,0,0.8)]"></div>
+<h2 class="font-headline-card text-headline-card italic text-on-surface uppercase tracking-tight group-hover:text-primary-fixed transition-colors mt-2">D. SILVA</h2>
+<div class="flex items-center justify-center gap-2 mt-1">
+<span class="font-label-caps text-label-caps text-surface-variant bg-primary-fixed px-2 py-[2px] rounded-sm text-[10px]">ST</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">U17 | BRASIL</span>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAC</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">88</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed w-[88%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">SHO</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">85</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed w-[85%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAS</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">72</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-surface-tint w-[72%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DRI</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">90</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed w-[90%] shadow-[0_0_5px_rgba(207,241,0,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Player Card 2 -->
+<div class="relative bg-surface-container border border-surface-variant rounded-xl overflow-hidden group cursor-pointer hover:border-primary-fixed transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(207,241,0,0.15)] flex flex-col h-full">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-highest via-surface-container to-surface-container-lowest opacity-90 z-0"></div>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-20 z-0"></div>
+<div class="absolute top-4 right-4 font-display-hero text-[140px] leading-none text-surface-variant/40 italic font-black select-none pointer-events-none z-0 tracking-tighter">10</div>
+<div class="absolute top-4 left-4 bg-tertiary text-on-tertiary font-label-caps text-label-caps px-3 py-1 -rotate-3 transform shadow-lg z-20 border border-white/50">
+                    PLAYMAKER
+                </div>
+<div class="relative h-64 w-full mt-8 flex justify-center items-end z-10">
+<img alt="Player Cutout" class="h-[110%] object-contain object-bottom filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-105" data-alt="A highly stylized, high-contrast digital cutout of a young male football player in an aggressive, dynamic pose. The background is completely transparent or deeply crushed black, allowing the player's form to pop perfectly against a dark UI card. The lighting is dramatic, with rim lights highlighting his athletic build, resembling premium Ultimate Team digital trading card art." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNsVUsha9h2BwiN81yw6wzlJaHXgg2OUn74kK1O8MeGIQf667zy9j92Pt-pAIv9bWeGm2ddX4oRLec1FXpyr2dcbVLuIhqrjUqYM2P9E9klVELvbTN6jg1iQLB5oGr3e-s0Ag_PrZvChpvBSc0Es0eKZjSz2stIPaMy79wbwu_sk5E1Dep57T7vVJZIcjqCrLPn_niXQmsPcWyUdttV1nDfgOz9n9gSYnU7JkqHg1Hwi55REoxc0hiQp3TFytGRtUfIGhCLNhnlzc"/>
+</div>
+<div class="relative z-20 p-5 bg-gradient-to-t from-surface via-surface/95 to-surface/40 backdrop-blur-sm border-t border-white/5 flex-grow flex flex-col justify-end">
+<div class="text-center mb-4 border-b border-surface-variant pb-3 relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-tertiary shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
+<h2 class="font-headline-card text-headline-card italic text-on-surface uppercase tracking-tight group-hover:text-primary-fixed transition-colors mt-2">M. ODRIA</h2>
+<div class="flex items-center justify-center gap-2 mt-1">
+<span class="font-label-caps text-label-caps text-surface-variant bg-tertiary px-2 py-[2px] rounded-sm text-[10px]">CAM</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">U19 | SPAIN</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAC</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">82</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed w-[82%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">SHO</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">78</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-surface-tint w-[78%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAS</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">94</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed w-[94%] shadow-[0_0_5px_rgba(207,241,0,0.5)]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DRI</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">89</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed w-[89%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Player Card 3 -->
+<div class="relative bg-surface-container border border-surface-variant rounded-xl overflow-hidden group cursor-pointer hover:border-primary-fixed transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(207,241,0,0.15)] flex flex-col h-full">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-highest via-surface-container to-surface-container-lowest opacity-90 z-0"></div>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-20 z-0"></div>
+<div class="absolute top-4 right-4 font-display-hero text-[140px] leading-none text-surface-variant/40 italic font-black select-none pointer-events-none z-0 tracking-tighter">04</div>
+<div class="absolute top-4 left-4 bg-secondary-fixed text-on-secondary-fixed font-label-caps text-label-caps px-3 py-1 -rotate-6 transform shadow-lg z-20 border border-white/20">
+                    DEFENSIVE WALL
+                </div>
+<div class="relative h-64 w-full mt-8 flex justify-center items-end z-10">
+<img alt="Player Cutout" class="h-[110%] object-contain object-bottom filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-105" data-alt="A highly stylized, high-contrast digital cutout of a young male football player in an aggressive, dynamic pose. The background is completely transparent or deeply crushed black, allowing the player's form to pop perfectly against a dark UI card. The lighting is dramatic, with rim lights highlighting his athletic build, resembling premium Ultimate Team digital trading card art." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_b9oHP7hPuq3D3gFtkWWrk1U0_fy6KPHRVLqdwffAvWbZsxLf6fsAPq_bH1ZBIyGVFEgr0t6aYMhXaeaLpRhgrfCELLGGHagqyj1XYWU1gp9j8n7yR40BiB5iqm3ZwZZmHRBan_ALbO_wjACxIwRVzQT0hl3vDmoj-N-C55bN9jk0mGpIkvpwVWY12piTrh_2lwKhoEzzXdWynZtIqWO9hqtJ9aLE1tJjaxyyUIZF8dssMdKPRM6mJ4QU2mMNFbeKuVw-nBdl0oI"/>
+</div>
+<div class="relative z-20 p-5 bg-gradient-to-t from-surface via-surface/95 to-surface/40 backdrop-blur-sm border-t border-white/5 flex-grow flex flex-col justify-end">
+<div class="text-center mb-4 border-b border-surface-variant pb-3 relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-secondary-fixed shadow-[0_0_10px_rgba(255,218,216,0.5)]"></div>
+<h2 class="font-headline-card text-headline-card italic text-on-surface uppercase tracking-tight group-hover:text-primary-fixed transition-colors mt-2">J. TERRY</h2>
+<div class="flex items-center justify-center gap-2 mt-1">
+<span class="font-label-caps text-label-caps text-on-secondary-fixed bg-secondary-fixed px-2 py-[2px] rounded-sm text-[10px]">CB</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">U17 | ENGLAND</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAC</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">75</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-surface-tint w-[75%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DEF</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">91</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed w-[91%] shadow-[0_0_5px_rgba(207,241,0,0.5)]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PHY</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">95</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-fixed w-[95%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAS</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">68</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-surface-tint w-[68%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Player Card 4 (Similar structure, altered content for variety) -->
+<div class="relative bg-surface-container border border-surface-variant rounded-xl overflow-hidden group cursor-pointer hover:border-primary-fixed transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(207,241,0,0.15)] flex flex-col h-full hidden md:flex">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-highest via-surface-container to-surface-container-lowest opacity-90 z-0"></div>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-20 z-0"></div>
+<div class="absolute top-4 right-4 font-display-hero text-[140px] leading-none text-surface-variant/40 italic font-black select-none pointer-events-none z-0 tracking-tighter">11</div>
+<div class="absolute top-4 left-4 bg-primary-fixed text-on-primary-fixed font-label-caps text-label-caps px-3 py-1 -rotate-6 transform shadow-[0_0_15px_rgba(207,241,0,0.4)] z-20 border border-white/20">
+                    TOP PROSPECT
+                </div>
+<div class="relative h-64 w-full mt-8 flex justify-center items-end z-10">
+<img alt="Player Cutout" class="h-[110%] object-contain object-bottom filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-105" data-alt="A highly stylized, high-contrast digital cutout of a young male football player in an aggressive, dynamic pose. The background is completely transparent or deeply crushed black, allowing the player's form to pop perfectly against a dark UI card. The lighting is dramatic, with rim lights highlighting his athletic build, resembling premium Ultimate Team digital trading card art." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBExuC1qucHXepDGfQmKEgYpLTufeky6_bD1s0ubZlt473lyLXHg1E6AibiuNOw6_NATQof5WdRYR1ffHc9Fjev9Pzyfg00fUMEaiTiLap-fxhvc_DjSfQomGIwFm5MryBE728zf25qX913D55c7cooIksOn4vwQ9cD-BDRbqOkGuzWMRBCKnCVMzZ8EAQCPnHw71Sg0Ko7P8rEV2Fvu8iw5DPhNG_dNyiiKjcBfTmSK4ODKsqIFxOoAHPS-fD4r5pwRDuWhdxNOoE"/>
+</div>
+<div class="relative z-20 p-5 bg-gradient-to-t from-surface via-surface/95 to-surface/40 backdrop-blur-sm border-t border-white/5 flex-grow flex flex-col justify-end">
+<div class="text-center mb-4 border-b border-surface-variant pb-3 relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-primary-fixed shadow-[0_0_10px_rgba(207,241,0,0.8)]"></div>
+<h2 class="font-headline-card text-headline-card italic text-on-surface uppercase tracking-tight group-hover:text-primary-fixed transition-colors mt-2">L. SANE</h2>
+<div class="flex items-center justify-center gap-2 mt-1">
+<span class="font-label-caps text-label-caps text-surface-variant bg-primary-fixed px-2 py-[2px] rounded-sm text-[10px]">RW</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">U19 | GERMANY</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-x-4 gap-y-3">
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAC</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">96</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed w-[96%] shadow-[0_0_5px_rgba(207,241,0,0.5)]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">SHO</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">81</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-surface-tint w-[81%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAS</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">77</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-surface-tint w-[77%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between group/stat">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DRI</span>
+<div class="flex flex-col items-end">
+<span class="font-stat-value text-[20px] font-bold leading-none text-on-surface">92</span>
+<div class="w-12 h-1 bg-surface-variant mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed w-[92%] shadow-[0_0_5px_rgba(207,241,0,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Load More Action -->
+<div class="mt-section-margin text-center">
+<button class="bg-transparent border-2 border-outline text-on-surface font-headline-card text-body-md italic px-8 py-3 rounded-DEFAULT hover:border-primary-fixed hover:text-primary-fixed hover:bg-primary-fixed/10 transition-all duration-300">
+                LOAD MORE TALENTS
+            </button>
+</div>
+</main>
+<!-- Footer Shared Component -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest w-full py-section-margin border-t border-surface-variant mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center px-container-padding gap-element-gap max-w-7xl mx-auto">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-display-hero text-headline-card italic font-black text-primary-fixed">PITCH ELITE</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">
+                    © 2024 PITCH ELITE. ALL RIGHTS RESERVED.
+                </p>
+</div>
+<nav class="flex flex-wrap justify-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed underline transition-all opacity-100 hover:opacity-80" href="#">Scouting Network</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed underline transition-all opacity-100 hover:opacity-80" href="#">Leaderboards</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed underline transition-all opacity-100 hover:opacity-80" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed underline transition-all opacity-100 hover:opacity-80" href="#">Terms of Service</a>
+</nav>
+</div>
+</footer>
+</body></html>

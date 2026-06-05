@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FC TALENT - Feed de Talentos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,800;0,900;1,800;1,900&amp;family=Lexend:wght@400&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#454933",
+                        "on-secondary": "#680012",
+                        "surface-bright": "#37393a",
+                        "surface": "#121414",
+                        "background": "#121414",
+                        "on-primary-fixed": "#181e00",
+                        "secondary": "#ffb3b2",
+                        "primary-fixed-dim": "#b5d300",
+                        "tertiary-fixed": "#e5e2e1",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "surface-container-highest": "#333535",
+                        "secondary-fixed": "#ffdad8",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-tertiary": "#313030",
+                        "on-secondary-fixed": "#410008",
+                        "on-surface-variant": "#c6c9ac",
+                        "surface-dim": "#121414",
+                        "on-error": "#690005",
+                        "surface-variant": "#333535",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-tint": "#b5d300",
+                        "on-background": "#e2e2e2",
+                        "on-primary-fixed-variant": "#404c00",
+                        "tertiary": "#ffffff",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#cff100",
+                        "on-primary": "#2b3400",
+                        "inverse-primary": "#566500",
+                        "inverse-on-surface": "#2f3131",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface-container-high": "#282a2b",
+                        "tertiary-container": "#e5e2e1",
+                        "secondary-fixed-dim": "#ffb3b2",
+                        "outline": "#909379",
+                        "primary-container": "#cff100",
+                        "on-primary-container": "#5b6b00",
+                        "on-tertiary-container": "#656464",
+                        "on-secondary-fixed-variant": "#92001e",
+                        "surface-container-low": "#1a1c1c",
+                        "on-surface": "#e2e2e2",
+                        "on-error-container": "#ffdad6",
+                        "surface-container": "#1e2020",
+                        "inverse-surface": "#e2e2e2",
+                        "primary": "#ffffff",
+                        "secondary-container": "#ff525c",
+                        "on-secondary-container": "#5b000f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-margin": "2.5rem",
+                        "element-gap": "1rem",
+                        "container-padding": "1.25rem",
+                        "card-stack-offset": "0.5rem"
+                    },
+                    "fontFamily": {
+                        "stat-value": ["Space Grotesk"],
+                        "display-hero": ["Epilogue"],
+                        "label-caps": ["Space Grotesk"],
+                        "headline-card": ["Epilogue"],
+                        "body-md": ["Lexend"]
+                    },
+                    "fontSize": {
+                        "stat-value": ["32px", { "lineHeight": "1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-hero": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "900" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "headline-card": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .clip-slant {
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+        .bg-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col pt-20 bg-noise">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-container-padding h-20 max-w-full bg-surface/20 backdrop-blur-2xl z-50 border-b border-outline-variant/20">
+<div class="font-display-hero text-headline-card italic font-black text-primary-container dark:text-primary-container">
+            FC TALENT
+        </div>
+<nav class="hidden md:flex gap-element-gap">
+<a class="font-display-hero text-label-caps uppercase italic tracking-wider text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 active:scale-95 transition-transform duration-200" href="#">Home</a>
+<a class="font-display-hero text-label-caps uppercase italic tracking-wider text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 active:scale-95 transition-transform duration-200" href="#">How it Works</a>
+<a class="font-display-hero text-label-caps uppercase italic tracking-wider text-primary-container border-b-2 border-primary-container pb-1 hover:text-primary-container transition-all duration-300 active:scale-95 transition-transform duration-200" href="#">Talents</a>
+<a class="font-display-hero text-label-caps uppercase italic tracking-wider text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 active:scale-95 transition-transform duration-200" href="#">Plans</a>
+</nav>
+<button class="bg-primary-container text-on-primary-container font-headline-card italic font-bold px-4 py-2 rounded uppercase text-sm hover:bg-primary transition-colors active:scale-95">
+            Create Profile
+        </button>
+</header>
+<main class="flex-grow px-container-padding py-section-margin">
+<!-- Search & Filters -->
+<div class="mb-section-margin bg-surface-container/50 backdrop-blur-xl p-6 rounded-xl border border-outline-variant/30 flex flex-col md:flex-row gap-element-gap items-center justify-between shadow-2xl">
+<div class="flex-grow w-full md:w-auto relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-high border-outline-variant/50 text-on-surface rounded-lg pl-12 pr-4 py-3 focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md text-body-md placeholder-on-surface-variant transition-colors" placeholder="Search talents..." type="text"/>
+</div>
+<div class="flex gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+<select class="bg-surface-container-high border-outline-variant/50 text-on-surface rounded-lg px-4 py-3 focus:border-primary-container focus:ring-1 focus:ring-primary-container font-label-caps uppercase tracking-wider min-w-[120px]">
+<option>Position</option>
+<option>ST</option>
+<option>CM</option>
+<option>CB</option>
+</select>
+<select class="bg-surface-container-high border-outline-variant/50 text-on-surface rounded-lg px-4 py-3 focus:border-primary-container focus:ring-1 focus:ring-primary-container font-label-caps uppercase tracking-wider min-w-[120px]">
+<option>Age</option>
+<option>U18</option>
+<option>18-21</option>
+<option>22+</option>
+</select>
+<select class="bg-surface-container-high border-outline-variant/50 text-on-surface rounded-lg px-4 py-3 focus:border-primary-container focus:ring-1 focus:ring-primary-container font-label-caps uppercase tracking-wider min-w-[120px]">
+<option>Region</option>
+<option>Europe</option>
+<option>South America</option>
+<option>Asia</option>
+</select>
+</div>
+</div>
+<!-- Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-element-gap">
+<!-- Card 1 -->
+<article class="group relative bg-surface-container-highest rounded-xl overflow-hidden border border-outline-variant/30 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(207,241,0,0.15)] flex flex-col h-[500px]">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-10"></div>
+<div class="absolute top-4 right-4 z-20 bg-secondary-container text-on-secondary-container font-headline-card italic font-bold px-3 py-1 rounded shadow-lg transform -rotate-3 text-sm">HOT PROSPECT</div>
+<div class="absolute inset-0 z-0">
+<img alt="Player action shot" class="w-full h-full object-cover object-top opacity-60 group-hover:opacity-100 transition-opacity duration-500" data-alt="A dynamic, high-contrast digital portrait of a young male football player mid-sprint, wearing a sleek dark kit with vibrant neon green accents. The background is a moody, blurred stadium environment lit by harsh, cinematic spotlights cutting through mist. The overall aesthetic is gritty, athletic, and heavily inspired by high-end sports video game covers, emphasizing motion and intensity in a dark mode palette." src="https://lh3.googleusercontent.com/aida/ADBb0ujU1GP2OeCD4Cuf60U_JIon-HVRXUeLi2EwUzytyep81cVNJNgKd25CXPWdmrgz5cxZtucCm8cGQPIXz9niF9_xaBuaqO6RcrhxAPPzWpQD2hbQiz2Tci30TFIUJRJIzXPhmhouvT9gtU9Ntn2Zl3f2YHWcO5WmH92_70k8a_ivt-IWieQqZkXxxm9PJ6kZIidLww-r0s22vFDCqjpARdW3VVPHWf6EREbypQJ3pNZnKxhIrQuWoqFVVzIHIR1VnGCZAobvfCw_"/>
+<div class="absolute inset-0 bg-gradient-to-b from-primary-container/10 to-transparent mix-blend-overlay"></div>
+</div>
+<div class="relative z-20 mt-auto p-6 flex flex-col gap-4">
+<div>
+<div class="font-display-hero text-headline-card text-primary-container italic uppercase">J. Bellingham</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-caps tracking-widest mt-1">
+<span>CM</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>20 YRS</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>ENG</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2 border-t border-outline-variant/30 pt-4">
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">88</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAC</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[88%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">86</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">SHO</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[86%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">89</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAS</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[89%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">91</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">DRI</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[91%]"></div></div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="group relative bg-surface-container-highest rounded-xl overflow-hidden border border-outline-variant/30 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(207,241,0,0.15)] flex flex-col h-[500px]">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-10"></div>
+<div class="absolute inset-0 z-0">
+<img alt="Player action shot" class="w-full h-full object-cover object-top opacity-60 group-hover:opacity-100 transition-opacity duration-500" data-alt="A powerful, high-contrast action shot of a professional female soccer player winding up for a strike, captured in sharp focus against a dark, dramatic background. Volumetric lighting casts sharp shadows, highlighting the tension in her muscles. The color grading leans heavily into deep blacks and bright, saturated skin tones, with subtle geometric graphic overlays hinting at digital sports analytics." src="https://lh3.googleusercontent.com/aida/ADBb0ugUP_MEZ6rg3fqDiP5S3mudhpeqscXd5hV8pqwVyY_tREosI9gQjyBw14Q0iDnYGqK8Je5ft9-X-iWWfaHhuxF87fGSy9_lpJFbUalW_4-N2xRMg1Nmg-_DUwsiZF8MwnBuOlYjYQ8oU7ARMibwHNvmH9YJ0zZxAz5seBRnIsG-fFPmf7PMCgL8VjhxQkS6G12KjuH_P5TPCZGG_-xtPXUcDdni-DFhIuaZ2O5KWq3-7g0VTmgKEWtUkDQkeGxzVJnjE01zCDleYA"/>
+</div>
+<div class="relative z-20 mt-auto p-6 flex flex-col gap-4">
+<div>
+<div class="font-display-hero text-headline-card text-primary-container italic uppercase">A. Putellas</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-caps tracking-widest mt-1">
+<span>CAM</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>29 YRS</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>ESP</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2 border-t border-outline-variant/30 pt-4">
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">82</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAC</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[82%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">90</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">SHO</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[90%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">92</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAS</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[92%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">93</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">DRI</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[93%]"></div></div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="group relative bg-surface-container-highest rounded-xl overflow-hidden border border-outline-variant/30 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(207,241,0,0.15)] flex flex-col h-[500px]">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-10"></div>
+<div class="absolute top-4 right-4 z-20 bg-primary-container text-on-primary-container font-headline-card italic font-bold px-3 py-1 rounded shadow-lg transform -rotate-3 text-sm">SPEEDSTER</div>
+<div class="absolute inset-0 z-0">
+<img alt="Player action shot" class="w-full h-full object-cover object-top opacity-60 group-hover:opacity-100 transition-opacity duration-500" data-alt="A stylized, close-up digital painting of a forward football player with an intense expression, heavily rendered to look like premium digital card art. The lighting is dramatic, featuring a strong rim light in neon red that contrasts with the deep charcoal background. Subtle motion blur elements and fragmented light shards add a sense of explosive speed to the composition." src="https://lh3.googleusercontent.com/aida/ADBb0uguflgJvyqLsB_KEY6gINN5L4TkCWznmf8lT3rN1bCydGVzlLmqNn30rJLPGDzS6RHE5tBfNeJhNRYuzJwGvqwuJrg7Z93C2ynDgokOjM4E-Pa8Mm634IYZCQKJueq5dVKhO0ryALAJ2Nt6-Rl7LpPSBaL0CFeYv36FKqH3zP3Io8HvpDupOJpAnZyI49nTbw_Q0UWOAbFWXp5k94cOFz0x1n1WcO0B444r_CXvIpI2WBXoff_COJ0Mr4sqr4eqrjyO-5J4eeMr"/>
+</div>
+<div class="relative z-20 mt-auto p-6 flex flex-col gap-4">
+<div>
+<div class="font-display-hero text-headline-card text-primary-container italic uppercase">K. Mbappe</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-caps tracking-widest mt-1">
+<span>ST</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>25 YRS</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>FRA</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2 border-t border-outline-variant/30 pt-4">
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">97</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAC</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[97%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">90</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">SHO</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[90%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">80</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">PAS</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[80%]"></div></div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-stat-value text-stat-value text-on-surface text-2xl">92</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">DRI</span>
+<div class="w-full h-1 bg-surface-container mt-1 rounded-full overflow-hidden"><div class="h-full bg-primary-container w-[92%]"></div></div>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Load More -->
+<div class="mt-section-margin flex justify-center">
+<button class="border-2 border-outline text-on-surface font-display-hero italic uppercase px-12 py-4 rounded-lg tracking-wider hover:bg-outline-variant/20 hover:border-primary-container hover:text-primary-container transition-all duration-300">
+                Load More Talents
+            </button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full flex flex-col md:flex-row justify-between items-center px-container-padding py-section-margin gap-element-gap bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/10 font-body-md text-body-md mt-auto">
+<div class="font-display-hero text-headline-card italic text-primary-container">
+            FC TALENT
+        </div>
+<div class="flex flex-wrap justify-center gap-element-gap">
+<a class="text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Network</a>
+<a class="text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Scouting</a>
+<a class="text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Legal</a>
+<a class="text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Terms</a>
+</div>
+<div class="text-on-surface-variant text-sm">
+            © 2024 FC TALENT. ALL RIGHTS RESERVED.
+        </div>
+</footer>
+</body></html>

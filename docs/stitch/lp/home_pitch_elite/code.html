@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pitch Elite</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,800;0,900;1,800&amp;family=Lexend:wght@400&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#cff100",
+                      "surface-variant": "#333535",
+                      "on-secondary-fixed-variant": "#92001e",
+                      "on-surface": "#e2e2e2",
+                      "inverse-on-surface": "#2f3131",
+                      "tertiary-container": "#e5e2e1",
+                      "surface-bright": "#37393a",
+                      "secondary-fixed-dim": "#ffb3b2",
+                      "surface-container-low": "#1a1c1c",
+                      "on-secondary": "#680012",
+                      "surface": "#121414",
+                      "primary-container": "#cff100",
+                      "outline-variant": "#454933",
+                      "on-surface-variant": "#c6c9ac",
+                      "on-secondary-fixed": "#410008",
+                      "surface-tint": "#b5d300",
+                      "surface-container-high": "#282a2b",
+                      "surface-container-highest": "#333535",
+                      "on-primary-fixed-variant": "#404c00",
+                      "inverse-surface": "#e2e2e2",
+                      "tertiary": "#ffffff",
+                      "outline": "#909379",
+                      "error": "#ffb4ab",
+                      "surface-container": "#1e2020",
+                      "surface-dim": "#121414",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "secondary-container": "#ff525c",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-fixed": "#e5e2e1",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "on-primary-container": "#5b6b00",
+                      "background": "#121414",
+                      "on-error": "#690005",
+                      "on-background": "#e2e2e2",
+                      "surface-container-lowest": "#0c0f0f",
+                      "primary": "#ffffff",
+                      "secondary-fixed": "#ffdad8",
+                      "on-tertiary": "#313030",
+                      "secondary": "#ffb3b2",
+                      "on-tertiary-container": "#656464",
+                      "on-tertiary-fixed": "#1c1b1b",
+                      "primary-fixed-dim": "#b5d300",
+                      "on-primary": "#2b3400",
+                      "inverse-primary": "#566500",
+                      "on-primary-fixed": "#181e00",
+                      "on-secondary-container": "#5b000f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card-stack-offset": "0.5rem",
+                      "section-margin": "2.5rem",
+                      "container-padding": "1.25rem",
+                      "element-gap": "1rem"
+              },
+              "fontFamily": {
+                      "stat-value": [
+                              "Space Grotesk"
+                      ],
+                      "body-md": [
+                              "Lexend"
+                      ],
+                      "headline-card": [
+                              "Epilogue"
+                      ],
+                      "label-caps": [
+                              "Space Grotesk"
+                      ],
+                      "display-hero": [
+                              "Epilogue"
+                      ]
+              },
+              "fontSize": {
+                      "stat-value": [
+                              "32px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-card": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-hero": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "900"
+                              }
+                      ]
+              }
+            },
+          }
+        }
+      </script>
+<style>
+        .clip-slant { clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+        .clip-slant-reverse { clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%); }
+        .bg-noise { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); opacity: 0.05; mix-blend-mode: overlay; pointer-events: none;}
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen relative overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Noise Overlay -->
+<div class="fixed inset-0 bg-noise z-0"></div>
+<!-- TopAppBar -->
+<header class="bg-surface/80 backdrop-blur-xl dark:bg-surface/80 fixed top-0 w-full z-50 border-b border-white/10 flat no shadows text-primary-fixed">
+<div class="flex justify-between items-center px-container-padding py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-3xl font-bold">sports_soccer</span>
+<span class="font-display-hero text-headline-card italic font-black text-primary-fixed tracking-tighter uppercase">PITCH ELITE</span>
+</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-on-surface font-medium hover:text-primary-fixed transition-colors duration-300" href="#">Scouting</a>
+<a class="text-on-surface font-medium hover:text-primary-fixed transition-colors duration-300" href="#">Leaderboards</a>
+</nav>
+<button class="bg-primary-fixed text-on-primary-fixed font-headline-card text-label-caps italic px-6 py-2 rounded uppercase hover:bg-primary-fixed-dim transition-colors duration-300 active:scale-95 transition-transform">CREATE PROFILE</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="relative z-10 pt-24">
+<!-- Hero Section -->
+<section class="relative min-h-[795px] flex flex-col md:flex-row items-center px-container-padding max-w-7xl mx-auto gap-element-gap mt-8 pb-section-margin">
+<!-- Left: Typography & CTA -->
+<div class="flex-1 flex flex-col gap-6 z-20 relative">
+<div class="absolute -top-20 -left-20 w-64 h-64 bg-primary-fixed/20 blur-[100px] rounded-full pointer-events-none"></div>
+<h1 class="font-display-hero text-display-hero text-primary italic uppercase drop-shadow-lg max-w-2xl">
+                    O SEU PERFIL DE CRAQUE <span class="text-primary-fixed block mt-2">COMEÇA AQUI</span>
+</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-lg text-lg">
+                    Crie sua carta personalizada estilo EA FC e seja visto por olheiros do mundo todo. Eleve seu jogo para o próximo nível digital.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 mt-4">
+<button class="bg-primary-fixed text-on-primary-fixed font-headline-card text-headline-card italic uppercase px-8 py-4 rounded hover:bg-primary-fixed-dim transition-all active:scale-95 shadow-[0_0_30px_rgba(207,241,0,0.3)]">
+                        CRIAR MEU PERFIL AGORA
+                    </button>
+<button class="glass-panel text-primary font-headline-card text-body-md italic uppercase px-8 py-4 rounded hover:bg-white/10 transition-all active:scale-95 border border-white/20">
+                        VER EXEMPLOS
+                    </button>
+</div>
+<div class="mt-8 flex items-center gap-4 glass-panel px-4 py-2 w-fit rounded-full border border-white/5">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-surface-variant border-2 border-background overflow-hidden"><img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcBhXHv_zKr2weqqVOiEBX3XyjlDha2-YGk7AiufczOMu-p4JdgE8iUiY6tPw0kQMmyKF6-__qCTylAm5ytx5Y3TCGe8hggAIdjBIL0B1U10l_WjD9GU97K20qBmGeUgTeXDmvtwe3De9DeGMce7yWqP7fGbs0grh8wMtbYlYw-0zAPzBtdAU_zDDHbfSiVTdTJn9ggFYLvy98B34Ci93JTgbummo83X68s4JSaqEaCces7a8Nn6LfYoiQyqVej9vpTL2IA3RSlqs"/></div>
+<div class="w-8 h-8 rounded-full bg-surface-variant border-2 border-background overflow-hidden"><img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBo5cFVPKfrpuyDOwXBI5A2Aia9Q0DGc5a0UZHnGvZWnIkpE3dC1-IYmcjFV-wivZZqWxng2FftJo0Q65sfjEAcBGtcqDqBcG8kKKVtcJ8-t2BOrJ_vIODh254cu8odO8UCDnHDlPFFvSWf8ndVgT6zxOhQUGvVjjqsZ6TkSR4r-ygAk81Cbc41oAE0n7f2yE9BG7R7ZsHTM5wmfYpCEWQBC6kUNfVTzpplknEbzTZTuxMVMTAs70Mcu-QpP1q2O32awsFwpStcJVQ"/></div>
+<div class="w-8 h-8 rounded-full bg-surface-variant border-2 border-background overflow-hidden"><img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwXNMBGdGcbuu8VXNoqJ2rZnHfYUWGikaBIhGclcqDbQyRduVCghtKb3sM3KmOc5GL9WDT8bokBvtFgLcHHNl3DwEE65hu3rKktj1Xb9cj4aj8RyOIdtifgL6UkS4MddeYef1nNPSumxC9w-mmKatP8PiXwnbNhpTnZky5g_GM3HU8-ipxOwY6D9G8DiZ0TZNZ_Ac2qOPpi_FPVnh_fvCxC6KIk_V-EjIcZ0qUWIkJh4LWlcLMwxOLgjCfGzB6JmBRXpFzXj1c4xU"/></div>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase">Mais de 10.000 talentos já cadastrados</span>
+</div>
+</div>
+<!-- Right: Visual Motif (Player Card Glassmorphism) -->
+<div class="flex-1 relative w-full flex justify-center items-center mt-12 md:mt-0 z-10">
+<!-- Background abstract shapes -->
+<div class="absolute inset-0 bg-gradient-to-tr from-primary-fixed/10 to-transparent rounded-full blur-3xl transform -skew-x-12 scale-150"></div>
+<!-- Main Card Motif -->
+<div class="relative w-[320px] md:w-[380px] h-[500px] glass-panel rounded-xl p-4 flex flex-col justify-end overflow-hidden shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 border-t-primary-fixed/30 border-l-primary-fixed/30">
+<!-- Giant Number Background -->
+<div class="absolute -right-8 top-10 font-display-hero text-[200px] leading-none italic font-black text-white/5 pointer-events-none">10</div>
+<!-- Player Image -->
+<img alt="Dynamic shot of a young soccer player in an urban pitch setting" class="absolute inset-0 w-full h-full object-cover object-top opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" data-alt="A dynamic, high-contrast action shot of a young athletic male soccer player in a dark urban pitch setting. The player is illuminated by dramatic neon yellow and cool white lighting, creating a cinematic, high-energy mood. The background features deep blacks and blurred concrete textures, perfectly fitting a modern, aggressive 'Ultimate Team' digital aesthetic. The style is hyper-realistic with sharp focus on the player's intense expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKSIP_592XOYhiew3NqVnS31TDsHOLTQk8XBX9rYxA3rS3EhBrDVODV2ZtjSKBauTN5qAGlhHF2xERfvPLPysszSd_nmCXfB3yYBI3pWF8yangZtRJ8FqjS0z5-5St8WJ5nd7iSk8s7aWvTwCMx9JD-Bf1kNpZ-4Fo0rSVV0TlDo9oWMAw3QB2defO2xxpG7aRVr6NmTiaWKG18ENC-QtYSl3kNRnSpKymYpvNgZHiPtQN-Q0fVlPq0erro9gW9iVwZF_HQoihvTA"/>
+<!-- Gradient overlay for text readability -->
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent h-full w-full"></div>
+<!-- Card Stats Overlay -->
+<div class="relative z-20 flex flex-col gap-2">
+<div class="flex justify-between items-end mb-2">
+<div>
+<h3 class="font-display-hero text-headline-card text-primary italic uppercase">SILVA</h3>
+<p class="font-label-caps text-label-caps text-primary-fixed">ATA • BRASIL</p>
+</div>
+<div class="font-stat-value text-stat-value text-primary-fixed">88</div>
+</div>
+<!-- Bento Grid for Stats -->
+<div class="grid grid-cols-3 gap-2">
+<div class="glass-panel p-2 rounded flex flex-col items-center">
+<span class="font-stat-value text-body-md font-bold text-white">92</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">PAC</span>
+<div class="w-full h-1 bg-surface mt-1 rounded-full overflow-hidden"><div class="w-[92%] h-full bg-primary-fixed"></div></div>
+</div>
+<div class="glass-panel p-2 rounded flex flex-col items-center">
+<span class="font-stat-value text-body-md font-bold text-white">85</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">SHO</span>
+<div class="w-full h-1 bg-surface mt-1 rounded-full overflow-hidden"><div class="w-[85%] h-full bg-primary-fixed"></div></div>
+</div>
+<div class="glass-panel p-2 rounded flex flex-col items-center">
+<span class="font-stat-value text-body-md font-bold text-white">89</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">DRI</span>
+<div class="w-full h-1 bg-surface mt-1 rounded-full overflow-hidden"><div class="w-[89%] h-full bg-primary-fixed"></div></div>
+</div>
+</div>
+</div>
+<!-- Badge Overlay -->
+<div class="absolute top-4 -left-2 bg-primary-fixed text-background font-headline-card text-label-caps italic px-3 py-1 uppercase transform -rotate-6 shadow-lg border border-primary-fixed-dim">
+                        ELITE PROSPECT
+                    </div>
+</div>
+</div>
+</section>
+<!-- Features Section (Slanted) -->
+<section class="bg-surface-container-high py-20 clip-slant-reverse mt-12 relative overflow-hidden">
+<!-- Pattern overlay -->
+<div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(#cff100 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="max-w-7xl mx-auto px-container-padding relative z-10 pt-10">
+<div class="text-center mb-16">
+<h2 class="font-display-hero text-display-hero text-primary italic uppercase mb-4">POR QUE O <span class="text-primary-fixed">PITCH ELITE?</span></h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Sua identidade digital no mundo do futebol. Desenhada para atrair a atenção de quem importa.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-element-gap">
+<!-- Feature 1 -->
+<div class="glass-panel p-8 rounded-xl border border-white/5 hover:border-primary-fixed/50 transition-colors group relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-fixed/10 rounded-bl-full transform translate-x-16 -translate-y-16 group-hover:bg-primary-fixed/20 transition-all"></div>
+<span class="material-symbols-outlined text-4xl text-primary-fixed mb-6 block" data-weight="fill">visibility</span>
+<h3 class="font-headline-card text-headline-card text-primary italic uppercase mb-3">Visibilidade Total</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Seu perfil desenhado para impacto imediato. Compartilhe seu link único com scouts e treinadores.</p>
+</div>
+<!-- Feature 2 -->
+<div class="glass-panel p-8 rounded-xl border border-white/5 hover:border-primary-fixed/50 transition-colors group relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-fixed/10 rounded-bl-full transform translate-x-16 -translate-y-16 group-hover:bg-primary-fixed/20 transition-all"></div>
+<span class="material-symbols-outlined text-4xl text-primary-fixed mb-6 block" data-weight="fill">query_stats</span>
+<h3 class="font-headline-card text-headline-card text-primary italic uppercase mb-3">Stats em Tempo Real</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Atualize suas métricas físicas e técnicas e veja sua carta evoluir com o seu desempenho em campo.</p>
+</div>
+<!-- Feature 3 -->
+<div class="glass-panel p-8 rounded-xl border border-white/5 hover:border-primary-fixed/50 transition-colors group relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-fixed/10 rounded-bl-full transform translate-x-16 -translate-y-16 group-hover:bg-primary-fixed/20 transition-all"></div>
+<span class="material-symbols-outlined text-4xl text-primary-fixed mb-6 block" data-weight="fill">link</span>
+<h3 class="font-headline-card text-headline-card text-primary italic uppercase mb-3">Link na Bio Profissional</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Reúna seus highlights do YouTube, TikTok e stats em um único hub digital profissional.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest w-full py-section-margin border-t border-surface-variant flat no shadows relative z-10 mt-12">
+<div class="flex flex-col md:flex-row justify-between items-center px-container-padding gap-element-gap max-w-7xl mx-auto">
+<div class="font-display-hero text-headline-card italic font-black text-primary-fixed">PITCH ELITE</div>
+<nav class="flex flex-wrap justify-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed underline transition-all opacity-100 hover:opacity-80" href="#">Scouting Network</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed underline transition-all opacity-100 hover:opacity-80" href="#">Leaderboards</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed underline transition-all opacity-100 hover:opacity-80" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed underline transition-all opacity-100 hover:opacity-80" href="#">Terms of Service</a>
+</nav>
+<div class="font-body-md text-body-md text-on-surface-variant">© 2024 PITCH ELITE. ALL RIGHTS RESERVED.</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Como Funciona - Pitch Elite</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,800;0,900;1,800;1,900&amp;family=Lexend:wght@400&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#454933",
+                    "on-secondary": "#680012",
+                    "surface-bright": "#37393a",
+                    "surface": "#121414",
+                    "background": "#121414",
+                    "on-primary-fixed": "#181e00",
+                    "secondary": "#ffb3b2",
+                    "primary-fixed-dim": "#b5d300",
+                    "tertiary-fixed": "#e5e2e1",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "surface-container-highest": "#333535",
+                    "secondary-fixed": "#ffdad8",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed": "#1c1b1b",
+                    "on-tertiary": "#313030",
+                    "on-secondary-fixed": "#410008",
+                    "on-surface-variant": "#c6c9ac",
+                    "surface-dim": "#121414",
+                    "on-error": "#690005",
+                    "surface-variant": "#333535",
+                    "surface-container-lowest": "#0c0f0f",
+                    "surface-tint": "#b5d300",
+                    "on-background": "#e2e2e2",
+                    "on-primary-fixed-variant": "#404c00",
+                    "tertiary": "#ffffff",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#cff100",
+                    "on-primary": "#2b3400",
+                    "inverse-primary": "#566500",
+                    "inverse-on-surface": "#2f3131",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "surface-container-high": "#282a2b",
+                    "tertiary-container": "#e5e2e1",
+                    "secondary-fixed-dim": "#ffb3b2",
+                    "outline": "#909379",
+                    "primary-container": "#cff100",
+                    "on-primary-container": "#5b6b00",
+                    "on-tertiary-container": "#656464",
+                    "on-secondary-fixed-variant": "#92001e",
+                    "surface-container-low": "#1a1c1c",
+                    "on-surface": "#e2e2e2",
+                    "on-error-container": "#ffdad6",
+                    "surface-container": "#1e2020",
+                    "inverse-surface": "#e2e2e2",
+                    "primary": "#ffffff",
+                    "secondary-container": "#ff525c",
+                    "on-secondary-container": "#5b000f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-margin": "2.5rem",
+                    "element-gap": "1rem",
+                    "container-padding": "1.25rem",
+                    "card-stack-offset": "0.5rem"
+            },
+            "fontFamily": {
+                    "stat-value": [
+                            "Space Grotesk"
+                    ],
+                    "display-hero": [
+                            "Epilogue"
+                    ],
+                    "label-caps": [
+                            "Space Grotesk"
+                    ],
+                    "headline-card": [
+                            "Epilogue"
+                    ],
+                    "body-md": [
+                            "Lexend"
+                    ]
+            },
+            "fontSize": {
+                    "stat-value": [
+                            "32px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-hero": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.04em",
+                                    "fontWeight": "900"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-card": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(207, 241, 0, 0.5);
+        }
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(69, 73, 51, 0.1) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(69, 73, 51, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden antialiased bg-grid-pattern">
+<!-- TopAppBar -->
+<nav class="bg-surface/20 backdrop-blur-2xl border-b border-outline-variant/20 fixed top-0 w-full flex justify-between items-center px-container-padding h-20 max-w-full z-50">
+<div class="flex items-center gap-4">
+<span class="font-display-hero text-headline-card italic font-black text-primary-container dark:text-primary-container uppercase">FC TALENT</span>
+</div>
+<div class="hidden md:flex gap-8 items-center h-full">
+<a class="text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 font-label-caps text-label-caps uppercase h-full flex items-center active:scale-95 transition-transform duration-200" href="#">Home</a>
+<a class="text-primary-container border-b-2 border-primary-container pb-1 hover:text-primary-container transition-all duration-300 font-label-caps text-label-caps uppercase h-full flex items-center active:scale-95 transition-transform duration-200" href="#">How it Works</a>
+<a class="text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 font-label-caps text-label-caps uppercase h-full flex items-center active:scale-95 transition-transform duration-200" href="#">Talents</a>
+<a class="text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 font-label-caps text-label-caps uppercase h-full flex items-center active:scale-95 transition-transform duration-200" href="#">Plans</a>
+</div>
+<div class="flex items-center">
+<button class="bg-primary-container text-on-primary-container font-headline-card text-headline-card italic px-6 py-2 rounded uppercase hover:bg-white transition-colors active:scale-95 duration-200 text-sm md:text-base">
+                Create Profile
+            </button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow pt-24 pb-section-margin px-container-padding flex flex-col items-center relative z-10">
+<!-- Background Accents -->
+<div class="absolute top-1/4 left-0 w-96 h-96 bg-primary-container/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+<div class="absolute bottom-1/4 right-0 w-96 h-96 bg-secondary-container/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+<header class="text-center mb-16 max-w-3xl mt-8">
+<h1 class="font-display-hero text-display-hero uppercase italic text-white mb-4">
+                Domine O Jogo <br/> <span class="text-primary-container text-glow">Passo a Passo</span>
+</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">
+                Sua jornada para o nível de elite começa aqui. Siga os três passos essenciais para construir seu perfil, analisar seu desempenho e ser notado por olheiros globais.
+            </p>
+</header>
+<!-- Staggered Grid Container -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-7xl mx-auto mb-20 relative">
+<!-- Connecting Line (Desktop only) -->
+<div class="hidden lg:block absolute top-1/2 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-transparent via-outline-variant to-transparent -z-10 transform -translate-y-1/2"></div>
+<!-- Step 1 -->
+<div class="glass-card rounded-xl p-6 flex flex-col relative overflow-hidden group transform lg:translate-y-0 transition-transform duration-500 hover:-translate-y-2">
+<div class="absolute -right-4 -top-4 text-9xl font-display-hero font-black text-white/5 italic opacity-50 z-0">1</div>
+<div class="relative z-10 mb-6 flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface border border-outline-variant flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person_add</span>
+</div>
+<div>
+<h3 class="font-headline-card text-headline-card text-white uppercase italic">Crie Sua Conta</h3>
+</div>
+</div>
+<div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant/30 bg-surface-container-low mb-6">
+<img alt="" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 mix-blend-luminosity hover:mix-blend-normal" data-alt="A sleek, high-fidelity UI mockup of a sports app account creation screen displayed on a modern smartphone. The screen features dark mode aesthetics with deep blacks, subtle geometric patterns, and vibrant neon green accents. It shows a sleek registration form with glassmorphism input fields and a bold 'Sign Up' button. The overall mood is futuristic, aggressive, and highly professional, fitting a top-tier football scouting platform." src="https://lh3.googleusercontent.com/aida/ADBb0ujU1GP2OeCD4Cuf60U_JIon-HVRXUeLi2EwUzytyep81cVNJNgKd25CXPWdmrgz5cxZtucCm8cGQPIXz9niF9_xaBuaqO6RcrhxAPPzWpQD2hbQiz2Tci30TFIUJRJIzXPhmhouvT9gtU9Ntn2Zl3f2YHWcO5WmH92_70k8a_ivt-IWieQqZkXxxm9PJ6kZIidLww-r0s22vFDCqjpARdW3VVPHWf6EREbypQJ3pNZnKxhIrQuWoqFVVzIHIR1VnGCZAobvfCw_"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant relative z-10 flex-grow">
+                    Cadastre-se na plataforma FC TALENT. Preencha seus dados básicos, posição principal e conecte suas redes sociais em minutos.
+                </p>
+</div>
+<!-- Step 2 -->
+<div class="glass-card rounded-xl p-6 flex flex-col relative overflow-hidden group transform lg:translate-y-12 transition-transform duration-500 hover:translate-y-10">
+<div class="absolute -right-4 -top-4 text-9xl font-display-hero font-black text-white/5 italic opacity-50 z-0">2</div>
+<div class="relative z-10 mb-6 flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface border border-outline-variant flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">query_stats</span>
+</div>
+<div>
+<h3 class="font-headline-card text-headline-card text-white uppercase italic">Registre Seus Gols</h3>
+</div>
+</div>
+<div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant/30 bg-surface-container-low mb-6">
+<img alt="" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 mix-blend-luminosity hover:mix-blend-normal" data-alt="A dynamic, high-fidelity UI mockup of a sports analytics dashboard showing player statistics. The interface is dark, with deep charcoal backgrounds and glowing neon green charts and progress bars. It features metrics like 'Pace', 'Shooting', and 'Passing' displayed in a technical, Space Grotesk font. The visual style is aggressive and modern, resembling a premium digital football collectible card interface." src="https://lh3.googleusercontent.com/aida/ADBb0ugUP_MEZ6rg3fqDiP5S3mudhpeqscXd5hV8pqwVyY_tREosI9gQjyBw14Q0iDnYGqK8Je5ft9-X-iWWfaHhuxF87fGSy9_lpJFbUalW_4-N2xRMg1Nmg-_DUwsiZF8MwnBuOlYjYQ8oU7ARMibwHNvmH9YJ0zZxAz5seBRnIsG-fFPmf7PMCgL8VjhxQkS6G12KjuH_P5TPCZGG_-xtPXUcDdni-DFhIuaZ2O5KWq3-7g0VTmgKEWtUkDQkeGxzVJnjE01zCDleYA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant relative z-10 flex-grow">
+                    Suba seus melhores lances, insira suas estatísticas de jogo e deixe nossa interface avançada gerar seu "Player Card" exclusivo.
+                </p>
+</div>
+<!-- Step 3 -->
+<div class="glass-card rounded-xl p-6 flex flex-col relative overflow-hidden group transform lg:translate-y-24 transition-transform duration-500 hover:translate-y-22">
+<div class="absolute -right-4 -top-4 text-9xl font-display-hero font-black text-white/5 italic opacity-50 z-0">3</div>
+<div class="relative z-10 mb-6 flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface border border-outline-variant flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">share</span>
+</div>
+<div>
+<h3 class="font-headline-card text-headline-card text-white uppercase italic">Compartilhe Seu Link</h3>
+</div>
+</div>
+<div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant/30 bg-surface-container-low mb-6">
+<img alt="" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 mix-blend-luminosity hover:mix-blend-normal" data-alt="A sleek UI mockup of a digital profile link page for a football player. The design features a large, stylized player cutout over a dark, textured background with subtle halftone patterns. Floating glassmorphism chips display social media links and key achievements. The color palette is strictly high-contrast dark mode with sharp neon green highlights. The aesthetic is aspirational and highly professional, perfect for an elite scouting platform." src="https://lh3.googleusercontent.com/aida/ADBb0uguflgJvyqLsB_KEY6gINN5L4TkCWznmf8lT3rN1bCydGVzlLmqNn30rJLPGDzS6RHE5tBfNeJhNRYuzJwGvqwuJrg7Z93C2ynDgokOjM4E-Pa8Mm634IYZCQKJueq5dVKhO0ryALAJ2Nt6-Rl7LpPSBaL0CFeYv36FKqH3zP3Io8HvpDupOJpAnZyI49nTbw_Q0UWOAbFWXp5k94cOFz0x1n1WcO0B444r_CXvIpI2WBXoff_COJ0Mr4sqr4eqrjyO-5J4eeMr"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant relative z-10 flex-grow">
+                    Gere seu link público e compartilhe seu portfólio completo com olheiros, clubes e agentes através de uma página otimizada.
+                </p>
+</div>
+</div>
+<!-- Final CTA -->
+<div class="mt-20 lg:mt-32 text-center w-full max-w-2xl mx-auto flex flex-col items-center">
+<button class="bg-primary-container text-on-primary-container font-headline-card text-headline-card italic px-10 py-4 rounded-lg uppercase hover:bg-white transition-colors active:scale-95 duration-200 shadow-[0_0_30px_rgba(207,241,0,0.3)] hover:shadow-[0_0_50px_rgba(207,241,0,0.5)] flex items-center gap-2">
+                COMEÇAR AGORA
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full flex flex-col md:flex-row justify-between items-center px-container-padding py-section-margin gap-element-gap bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/10 z-10 relative">
+<div class="font-display-hero text-headline-card italic text-primary-container uppercase">
+            FC TALENT
+        </div>
+<div class="flex flex-wrap justify-center gap-6 md:gap-8">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Network</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Scouting</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Legal</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Privacy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Terms</a>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm text-center md:text-right">
+            © 2024 FC TALENT. ALL RIGHTS RESERVED.
+        </div>
+</footer>
+</body></html>

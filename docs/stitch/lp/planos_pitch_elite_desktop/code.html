@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pitch Elite - Pricing</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&amp;family=Lexend:wght@100..900&amp;family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#454933",
+                    "on-secondary": "#680012",
+                    "surface-bright": "#37393a",
+                    "surface": "#121414",
+                    "background": "#121414",
+                    "on-primary-fixed": "#181e00",
+                    "secondary": "#ffb3b2",
+                    "primary-fixed-dim": "#b5d300",
+                    "tertiary-fixed": "#e5e2e1",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "surface-container-highest": "#333535",
+                    "secondary-fixed": "#ffdad8",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed": "#1c1b1b",
+                    "on-tertiary": "#313030",
+                    "on-secondary-fixed": "#410008",
+                    "on-surface-variant": "#c6c9ac",
+                    "surface-dim": "#121414",
+                    "on-error": "#690005",
+                    "surface-variant": "#333535",
+                    "surface-container-lowest": "#0c0f0f",
+                    "surface-tint": "#b5d300",
+                    "on-background": "#e2e2e2",
+                    "on-primary-fixed-variant": "#404c00",
+                    "tertiary": "#ffffff",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#cff100",
+                    "on-primary": "#2b3400",
+                    "inverse-primary": "#566500",
+                    "inverse-on-surface": "#2f3131",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "surface-container-high": "#282a2b",
+                    "tertiary-container": "#e5e2e1",
+                    "secondary-fixed-dim": "#ffb3b2",
+                    "outline": "#909379",
+                    "primary-container": "#cff100",
+                    "on-primary-container": "#5b6b00",
+                    "on-tertiary-container": "#656464",
+                    "on-secondary-fixed-variant": "#92001e",
+                    "surface-container-low": "#1a1c1c",
+                    "on-surface": "#e2e2e2",
+                    "on-error-container": "#ffdad6",
+                    "surface-container": "#1e2020",
+                    "inverse-surface": "#e2e2e2",
+                    "primary": "#ffffff",
+                    "secondary-container": "#ff525c",
+                    "on-secondary-container": "#5b000f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-margin": "2.5rem",
+                    "element-gap": "1rem",
+                    "container-padding": "1.25rem",
+                    "card-stack-offset": "0.5rem"
+            },
+            "fontFamily": {
+                    "stat-value": [
+                            "Space Grotesk"
+                    ],
+                    "display-hero": [
+                            "Epilogue"
+                    ],
+                    "label-caps": [
+                            "Space Grotesk"
+                    ],
+                    "headline-card": [
+                            "Epilogue"
+                    ],
+                    "body-md": [
+                            "Lexend"
+                    ]
+            },
+            "fontSize": {
+                    "stat-value": [
+                            "32px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-hero": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.04em",
+                                    "fontWeight": "900"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-card": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-container-padding h-20 max-w-full bg-surface/20 backdrop-blur-2xl border-b border-outline-variant/20 z-50">
+<div class="font-display-hero text-headline-card italic font-black text-primary-container dark:text-primary-container">
+            FC TALENT
+        </div>
+<nav class="hidden md:flex gap-element-gap">
+<a class="text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 active:scale-95 transition-transform duration-200" href="#">Home</a>
+<a class="text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 active:scale-95 transition-transform duration-200" href="#">How it Works</a>
+<a class="text-on-surface dark:text-on-surface hover:text-primary-container transition-all duration-300 active:scale-95 transition-transform duration-200" href="#">Talents</a>
+<a class="text-primary-container border-b-2 border-primary-container pb-1 hover:text-primary-container transition-all duration-300 active:scale-95 transition-transform duration-200" href="#">Plans</a>
+</nav>
+<button class="bg-primary-container text-on-primary-container font-display-hero text-label-caps uppercase italic tracking-wider px-6 py-2 rounded-full hover:bg-primary-fixed transition-colors active:scale-95 duration-200">
+            Create Profile
+        </button>
+</header>
+<main class="pt-24 pb-section-margin px-container-padding relative">
+<!-- Background Hero Element -->
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none" data-alt="An aggressive, high-contrast abstract digital background featuring shards of light and deep shadows. The visual aesthetic mimics an elite football stadium environment at night, illuminated by intense, volumetric neon green beams and smoky atmospheres, establishing a premium, high-octane mood." style="background-image: url('https://lh3.googleusercontent.com/aida/ADBb0ujU1GP2OeCD4Cuf60U_JIon-HVRXUeLi2EwUzytyep81cVNJNgKd25CXPWdmrgz5cxZtucCm8cGQPIXz9niF9_xaBuaqO6RcrhxAPPzWpQD2hbQiz2Tci30TFIUJRJIzXPhmhouvT9gtU9Ntn2Zl3f2YHWcO5WmH92_70k8a_ivt-IWieQqZkXxxm9PJ6kZIidLww-r0s22vFDCqjpARdW3VVPHWf6EREbypQJ3pNZnKxhIrQuWoqFVVzIHIR1VnGCZAobvfCw_'); background-size: cover; background-position: center;"></div>
+<div class="absolute inset-0 z-0 bg-gradient-to-b from-surface/50 to-surface pointer-events-none"></div>
+<!-- Header Content -->
+<div class="relative z-10 max-w-4xl mx-auto text-center mt-section-margin mb-section-margin">
+<h1 class="font-display-hero text-display-hero italic text-on-surface uppercase drop-shadow-lg">
+                Eleve o seu <span class="text-primary-container">Nível</span>
+</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-4 max-w-2xl mx-auto">
+                Escolha o plano que se adapta à sua ambição. De iniciantes a atletas de elite, temos as ferramentas para impulsionar a sua carreira no futebol.
+            </p>
+</div>
+<!-- Pricing Cards -->
+<div class="relative z-10 max-w-5xl mx-auto flex flex-col md:flex-row gap-element-gap md:gap-8 items-center md:items-stretch justify-center">
+<!-- Basic Card -->
+<div class="w-full md:w-1/2 max-w-sm bg-surface-container-low/50 backdrop-blur-xl border border-outline-variant rounded-xl p-container-padding flex flex-col relative overflow-hidden transition-all duration-300 hover:border-outline">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-outline-variant/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="mb-8">
+<h2 class="font-headline-card text-headline-card text-on-surface uppercase italic">BÁSICO</h2>
+<div class="mt-2 font-stat-value text-stat-value text-on-surface">Gratuito</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 text-sm">O ponto de partida essencial para a sua jornada.</p>
+</div>
+<ul class="flex flex-col gap-3 mb-8 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-outline text-[20px]" data-weight="fill">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Perfil público básico</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-outline text-[20px]" data-weight="fill">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Upload de 3 vídeos de melhores momentos</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-outline text-[20px]" data-weight="fill">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Acesso a fóruns da comunidade</span>
+</li>
+</ul>
+<button class="w-full border-2 border-outline-variant text-on-surface rounded-full py-4 font-display-hero text-label-caps uppercase italic hover:bg-surface-variant hover:text-on-surface transition-all duration-300">
+                    COMEÇAR AGORA
+                </button>
+</div>
+<!-- Elite Card -->
+<div class="w-full md:w-1/2 max-w-sm bg-surface-container-highest backdrop-blur-2xl border border-primary-container rounded-xl p-container-padding flex flex-col relative overflow-hidden md:-translate-y-4 shadow-[0_0_40px_rgba(207,241,0,0.15)] transition-all duration-300">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/5 rounded-full blur-3xl pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
+<!-- Badge -->
+<div class="absolute top-6 right-6 -rotate-6 bg-primary-container text-on-primary-container font-label-caps text-label-caps px-4 py-1.5 rounded-full uppercase font-bold shadow-lg z-20">
+                    RECOMENDADO
+                </div>
+<div class="mb-8 relative z-10">
+<h2 class="font-headline-card text-headline-card text-primary-container uppercase italic tracking-wide">ELITE</h2>
+<div class="mt-2 font-stat-value text-stat-value text-on-surface flex items-baseline gap-1">
+                        R$ 19,90<span class="text-lg font-normal text-on-surface-variant">/mês</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 text-sm">Ferramentas avançadas para atletas de alto rendimento.</p>
+</div>
+<ul class="flex flex-col gap-3 mb-8 flex-grow relative z-10">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary-container text-[20px]" data-weight="fill">verified</span>
+<span class="font-body-md text-body-md text-on-surface text-sm">Selo de verificação Elite</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary-container text-[20px]" data-weight="fill">bolt</span>
+<span class="font-body-md text-body-md text-on-surface text-sm">Upload ilimitado em 4K</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary-container text-[20px]" data-weight="fill">analytics</span>
+<span class="font-body-md text-body-md text-on-surface text-sm">Análise de desempenho por IA</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary-container text-[20px]" data-weight="fill">visibility</span>
+<span class="font-body-md text-body-md text-on-surface text-sm">Destaque nas buscas de olheiros</span>
+</li>
+</ul>
+<button class="w-full bg-primary-container text-on-primary-container rounded-full py-4 font-display-hero text-label-caps uppercase italic hover:bg-primary-fixed hover:scale-[1.02] transition-all duration-300 relative z-10 font-bold shadow-[0_0_20px_rgba(207,241,0,0.3)]">
+                    SER UM ATLETA ELITE
+                </button>
+</div>
+</div>
+<!-- Feature Images Grid -->
+<div class="relative z-10 max-w-5xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-2 gap-element-gap">
+<div class="rounded-xl overflow-hidden h-64 relative group border border-outline-variant/30">
+<img alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A highly detailed, dramatic portrait of a professional football player captured mid-action. The lighting is cinematic and dark, featuring harsh rim lights in a vibrant volt green that traces the athlete's dynamic silhouette against a pitch-black background, emphasizing intensity and elite performance." src="https://lh3.googleusercontent.com/aida/ADBb0ugUP_MEZ6rg3fqDiP5S3mudhpeqscXd5hV8pqwVyY_tREosI9gQjyBw14Q0iDnYGqK8Je5ft9-X-iWWfaHhuxF87fGSy9_lpJFbUalW_4-N2xRMg1Nmg-_DUwsiZF8MwnBuOlYjYQ8oU7ARMibwHNvmH9YJ0zZxAz5seBRnIsG-fFPmf7PMCgL8VjhxQkS6G12KjuH_P5TPCZGG_-xtPXUcDdni-DFhIuaZ2O5KWq3-7g0VTmgKEWtUkDQkeGxzVJnjE01zCDleYA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-80"></div>
+<div class="absolute bottom-4 left-4">
+<h3 class="font-headline-card text-headline-card text-on-surface italic">Visibilidade</h3>
+</div>
+</div>
+<div class="rounded-xl overflow-hidden h-64 relative group border border-outline-variant/30">
+<img alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A sleek, futuristic digital dashboard displaying sports analytics. The UI design employs a glassmorphism style, floating over a dark, textured background. Glowing volt green charts, graphs, and performance metrics stand out sharply, conveying advanced technology and data-driven athletic tracking." src="https://lh3.googleusercontent.com/aida/ADBb0uguflgJvyqLsB_KEY6gINN5L4TkCWznmf8lT3rN1bCydGVzlLmqNn30rJLPGDzS6RHE5tBfNeJhNRYuzJwGvqwuJrg7Z93C2ynDgokOjM4E-Pa8Mm634IYZCQKJueq5dVKhO0ryALAJ2Nt6-Rl7LpPSBaL0CFeYv36FKqH3zP3Io8HvpDupOJpAnZyI49nTbw_Q0UWOAbFWXp5k94cOFz0x1n1WcO0B444r_CXvIpI2WBXoff_COJ0Mr4sqr4eqrjyO-5J4eeMr"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-80"></div>
+<div class="absolute bottom-4 left-4">
+<h3 class="font-headline-card text-headline-card text-on-surface italic">Performance</h3>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full flex flex-col md:flex-row justify-between items-center px-container-padding py-section-margin gap-element-gap bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/10">
+<div class="font-display-hero text-headline-card italic text-primary-container">
+            FC TALENT
+        </div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Network</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Scouting</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Legal</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Privacy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-container transition-colors cursor-pointer" href="#">Terms</a>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm">
+            © 2024 FC TALENT. ALL RIGHTS RESERVED.
+        </div>
+</footer>
+</body></html>

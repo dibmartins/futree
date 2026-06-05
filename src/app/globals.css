@@ -5,6 +5,19 @@
   --font-body: var(--font-lexend), ui-sans-serif;
   --font-stat: var(--font-space-grotesk), ui-monospace;
 
+  --color-primary-fixed: #cff100;
+  --color-primary-fixed-dim: #b5d300;
+  --color-on-primary-fixed: #181e00;
+  --color-surface-variant: #333535;
+  --color-surface-bright: #37393a;
+  --color-surface-container: #1e2020;
+  --color-surface-container-low: #1a1c1c;
+  --color-surface-container-high: #282a2b;
+  --color-surface-container-highest: #333535;
+  --color-surface-container-lowest: #0c0f0f;
+  --color-on-surface-variant: #c6c9ac;
+  --color-outline-variant: #454933;
+
   --color-primary: var(--primary);
   --color-surface: #121414;
   --color-on-surface: #e2e2e2;
@@ -13,8 +26,10 @@
 :root {
   --background: #121414;
   --foreground: #e2e2e2;
-  --primary: #DCFF1E;
-  --primary-rgb: 220, 255, 30;
+  --primary: #ffffff;
+  --primary-rgb: 255, 255, 255;
+  --primary-fixed: #cff100;
+  --primary-fixed-rgb: 207, 241, 0;
 }
 
 @layer base {
@@ -29,16 +44,33 @@
   .glass-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    border: 1px solid rgba(var(--primary-fixed-rgb), 0.1);
+  }
+
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .text-neon {
-    color: var(--primary);
-    text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.4);
+    color: var(--primary-fixed);
+    text-shadow: 0 0 10px rgba(var(--primary-fixed-rgb), 0.4);
   }
 
-  .bg-neon {
-    background-color: var(--primary);
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  .clip-slant {
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+  }
+
+  .clip-slant-reverse {
+    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
   }
 
   .hero-clip {
