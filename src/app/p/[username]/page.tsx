@@ -285,14 +285,15 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               )}
               <span className="h-6 w-[2px] bg-primary/30"></span>
               <div className="flex flex-col">
-                <span className="font-stat font-bold text-white text-xl tracking-widest uppercase leading-none">
-                  {profile.position}
+                <span className="font-stat font-bold text-white text-xl tracking-widest uppercase leading-none flex items-center flex-wrap">
+                  <span>{profile.position}</span>
+                  {profile.secondaryPosition && (
+                    <span className="text-white/60 font-semibold flex items-center">
+                      <span className="mx-2 text-white/30 font-light text-lg select-none">|</span>
+                      <span>{profile.secondaryPosition}</span>
+                    </span>
+                  )}
                 </span>
-                {profile.secondaryPosition && (
-                  <span className="text-[10px] text-white/40 font-stat uppercase tracking-widest mt-1">
-                    Alt: {profile.secondaryPosition}
-                  </span>
-                )}
               </div>
             </div>
           </div>
