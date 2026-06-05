@@ -112,6 +112,16 @@ export default function SettingsPage() {
   // UI states
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type });
+    // Reset toast after 3 seconds
+    const timer = setTimeout(() => {
+      setToast(null);
+    }, 3000);
+    return () => clearTimeout(timer);
+  };
 
   useEffect(() => {
     fetch("/api/profile")
@@ -151,10 +161,10 @@ export default function SettingsPage() {
         setIsOnboarding(false);
       } else {
         const err = await res.json();
-        alert(err.error || "Erro no onboarding");
+        showToast(err.error || "Erro no onboarding", "error");
       }
     } catch {
-      alert("Erro ao processar onboarding");
+      showToast("Erro ao processar onboarding", "error");
     } finally {
       setSaving(false);
     }
@@ -217,11 +227,11 @@ export default function SettingsPage() {
         });
       } else {
         const errorData = await res.json();
-        alert(`Erro no upload: ${errorData.details || errorData.error}`);
+        showToast(`Erro no upload: ${errorData.details || errorData.error}`, "error");
       }
     } catch (error) {
       console.error(error);
-      alert("Erro ao enviar arquivo. O processamento de imagem pode ser pesado para o seu dispositivo.");
+      showToast("Erro ao enviar arquivo. O processamento de imagem pode ser pesado.", "error");
     } finally {
       if (type === "avatar") setUploadingAvatar(false);
       else if (type === "hero") setUploadingHero(false);
@@ -248,15 +258,15 @@ export default function SettingsPage() {
       if (res.ok) {
         const updated = await res.json();
         setProfile(updated);
-        alert("Perfil atualizado!");
+        showToast("Perfil atualizado!", "success");
         router.refresh();
       } else {
         const error = await res.json();
-        alert(`Erro ao salvar: ${error.error || "Erro desconhecido"}`);
+        showToast(`Erro ao salvar: ${error.error || "Erro desconhecido"}`, "error");
       }
     } catch (err) {
       console.error("Erro ao salvar:", err);
-      alert("Erro ao salvar.");
+      showToast("Erro ao salvar.", "error");
     } finally {
       setSaving(false);
     }
@@ -1041,6 +1051,23 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-[#121414] text-white p-6 pb-32 flex justify-center">
+      {toast && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-fadeIn pointer-events-none">
+          <div className={`flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md border ${
+            toast.type === "success" 
+              ? "bg-[#1e2020]/90 border-primary-fixed/20 text-primary-fixed" 
+              : "bg-[#1e2020]/90 border-red-500/20 text-red-400"
+          }`}>
+            <span className="material-symbols-outlined text-xl">
+              {toast.type === "success" ? "check_circle" : "error"}
+            </span>
+            <span className="font-stat text-sm font-bold uppercase tracking-wider">
+              {toast.message}
+            </span>
+          </div>
+        </div>
+      )}
+
       <div className="w-full max-w-2xl">
         <header className="mb-8 flex justify-between items-center relative">
           <div className="flex items-center gap-3">
