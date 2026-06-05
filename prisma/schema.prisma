@@ -73,6 +73,7 @@ model Profile {
   theme             ThemeConfig?
   stats             Stats?
   links             Link[]
+  clubs             ProfileClub[]
   
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
@@ -115,4 +116,16 @@ model Link {
   icon      String?
   imageUrl  String?
   order     Int     @default(0)
+}
+
+model ProfileClub {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name      String
+  socialUrl String?
+  logoUrl   String?
+  isCurrent Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

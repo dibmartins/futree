@@ -17,6 +17,7 @@ export async function GET() {
         orderBy: { order: "asc" },
       },
       theme: true,
+      clubs: true,
     },
   });
 
@@ -50,7 +51,7 @@ export async function PATCH(request: Request) {
       jerseyNumber, position, secondaryPosition, 
       height, weight, preferredFoot, characteristics,
       currentClub, history,
-      avatarUrl, heroImageUrl, youtubeUrl, stats, theme, links 
+      avatarUrl, heroImageUrl, youtubeUrl, stats, theme, links, clubs 
     } = body;
 
     // Fazemos o update ignorando campos que possam dar erro de validação temporariamente
@@ -62,6 +63,7 @@ export async function PATCH(request: Request) {
         links: {
           orderBy: { order: "asc" },
         },
+        clubs: true,
       },
       data: {
         username,
@@ -133,6 +135,15 @@ export async function PATCH(request: Request) {
             icon: link.icon,
             imageUrl: link.imageUrl,
             order: link.order || 0,
+          })) || [],
+        },
+        clubs: {
+          deleteMany: {},
+          create: clubs?.map((club: any) => ({
+            name: club.name || "",
+            socialUrl: club.socialUrl || "",
+            logoUrl: club.logoUrl || "",
+            isCurrent: !!club.isCurrent,
           })) || [],
         },
       },

@@ -6,6 +6,14 @@ import { signOut } from "next-auth/react";
 import Image from "next/image";
 import { removeBackground } from "@imgly/background-removal";
 
+interface Club {
+  id: string;
+  name: string;
+  socialUrl?: string;
+  logoUrl?: string;
+  isCurrent: boolean;
+}
+
 interface ProfileData {
   username: string;
   displayName: string;
@@ -52,6 +60,7 @@ interface ProfileData {
     secondaryColor: string;
     backgroundColor: string;
   };
+  clubs: Club[];
 }
 
 export default function SettingsPage() {
@@ -62,6 +71,7 @@ export default function SettingsPage() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingHero, setUploadingHero] = useState(false);
   const [uploadingLinks, setUploadingLinks] = useState<Record<string, boolean>>({});
+  const [uploadingClubs, setUploadingClubs] = useState<Record<string, boolean>>({});
 
   // Username check states
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
@@ -122,13 +132,14 @@ export default function SettingsPage() {
     }
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "avatar" | "hero" | "link", linkId?: string) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "avatar" | "hero" | "link" | "club", targetId?: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (type === "avatar") setUploadingAvatar(true);
     else if (type === "hero") setUploadingHero(true);
-    else if (type === "link" && linkId) setUploadingLinks(prev => ({ ...prev, [linkId]: true }));
+    else if (type === "link" && targetId) setUploadingLinks(prev => ({ ...prev, [targetId]: true }));
+    else if (type === "club" && targetId) setUploadingClubs(prev => ({ ...prev, [targetId]: true }));
 
     try {
       let fileToUpload: File | Blob = file;
@@ -149,7 +160,7 @@ export default function SettingsPage() {
       const formData = new FormData();
       formData.append("file", fileToUpload);
       formData.append("type", type);
-      if (linkId) formData.append("linkId", linkId);
+      if (targetId) formData.append("linkId", targetId);
 
       const res = await fetch("/api/upload", {
         method: "POST",
@@ -162,11 +173,17 @@ export default function SettingsPage() {
           if (!prev) return null;
           if (type === "avatar") return { ...prev, avatarUrl: url };
           if (type === "hero") return { ...prev, heroImageUrl: url };
-          if (type === "link" && linkId) {
+          if (type === "link" && targetId) {
              const newLinks = [...prev.links];
-             const index = newLinks.findIndex(l => l.id === linkId);
+             const index = newLinks.findIndex(l => l.id === targetId);
              if (index !== -1) newLinks[index].imageUrl = url;
              return { ...prev, links: newLinks };
+          }
+          if (type === "club" && targetId) {
+             const newClubs = [...(prev.clubs || [])];
+             const index = newClubs.findIndex(c => c.id === targetId);
+             if (index !== -1) newClubs[index].logoUrl = url;
+             return { ...prev, clubs: newClubs };
           }
           return prev;
         });
@@ -180,7 +197,8 @@ export default function SettingsPage() {
     } finally {
       if (type === "avatar") setUploadingAvatar(false);
       else if (type === "hero") setUploadingHero(false);
-      else if (type === "link" && linkId) setUploadingLinks(prev => ({ ...prev, [linkId]: false }));
+      else if (type === "link" && targetId) setUploadingLinks(prev => ({ ...prev, [targetId]: false }));
+      else if (type === "club" && targetId) setUploadingClubs(prev => ({ ...prev, [targetId]: false }));
     }
   };
 
@@ -221,6 +239,40 @@ export default function SettingsPage() {
     setProfile({
       ...profile,
       links: profile.links.filter(l => l.id !== id)
+    });
+  };
+
+  const addClub = () => {
+    if (!profile) return;
+    const newClub: Club = {
+      id: `temp-${Date.now()}`,
+      name: "",
+      socialUrl: "",
+      logoUrl: "",
+      isCurrent: (profile.clubs || []).length === 0,
+    };
+    setProfile({
+      ...profile,
+      clubs: [...(profile.clubs || []), newClub]
+    });
+  };
+
+  const removeClub = (id: string) => {
+    if (!profile) return;
+    setProfile({
+      ...profile,
+      clubs: (profile.clubs || []).filter(c => c.id !== id)
+    });
+  };
+
+  const setClubCurrent = (id: string) => {
+    if (!profile) return;
+    setProfile({
+      ...profile,
+      clubs: (profile.clubs || []).map(c => ({
+        ...c,
+        isCurrent: c.id === id
+      }))
     });
   };
 
@@ -582,19 +634,10 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* Trajetória Esportiva */}
+        {/* Trajetória */}
         <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Trajetória Esportiva</h2>
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Trajetória</h2>
           <div className="grid gap-4">
-            <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Clube ou Escolinha Atual</label>
-              <input
-                type="text"
-                value={profile.currentClub || ""}
-                onChange={(e) => setProfile({ ...profile, currentClub: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-              />
-            </div>
             <div>
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Histórico e Conquistas</label>
               <textarea
@@ -605,6 +648,110 @@ export default function SettingsPage() {
                 placeholder="Fale sobre seus clubes anteriores e principais títulos..."
               />
             </div>
+          </div>
+        </section>
+
+        {/* Clubes & Escolinhas */}
+        <section className="glass-card p-6 rounded-2xl">
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Clubes & Escolinhas</h2>
+          
+          <div className="space-y-6">
+            {(profile.clubs || []).map((club, index) => (
+              <div key={club.id} className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest">
+                    Clube/Escolinha #{index + 1}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeClub(club.id)}
+                    className="text-[10px] uppercase font-stat text-white/20 hover:text-red-500 transition-colors"
+                  >
+                    Remover
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs uppercase font-stat text-white/40 mb-1">Nome do Clube/Escolinha</label>
+                    <input
+                      type="text"
+                      value={club.name}
+                      onChange={(e) => {
+                        const newClubs = [...profile.clubs];
+                        newClubs[index].name = e.target.value;
+                        setProfile({ ...profile, clubs: newClubs });
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary focus:outline-none transition-colors"
+                      placeholder="Ex: Pádua Academy"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase font-stat text-white/40 mb-1">Link Redes Sociais (Instagram, Facebook...)</label>
+                    <input
+                      type="text"
+                      value={club.socialUrl || ""}
+                      onChange={(e) => {
+                        const newClubs = [...profile.clubs];
+                        newClubs[index].socialUrl = e.target.value;
+                        setProfile({ ...profile, clubs: newClubs });
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary focus:outline-none transition-colors"
+                      placeholder="Ex: https://instagram.com/paduaacademy"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden bg-black/40 border border-white/10 flex-shrink-0 flex items-center justify-center p-2">
+                    {club.logoUrl ? (
+                      <Image src={club.logoUrl} alt="Club Logo" width={48} height={48} className="object-contain" />
+                    ) : (
+                      <div className="opacity-20">
+                        <span className="material-symbols-outlined text-2xl">sports_soccer</span>
+                      </div>
+                    )}
+                    {uploadingClubs[club.id] && (
+                      <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                        <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex-grow w-full">
+                    <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Escudo / Logo do Clube</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, "club", club.id)}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-4 md:mt-0 self-center">
+                    <input
+                      type="checkbox"
+                      id={`current-${club.id}`}
+                      checked={club.isCurrent}
+                      onChange={() => setClubCurrent(club.id)}
+                      className="w-4 h-4 rounded border-white/10 text-primary focus:ring-primary bg-white/5 accent-primary animate-none"
+                    />
+                    <label htmlFor={`current-${club.id}`} className="text-xs uppercase font-stat text-white/70 cursor-pointer select-none">
+                      Clube Atual
+                    </label>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addClub}
+              className="w-full border border-dashed border-white/20 hover:border-primary hover:text-primary transition-all p-4 rounded-xl flex items-center justify-center gap-2 text-sm font-stat uppercase tracking-widest text-white/50"
+            >
+              <span className="material-symbols-outlined">add_circle</span>
+              Adicionar Clube/Escolinha
+            </button>
           </div>
         </section>
 

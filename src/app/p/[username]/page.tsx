@@ -35,8 +35,17 @@ export async function generateMetadata({ params }: ProfilePageProps) {
   };
 }
 
+interface Club {
+  id: string;
+  name: string;
+  socialUrl?: string | null;
+  logoUrl?: string | null;
+  isCurrent: boolean;
+}
+
 interface ProfileWithStats {
   displayName: string;
+  clubs: Club[];
   fullName?: string | null;
   nickname?: string | null;
   birthDate?: Date | null;
@@ -92,6 +101,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         orderBy: { order: "asc" },
       },
       theme: true,
+      clubs: true,
     },
   }) as unknown as ProfileWithStats;
 
@@ -137,6 +147,27 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   };
   const currentSeason = getSeasonLabel();
   const isGoalkeeper = profile.position === "Goleiro";
+
+  const currentClub = (profile.clubs || []).find(c => c.isCurrent);
+
+  const extractHandle = (url: string | null | undefined) => {
+    if (!url) return "";
+    let trimmed = url.trim();
+    if (!trimmed) return "";
+    trimmed = trimmed.replace(/\/?(\?.*)?$/, "");
+    try {
+      if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.includes(".com")) {
+        const parsed = new URL(trimmed.startsWith("http") ? trimmed : `https://${trimmed}`);
+        const pathSegments = parsed.pathname.split("/").filter(Boolean);
+        if (pathSegments.length > 0) {
+          return `@${pathSegments[pathSegments.length - 1]}`;
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to parse URL for handle extraction:", e);
+    }
+    return trimmed.startsWith("@") ? trimmed : `@${trimmed}`;
+  };
 
   const getYoutubeEmbedUrl = (url: string | null | undefined) => {
     if (!url) return null;
@@ -311,17 +342,41 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         )}
       </section>
 
-      {/* Trajetória & Histórico */}
-      {(profile.currentClub || profile.history) && (
+      {/* Trajetória */}
+      {(currentClub || profile.history) && (
         <section className="mt-20 px-6">
-          <h2 className="font-display font-black italic text-3xl mb-6 uppercase tracking-tighter">
-            Trajetória <span className="text-primary">Esportiva</span>
+          <h2 className="font-display font-black italic text-3xl mb-6 uppercase tracking-tighter text-white">
+            TRAJETÓRIA
           </h2>
           <div className="glass-card rounded-[2rem] p-8 border-white/10 relative overflow-hidden">
-            {profile.currentClub && (
-              <div className="mb-6">
-                <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest block mb-2">Clube Atual</span>
-                <p className="text-2xl font-display font-black italic text-white uppercase">{profile.currentClub}</p>
+            {currentClub && (
+              <div className="mb-6 flex items-center gap-4">
+                {currentClub.logoUrl && (
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden bg-black/20 border border-white/10 flex-shrink-0 flex items-center justify-center p-2">
+                    <Image
+                      src={currentClub.logoUrl}
+                      alt={currentClub.name}
+                      width={64}
+                      height={64}
+                      className="object-contain"
+                    />
+                  </div>
+                )}
+                <div>
+                  <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest block mb-1">Clube Atual</span>
+                  <p className="text-2xl font-display font-black italic text-white uppercase">{currentClub.name}</p>
+                  {currentClub.socialUrl && (
+                    <a
+                      href={currentClub.socialUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-stat text-white/50 hover:text-primary transition-colors flex items-center gap-1 mt-1"
+                    >
+                      <span className="material-symbols-outlined text-sm">link</span>
+                      {extractHandle(currentClub.socialUrl)}
+                    </a>
+                  )}
+                </div>
               </div>
             )}
             {profile.history && (
