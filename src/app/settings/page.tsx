@@ -1044,13 +1044,23 @@ export default function SettingsPage() {
       <div className="w-full max-w-2xl">
         <header className="mb-8 flex justify-between items-center relative">
           <div className="flex items-center gap-3">
-            <a
-              href={`/p/${profile.username}`}
-              className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-primary transition-all active:scale-95"
-              title="Voltar ao Perfil"
-            >
-              <span className="material-symbols-outlined">arrow_back</span>
-            </a>
+            {activeSection === null ? (
+              <a
+                href={`/p/${profile.username}`}
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-primary transition-all active:scale-95"
+                title="Voltar ao Perfil"
+              >
+                <span className="material-symbols-outlined">arrow_back</span>
+              </a>
+            ) : (
+              <button
+                onClick={() => setActiveSection(null)}
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-primary transition-all active:scale-95 cursor-pointer"
+                title="Voltar ao Menu"
+              >
+                <span className="material-symbols-outlined">arrow_back</span>
+              </button>
+            )}
             <h1 className="text-xl font-display font-black italic text-primary uppercase tracking-widest">
               Configurações
             </h1>
@@ -1058,7 +1068,7 @@ export default function SettingsPage() {
           <div>
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400 font-stat text-xs uppercase tracking-widest transition-all active:scale-95 flex items-center gap-1.5 text-white/60"
+              className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400 font-stat text-xs uppercase tracking-widest transition-all active:scale-95 flex items-center gap-1.5 text-white/60 cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">logout</span>
               Sair
@@ -1116,38 +1126,24 @@ export default function SettingsPage() {
           </div>
         ) : (
           <div className="space-y-6 animate-fadeIn">
-            <div className="flex items-center gap-4 mb-4">
-              <button
-                onClick={() => setActiveSection(null)}
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-primary transition-all active:scale-95"
-              >
-                <span className="material-symbols-outlined">arrow_back</span>
-              </button>
-              <div>
-                <span className="text-[10px] font-stat font-bold uppercase tracking-widest text-white/40">Seção</span>
-                <h2 className="text-lg font-display font-black italic uppercase tracking-wider text-primary">
-                  {getSectionTitle()}
-                </h2>
-              </div>
+            <div className="mb-4">
+              <span className="text-[10px] font-stat font-bold uppercase tracking-widest text-white/40">Seção</span>
+              <h2 className="text-lg font-display font-black italic uppercase tracking-wider text-primary">
+                {getSectionTitle()}
+              </h2>
             </div>
 
             <div className="glass-card p-6 rounded-3xl border border-white/5 space-y-6">
               {renderSectionContent()}
 
-              <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3">
+              <div className="pt-6 border-t border-white/10">
                 <button
                   onClick={handleSave}
                   disabled={saving || usernameAvailable === false}
-                  className="flex-1 bg-primary text-black py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2"
+                  className="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  {saving && <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>}
-                  {saving ? "Salvando..." : "Salvar Alterações"}
-                </button>
-                <button
-                  onClick={() => setActiveSection(null)}
-                  className="px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl font-stat font-bold text-xs uppercase tracking-widest text-white/60 hover:text-white transition-all active:scale-95 text-center"
-                >
-                  Voltar ao Menu
+                  {saving && <span className="w-4 h-4 border-2 border-on-primary-fixed border-t-transparent rounded-full animate-spin"></span>}
+                  {saving ? "SALVANDO..." : "SALVAR"}
                 </button>
               </div>
             </div>
