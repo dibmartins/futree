@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import UserMenu from "@/components/UserMenu";
 import { removeBackground } from "@imgly/background-removal";
 
 interface Club {
@@ -67,25 +68,23 @@ const menuCategories = [
   {
     title: "Conta & Identidade",
     items: [
-      { id: "identity", label: "Identidade", subtitle: "Username, nome, apelido, cidade e estado", icon: "badge" },
-      { id: "contacts", label: "Responsáveis", subtitle: "Contatos de emergência e pais", icon: "contacts" },
-      { id: "media", label: "Mídia & Visual", subtitle: "Camisa, avatar, fotos e destaques", icon: "photo_camera" },
+      { id: "identity", label: "Identidade", subtitle: "Username, data de nascimento, responsável, contatos e cidade", icon: "badge" },
+      { id: "media", label: "Aparência", subtitle: "Avatar, fotos de impacto, destaques e cores do tema", icon: "palette" },
     ]
   },
   {
     title: "Desempenho & Histórico",
     items: [
-      { id: "physical", label: "Perfil Físico & Técnico", subtitle: "Altura, peso, perna, posições e habilidades", icon: "sports_soccer" },
+      { id: "physical", label: "Perfil Físico & Técnico", subtitle: "Camisa, altura, peso, perna, posições e habilidades", icon: "sports_soccer" },
       { id: "history", label: "Trajetória", subtitle: "Resumo da sua história no futebol", icon: "timeline" },
       { id: "clubs", label: "Clubes & Escolinhas", subtitle: "Seus clubes anteriores e atual", icon: "shield" },
       { id: "stats", label: "Estatísticas da Temporada", subtitle: "Número de jogos e gols", icon: "leaderboard" },
     ]
   },
   {
-    title: "Conteúdo & Estilo",
+    title: "Conteúdo",
     items: [
       { id: "storytelling", label: "Sessões & Storytelling", subtitle: "Abas e links adicionais no perfil", icon: "layers" },
-      { id: "theme", label: "Personalização", subtitle: "Cores e visual do perfil", icon: "palette" },
     ]
   }
 ];
@@ -395,19 +394,32 @@ export default function SettingsPage() {
     );
   }
 
+  const { data: session } = useSession();
+
   const getSectionTitle = () => {
     switch (activeSection) {
       case "identity": return "Identidade";
-      case "contacts": return "Responsáveis (Contatos)";
-      case "media": return "Mídia & Visual";
+      case "media": return "Aparência";
       case "physical": return "Perfil Físico & Técnico";
       case "history": return "Trajetória";
       case "clubs": return "Clubes & Escolinhas";
       case "stats": return "Estatísticas da Temporada";
       case "storytelling": return "Sessões & Storytelling";
-      case "theme": return "Personalização";
       default: return "";
     }
+  };
+
+  const isMinor = (birthDateString: string | undefined): boolean => {
+    if (!birthDateString) return false;
+    const birth = new Date(birthDateString);
+    if (isNaN(birth.getTime())) return false;
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age < 18;
   };
 
   const renderSectionContent = () => {
@@ -415,7 +427,59 @@ export default function SettingsPage() {
     switch (activeSection) {
       case "identity":
         return (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fadeIn">
+            {/* Data de Nascimento no Topo */}
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Data de Nascimento</label>
+              <input
+                type="date"
+                value={profile.birthDate ? new Date(profile.birthDate).toISOString().split("T")[0] : ""}
+                onChange={(e) => setProfile({ ...profile, birthDate: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm font-stat font-bold"
+              />
+            </div>
+
+            {/* Card condicional de menor de idade */}
+            {isMinor(profile.birthDate) && (
+              <div className="p-5 bg-yellow-500/5 border border-yellow-500/20 rounded-2xl space-y-4 animate-fadeIn">
+                <div className="flex items-start gap-3 text-yellow-400">
+                  <span className="material-symbols-outlined mt-0.5">info</span>
+                  <div className="text-xs font-stat uppercase tracking-wider font-bold">
+                    Atleta menor de idade detectado. Por favor, informe os contatos do responsável legal abaixo.
+                  </div>
+                </div>
+                <div className="space-y-4 border-t border-white/5 pt-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome do Responsável</label>
+                    <input
+                      type="text"
+                      value={profile.parentName || ""}
+                      onChange={(e) => setProfile({ ...profile, parentName: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
+                      placeholder="Ex: Pai ou Mãe"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="block text-xs uppercase font-stat text-white/50 mb-1">Telefone / WhatsApp do Responsável</label>
+                    <div className="relative flex">
+                      <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-white/10 bg-white/5 text-white/50 text-sm font-stat">
+                        +55
+                      </span>
+                      <input
+                        type="text"
+                        value={profile.parentPhone || ""}
+                        onChange={(e) => setProfile({ ...profile, parentPhone: e.target.value.replace(/\D/g, "") })}
+                        className="flex-grow w-full bg-white/5 border border-white/10 rounded-r-lg p-3 focus:outline-none focus:border-primary text-sm font-stat"
+                        placeholder="(00) 00000-0000"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Demais campos de Identificação */}
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de usuário (Ficará visível na url do seu perfil)</label>
               <div className="relative">
@@ -471,16 +535,6 @@ export default function SettingsPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Data de Nascimento</label>
-              <input
-                type="date"
-                value={profile.birthDate ? new Date(profile.birthDate).toISOString().split("T")[0] : ""}
-                onChange={(e) => setProfile({ ...profile, birthDate: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cidade</label>
               <input
                 type="text"
@@ -506,51 +560,9 @@ export default function SettingsPage() {
           </div>
         );
 
-      case "contacts":
-        return (
-          <div className="space-y-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome do Responsável</label>
-              <input
-                type="text"
-                value={profile.parentName || ""}
-                onChange={(e) => setProfile({ ...profile, parentName: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-                placeholder="Ex: Pai ou Mãe"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Telefone / WhatsApp</label>
-              <div className="relative flex">
-                <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-white/10 bg-white/5 text-white/50 text-sm font-stat">
-                  +55
-                </span>
-                <input
-                  type="text"
-                  value={profile.parentPhone || ""}
-                  onChange={(e) => setProfile({ ...profile, parentPhone: e.target.value.replace(/\D/g, "") })}
-                  className="flex-grow w-full bg-white/5 border border-white/10 rounded-r-lg p-3 focus:outline-none focus:border-primary text-sm"
-                  placeholder="(00) 00000-0000"
-                />
-              </div>
-            </div>
-          </div>
-        );
-
       case "media":
         return (
-          <div className="space-y-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Número da Camisa</label>
-              <input
-                type="text"
-                value={profile.jerseyNumber || ""}
-                onChange={(e) => setProfile({ ...profile, jerseyNumber: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-              />
-            </div>
-
+          <div className="space-y-6">
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Retrato)</label>
               <div className="mt-1">
@@ -631,12 +643,99 @@ export default function SettingsPage() {
                 </label>
               </div>
             </div>
+
+            {/* Cores integradas na Aparência */}
+            <div className="flex flex-col gap-4 border-t border-white/5 pt-4">
+              <span className="text-[10px] font-stat font-bold uppercase tracking-widest text-primary">Paleta de Cores do Perfil</span>
+              
+              <div className="flex flex-col gap-1.5">
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor Primária (Identidade)</label>
+                <div className="flex gap-4 items-center">
+                  <input
+                    type="color"
+                    value={profile.theme?.primaryColor || "#DCFF1E"}
+                    onChange={(e) => setProfile({
+                      ...profile,
+                      theme: { ...(profile.theme || {}), primaryColor: e.target.value }
+                    } as unknown as ProfileData)}
+                    className="w-12 h-12 rounded-lg bg-transparent border-none cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    value={profile.theme?.primaryColor || "#DCFF1E"}
+                    onChange={(e) => setProfile({
+                      ...profile,
+                      theme: { ...(profile.theme || {}), primaryColor: e.target.value }
+                    } as unknown as ProfileData)}
+                    className="flex-1 bg-white/5 border border-white/10 rounded-lg p-3 text-sm font-stat uppercase"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor dos Botões (Texto)</label>
+                <div className="flex gap-4 items-center">
+                  <input
+                    type="color"
+                    value={profile.theme?.secondaryColor || "#000000"}
+                    onChange={(e) => setProfile({
+                      ...profile,
+                      theme: { ...(profile.theme || {}), secondaryColor: e.target.value }
+                    } as unknown as ProfileData)}
+                    className="w-12 h-12 rounded-lg bg-transparent border-none cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    value={profile.theme?.secondaryColor || "#000000"}
+                    onChange={(e) => setProfile({
+                      ...profile,
+                      theme: { ...(profile.theme || {}), secondaryColor: e.target.value }
+                    } as unknown as ProfileData)}
+                    className="flex-1 bg-white/5 border border-white/10 rounded-lg p-3 text-sm font-stat uppercase"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         );
 
       case "physical":
         return (
           <div className="space-y-4">
+            {/* Número da Camisa com botões de +/- */}
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Número da Camisa</label>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const val = Math.max(0, (parseInt(profile.jerseyNumber || "0") || 0) - 1);
+                    setProfile({ ...profile, jerseyNumber: String(val) });
+                  }}
+                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  min="0"
+                  value={profile.jerseyNumber || ""}
+                  onChange={(e) => setProfile({ ...profile, jerseyNumber: e.target.value })}
+                  className="flex-grow bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const val = (parseInt(profile.jerseyNumber || "0") || 0) + 1;
+                    setProfile({ ...profile, jerseyNumber: String(val) });
+                  }}
+                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Altura (m)</label>
               <input
@@ -726,7 +825,7 @@ export default function SettingsPage() {
                           const newChars = profile.characteristics?.filter((_, idx) => idx !== i);
                           setProfile({ ...profile, characteristics: newChars });
                         }}
-                        className="hover:text-red-600 transition-colors"
+                        className="hover:text-red-600 transition-colors cursor-pointer flex items-center justify-center"
                       >
                         <span className="material-symbols-outlined text-[14px]">close</span>
                       </button>
@@ -784,7 +883,7 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={() => removeClub(club.id)}
-                    className="text-[10px] uppercase font-stat text-white/20 hover:text-red-500 transition-colors"
+                    className="text-[10px] uppercase font-stat text-white/20 hover:text-red-500 transition-colors cursor-pointer"
                   >
                     Remover
                   </button>
@@ -863,7 +962,7 @@ export default function SettingsPage() {
                       id={`current-${club.id}`}
                       checked={club.isCurrent}
                       onChange={() => setClubCurrent(club.id)}
-                      className="w-4 h-4 rounded border-white/10 text-primary focus:ring-primary bg-white/5 accent-primary animate-none"
+                      className="w-4 h-4 rounded border-white/10 text-primary focus:ring-primary bg-white/5 accent-primary animate-none cursor-pointer"
                     />
                     <label htmlFor={`current-${club.id}`} className="text-xs uppercase font-stat text-white/70 cursor-pointer select-none">
                       Clube Atual
@@ -876,7 +975,7 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={addClub}
-              className="w-full border border-dashed border-white/20 hover:border-primary hover:text-primary transition-all p-4 rounded-xl flex items-center justify-center gap-2 text-sm font-stat uppercase tracking-widest text-white/50"
+              className="w-full border border-dashed border-white/20 hover:border-primary hover:text-primary transition-all p-4 rounded-xl flex items-center justify-center gap-2 text-sm font-stat uppercase tracking-widest text-white/50 cursor-pointer"
             >
               <span className="material-symbols-outlined">add_circle</span>
               Adicionar Clube/Escolinha
@@ -887,34 +986,92 @@ export default function SettingsPage() {
       case "stats":
         return (
           <div className="space-y-4">
+            {/* Jogos com +/- */}
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Jogos</label>
-              <input
-                type="number"
-                min="0"
-                value={profile.stats?.matches || 0}
-                onChange={(e) => setProfile({
-                  ...profile,
-                  stats: { ...(profile.stats || {}), matches: parseInt(e.target.value) || 0 }
-                })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
-              />
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const val = Math.max(0, (profile.stats?.matches || 0) - 1);
+                    setProfile({
+                      ...profile,
+                      stats: { ...(profile.stats || {}), matches: val }
+                    });
+                  }}
+                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  min="0"
+                  value={profile.stats?.matches || 0}
+                  onChange={(e) => setProfile({
+                    ...profile,
+                    stats: { ...(profile.stats || {}), matches: parseInt(e.target.value) || 0 }
+                  })}
+                  className="flex-grow bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const val = (profile.stats?.matches || 0) + 1;
+                    setProfile({
+                      ...profile,
+                      stats: { ...(profile.stats || {}), matches: val }
+                    });
+                  }}
+                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                >
+                  +
+                </button>
+              </div>
             </div>
 
+            {/* Gols com +/- */}
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">
                 {profile.position === "Goleiro" ? "Gols Sofridos" : "Gols"}
               </label>
-              <input
-                type="number"
-                min="0"
-                value={profile.stats?.goals || 0}
-                onChange={(e) => setProfile({
-                  ...profile,
-                  stats: { ...(profile.stats || {}), goals: parseInt(e.target.value) || 0 }
-                })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
-              />
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const val = Math.max(0, (profile.stats?.goals || 0) - 1);
+                    setProfile({
+                      ...profile,
+                      stats: { ...(profile.stats || {}), goals: val }
+                    });
+                  }}
+                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  min="0"
+                  value={profile.stats?.goals || 0}
+                  onChange={(e) => setProfile({
+                    ...profile,
+                    stats: { ...(profile.stats || {}), goals: parseInt(e.target.value) || 0 }
+                  })}
+                  className="flex-grow bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const val = (profile.stats?.goals || 0) + 1;
+                    setProfile({
+                      ...profile,
+                      stats: { ...(profile.stats || {}), goals: val }
+                    });
+                  }}
+                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -928,7 +1085,7 @@ export default function SettingsPage() {
                   <span className="text-[10px] font-stat text-primary font-bold uppercase tracking-widest">Sessão #{index + 1}</span>
                   <button
                     onClick={() => removeLink(link.id)}
-                    className="text-[10px] uppercase font-stat text-white/20 hover:text-red-500 transition-colors"
+                    className="text-[10px] uppercase font-stat text-white/20 hover:text-red-500 transition-colors cursor-pointer"
                   >
                     Remover Sessão
                   </button>
@@ -1024,59 +1181,6 @@ export default function SettingsPage() {
           </div>
         );
 
-      case "theme":
-        return (
-          <div className="space-y-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor Primária (Identidade)</label>
-              <div className="flex gap-4 items-center">
-                <input
-                  type="color"
-                  value={profile.theme?.primaryColor || "#DCFF1E"}
-                  onChange={(e) => setProfile({
-                    ...profile,
-                    theme: { ...(profile.theme || {}), primaryColor: e.target.value }
-                  } as unknown as ProfileData)}
-                  className="w-12 h-12 rounded-lg bg-transparent border-none cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={profile.theme?.primaryColor || "#DCFF1E"}
-                  onChange={(e) => setProfile({
-                    ...profile,
-                    theme: { ...(profile.theme || {}), primaryColor: e.target.value }
-                  } as unknown as ProfileData)}
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg p-3 text-sm font-stat uppercase"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor dos Botões (Texto)</label>
-              <div className="flex gap-4 items-center">
-                <input
-                  type="color"
-                  value={profile.theme?.secondaryColor || "#000000"}
-                  onChange={(e) => setProfile({
-                    ...profile,
-                    theme: { ...(profile.theme || {}), secondaryColor: e.target.value }
-                  } as unknown as ProfileData)}
-                  className="w-12 h-12 rounded-lg bg-transparent border-none cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={profile.theme?.secondaryColor || "#000000"}
-                  onChange={(e) => setProfile({
-                    ...profile,
-                    theme: { ...(profile.theme || {}), secondaryColor: e.target.value }
-                  } as unknown as ProfileData)}
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg p-3 text-sm font-stat uppercase"
-                />
-              </div>
-            </div>
-          </div>
-        );
-
       default:
         return null;
     }
@@ -1085,7 +1189,7 @@ export default function SettingsPage() {
   if (!profile) return null;
 
   return (
-    <div className="min-h-screen bg-[#121414] text-white p-6 pb-32 flex justify-center">
+    <div className="min-h-screen bg-[#121414] text-white pt-24 p-6 pb-32 flex justify-center">
       {toast && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-fadeIn pointer-events-none">
           <div className={`flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md border ${
@@ -1104,7 +1208,7 @@ export default function SettingsPage() {
       )}
 
       <div className="w-full max-w-2xl">
-        <header className="mb-8 flex justify-between items-center relative">
+        <header className="fixed top-0 left-0 w-full z-50 bg-black/60 backdrop-blur-md flex justify-between items-center px-6 py-4 border-b border-white/10 shadow-2xl shadow-primary/10">
           <div className="flex items-center gap-3">
             {activeSection === null ? (
               <a
@@ -1123,19 +1227,15 @@ export default function SettingsPage() {
                 <span className="material-symbols-outlined">arrow_back</span>
               </button>
             )}
-            <h1 className="text-xl font-display font-black italic text-primary uppercase tracking-widest">
-              Configurações
-            </h1>
+            <div className="text-xl font-display font-black italic text-primary tracking-widest uppercase leading-none">
+              {profile.displayName}
+            </div>
           </div>
-          <div>
-            <button
-              onClick={() => signOut({ callbackUrl: "/login" })}
-              className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400 font-stat text-xs uppercase tracking-widest transition-all active:scale-95 flex items-center gap-1.5 text-white/60 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-sm">logout</span>
-              Sair
-            </button>
-          </div>
+          <UserMenu
+            isLoggedIn={!!session}
+            userImage={session?.user?.image || profile.avatarUrl}
+            userName={session?.user?.name || profile.displayName}
+          />
         </header>
 
         {activeSection === null ? (
@@ -1150,14 +1250,14 @@ export default function SettingsPage() {
                     <button
                       key={item.id}
                       onClick={() => setActiveSection(item.id)}
-                      className="w-full text-left bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between hover:bg-white/10 hover:border-primary/20 active:scale-[0.99] transition-all group"
+                      className="w-full text-left bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between hover:bg-white/10 hover:border-primary/20 active:scale-[0.99] transition-all group cursor-pointer"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/50 group-hover:text-primary group-hover:bg-primary/5 transition-all">
+                        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/50 group-hover:text-primary-fixed group-hover:bg-primary-fixed/5 transition-all">
                           <span className="material-symbols-outlined text-xl">{item.icon}</span>
                         </div>
                         <div>
-                          <h4 className="font-display font-bold text-sm text-white group-hover:text-primary transition-colors">
+                          <h4 className="font-display font-bold text-sm text-white group-hover:text-primary-fixed transition-colors">
                             {item.label}
                           </h4>
                           <p className="text-xs text-white/40 mt-0.5 font-stat">
@@ -1165,7 +1265,7 @@ export default function SettingsPage() {
                           </p>
                         </div>
                       </div>
-                      <span className="material-symbols-outlined text-white/20 group-hover:text-primary group-hover:translate-x-1 transition-all">
+                      <span className="material-symbols-outlined text-white/20 group-hover:text-primary-fixed group-hover:translate-x-1 transition-all">
                         chevron_right
                       </span>
                     </button>
