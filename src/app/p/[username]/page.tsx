@@ -215,9 +215,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         secondaryRgb={secondaryRgb}
       />
 
-      <header className="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-md flex justify-between items-center px-6 py-4 border-b border-white/10 shadow-2xl shadow-primary/10">
-        <div className="text-xl font-display font-black italic text-primary tracking-widest uppercase">
-          {profile.displayName}
+      <header className="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-md flex justify-between items-center px-6 py-3 border-b border-white/10 shadow-2xl shadow-primary/10">
+        <div className="flex flex-col">
+          <div className="text-xl font-display font-black italic text-primary tracking-widest uppercase leading-tight">
+            {profile.displayName}
+          </div>
+          {location && (
+            <div className="flex items-center gap-1 mt-0.5 text-white/50 font-stat text-[10px] uppercase tracking-wider">
+              <span className="material-symbols-outlined text-[12px] text-primary">location_on</span>
+              <span>{location}</span>
+            </div>
+          )}
         </div>
         <UserMenu
           isLoggedIn={!!session}
@@ -260,40 +268,32 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             )}
           </div>
         </div>
-        <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 pb-24 md:p-12">
-          <div className="max-w-md w-full glass-panel rounded-[2rem] p-6 md:p-8 border border-primary/10 backdrop-blur-md bg-black/50 shadow-2xl relative">
-            <div className="space-y-0">
-              <span className="inline-block px-3 py-1 bg-primary text-black font-display font-black italic text-xs mb-3 angled-accent uppercase">
-                {showCategory ? `${category} • ` : ""}{profile.nickname || "PROMESSA"}
-              </span>
-              <h1 className="font-display font-black italic text-4xl sm:text-5xl text-white leading-none tracking-tighter uppercase mb-3">
-                {profile.displayName.split(" ")[0]} <br />{" "}
-                <span className="text-primary">{profile.displayName.split(" ").slice(1).join(" ")}</span>
-              </h1>
-              <div className="flex items-center gap-4 mt-2">
-                {profile.jerseyNumber && (
-                  <span className="font-display font-extrabold italic text-4xl text-white/45">
-                    {profile.jerseyNumber}
+        <div className="absolute inset-0 z-20 flex flex-col justify-end p-8 pb-20 md:pb-24 bg-gradient-to-t from-black via-black/45 to-transparent">
+          <div className="space-y-0">
+            <span className="inline-block px-3 py-1 bg-primary text-black font-display font-black italic text-xs mb-2 angled-accent uppercase">
+              {showCategory ? `${category} • ` : ""}{profile.nickname || "PROMESSA"}
+            </span>
+            <h1 className="font-display font-black italic text-5xl sm:text-6xl md:text-7xl text-white leading-none tracking-tighter uppercase">
+              {profile.displayName.split(" ")[0]} <br />{" "}
+              <span className="text-primary">{profile.displayName.split(" ").slice(1).join(" ")}</span>
+            </h1>
+            <div className="flex items-center gap-4 mt-2">
+              {profile.jerseyNumber && (
+                <span className="font-display font-extrabold italic text-4xl text-white/40">
+                  {profile.jerseyNumber}
+                </span>
+              )}
+              <span className="h-6 w-[2px] bg-primary/30"></span>
+              <div className="flex flex-col">
+                <span className="font-stat font-bold text-white text-xl tracking-widest uppercase leading-none">
+                  {profile.position}
+                </span>
+                {profile.secondaryPosition && (
+                  <span className="text-[10px] text-white/40 font-stat uppercase tracking-widest mt-1">
+                    Alt: {profile.secondaryPosition}
                   </span>
                 )}
-                <span className="h-6 w-[2px] bg-primary/30"></span>
-                <div className="flex flex-col">
-                  <span className="font-stat font-bold text-white text-lg tracking-widest uppercase leading-none">
-                    {profile.position}
-                  </span>
-                  {profile.secondaryPosition && (
-                    <span className="text-[10px] text-white/45 font-stat uppercase tracking-widest mt-1">
-                      Alt: {profile.secondaryPosition}
-                    </span>
-                  )}
-                </div>
               </div>
-              {location && (
-                <div className="flex items-center gap-2 mt-4 text-white/60 font-stat text-xs uppercase tracking-widest">
-                  <span className="material-symbols-outlined text-sm text-primary">location_on</span>
-                  {location}
-                </div>
-              )}
             </div>
           </div>
         </div>
