@@ -338,28 +338,28 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         )}
 
         {profile.stats && (
-          <div className="glass-card rounded-[2rem] p-8 overflow-hidden relative border-white/10 bg-gradient-to-br from-white/[0.02] to-primary/[0.01]">
-            <div className="absolute -right-10 -bottom-10 font-display font-black italic text-[200px] text-white/[0.03] leading-none select-none">
+          <div className="glass-card rounded-[2rem] py-5 px-6 overflow-hidden relative border-white/10 bg-gradient-to-br from-white/[0.02] to-primary/[0.01]">
+            <div className="absolute -right-10 -bottom-10 font-display font-black italic text-[200px] text-white/[0.02] leading-none select-none pointer-events-none">
               {profile.jerseyNumber}
             </div>
-            <h2 className="font-display font-black italic text-2xl mb-8 flex items-center gap-2 uppercase">
-              <span className="w-2 h-8 bg-primary"></span>
+            <h2 className="font-display font-black italic text-lg mb-5 flex items-center gap-2 uppercase tracking-wide">
+              <span className="w-1.5 h-6 bg-primary"></span>
               TEMPORADA {currentSeason}
             </h2>
-            <div className="grid grid-cols-2 gap-8 mb-4">
-              <div className="flex flex-col">
-                <span className="font-stat text-[56px] font-bold text-white leading-none">
+            <div className="grid grid-cols-2 gap-4 relative z-10">
+              <div className="flex flex-col items-center border-r border-white/5 py-1">
+                <span className="font-display font-black italic text-6xl sm:text-7xl text-white leading-none tracking-tighter">
                   {profile.stats.matches || 0}
                 </span>
-                <span className="font-stat text-xs font-semibold text-white/50 tracking-[0.2em] uppercase mt-2">
+                <span className="font-stat text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase mt-2">
                   Jogos
                 </span>
               </div>
-              <div className="flex flex-col">
-                <span className="font-stat text-[56px] font-bold text-primary leading-none">
+              <div className="flex flex-col items-center py-1">
+                <span className="font-display font-black italic text-6xl sm:text-7xl text-primary leading-none tracking-tighter">
                   {profile.stats.goals || 0}
                 </span>
-                <span className="font-stat text-xs font-semibold text-white/50 tracking-[0.2em] uppercase mt-2">
+                <span className="font-stat text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase mt-2">
                   {isGoalkeeper ? "Gols Sofridos" : "Gols"}
                 </span>
               </div>
@@ -370,7 +370,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
       {/* Trajetória */}
       {(currentClub || profile.history) && (
-        <section className="mt-20 px-6 relative">
+        <section className="mt-12 px-6 relative">
           <div 
             className="absolute -right-20 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full blur-[100px] opacity-[0.03] pointer-events-none -z-10"
             style={{ backgroundColor: secondaryColor }}
