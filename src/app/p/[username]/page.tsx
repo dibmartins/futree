@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import UserMenu from "@/components/UserMenu";
 import SilhouetteBorderBeam from "@/components/SilhouetteBorderBeam";
+import DynamicBackgroundEffects from "@/components/DynamicBackgroundEffects";
 
 export const revalidate = 0; // Desabilita o cache para esta página
 
@@ -193,7 +194,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   return (
     <main
-      className="pb-32 font-body overflow-x-hidden bg-[#121414] text-[#e2e2e2]"
+      className="pb-32 font-body overflow-x-hidden bg-[#121414] text-[#e2e2e2] relative"
       style={{
         "--primary": primaryColor,
         "--primary-rgb": primaryRgb,
@@ -206,6 +207,14 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         color: "#e2e2e2"
       } as React.CSSProperties}
     >
+      {/* Dynamic theme glow patterns and floating ambient elements */}
+      <DynamicBackgroundEffects
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+        primaryRgb={primaryRgb}
+        secondaryRgb={secondaryRgb}
+      />
+
       <header className="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-md flex justify-between items-center px-6 py-4 border-b border-white/10 shadow-2xl shadow-primary/10">
         <div className="text-xl font-display font-black italic text-primary tracking-widest uppercase">
           {profile.displayName}
@@ -219,13 +228,19 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
       <section className="relative h-[85dvh] min-h-[640px] md:h-[795px] overflow-hidden hero-clip bg-[#080808]">
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-primary/5 rounded-full blur-[100px]"></div>
+          <div 
+            className="absolute top-1/4 -left-20 w-96 h-96 rounded-full blur-[100px] opacity-25"
+            style={{ backgroundColor: primaryColor }}
+          />
+          <div 
+            className="absolute bottom-1/4 -right-20 w-96 h-96 rounded-full blur-[100px] opacity-15"
+            style={{ backgroundColor: secondaryColor }}
+          />
           <div
-            className="absolute inset-0 opacity-10"
+            className="absolute inset-0 opacity-20"
             style={{
-              backgroundImage: `radial-gradient(${primaryColor} 0.5px, transparent 0.5px)`,
-              backgroundSize: "20px 20px",
+              backgroundImage: `radial-gradient(${primaryColor} 0.8px, transparent 0.8px)`,
+              backgroundSize: "24px 24px",
             }}
           ></div>
         </div>
@@ -284,6 +299,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
       {/* Perfil Físico & Técnico */}
       <section className="px-6 mt-8 relative z-30">
+        {/* Soft elegant backglow */}
+        <div 
+          className="absolute -left-20 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full blur-[100px] opacity-[0.05] pointer-events-none -z-10"
+          style={{ backgroundColor: primaryColor }}
+        />
+        
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="glass-card rounded-2xl p-4 border-white/5 flex flex-col items-center justify-center text-center">
             <span className="text-[10px] text-white/40 font-stat uppercase mb-1">Altura</span>
@@ -312,7 +333,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         )}
 
         {profile.stats && (
-          <div className="glass-card rounded-[2rem] p-8 overflow-hidden relative border-white/10">
+          <div className="glass-card rounded-[2rem] p-8 overflow-hidden relative border-white/10 bg-gradient-to-br from-white/[0.02] to-primary/[0.01]">
             <div className="absolute -right-10 -bottom-10 font-display font-black italic text-[200px] text-white/[0.03] leading-none select-none">
               {profile.jerseyNumber}
             </div>
@@ -344,11 +365,16 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
       {/* Trajetória */}
       {(currentClub || profile.history) && (
-        <section className="mt-20 px-6">
-          <h2 className="font-display font-black italic text-3xl mb-6 uppercase tracking-tighter text-white">
-            TRAJETÓRIA
+        <section className="mt-20 px-6 relative">
+          <div 
+            className="absolute -right-20 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full blur-[100px] opacity-[0.03] pointer-events-none -z-10"
+            style={{ backgroundColor: secondaryColor }}
+          />
+          <h2 className="font-display font-black italic text-3xl mb-6 uppercase tracking-tighter text-white flex items-center gap-3">
+            <span>TRAJETÓRIA</span>
+            <div className="flex-grow h-px bg-gradient-to-r from-primary/30 to-transparent" />
           </h2>
-          <div className="glass-card rounded-[2rem] p-8 border-white/10 relative overflow-hidden">
+          <div className="glass-card rounded-[2rem] p-8 border-white/10 relative overflow-hidden bg-gradient-to-br from-white/[0.02] to-secondary/[0.01]">
             {currentClub && (
               <div className="mb-6 flex items-center gap-4">
                 {currentClub.logoUrl && (
@@ -392,11 +418,23 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       )}
 
       {embedUrl && (
-        <section className="mt-20 px-6">
-          <h2 className="font-display font-black italic text-3xl mb-6 uppercase tracking-tighter">
-            Skills & <span className="text-primary">Goals</span>
+        <section className="mt-20 px-6 relative">
+          <div 
+            className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-secondary/5 blur-3xl opacity-30 rounded-3xl -z-10"
+            style={{
+              filter: "blur(50px)"
+            }}
+          />
+          <h2 className="font-display font-black italic text-3xl mb-6 uppercase tracking-tighter flex items-center gap-3">
+            <span>Skills & <span className="text-primary">Goals</span></span>
+            <div className="flex-grow h-px bg-gradient-to-r from-primary/30 to-transparent" />
           </h2>
-          <div className="relative aspect-video rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl shadow-primary/20">
+          <div 
+            className="relative aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
+            style={{
+              boxShadow: `0 20px 50px rgba(${primaryRgb}, 0.15)`
+            }}
+          >
             <iframe
               src={embedUrl}
               className="absolute inset-0 w-full h-full"
