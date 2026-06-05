@@ -136,6 +136,13 @@ export async function PATCH(request: Request) {
       },
     });
 
+    if (avatarUrl !== undefined) {
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { image: avatarUrl },
+      });
+    }
+
     return NextResponse.json(profile);
   } catch (error) {
     console.error("ERRO CRITICO AO ATUALIZAR PERFIL:", error);
