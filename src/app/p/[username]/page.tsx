@@ -62,6 +62,7 @@ interface ProfileWithStats {
   stats?: {
     goals: number;
     assists: number;
+    matches: number;
     pace: number;
     shooting: number;
     passing: number;
@@ -125,6 +126,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const age = birthYear ? currentYear - birthYear : null;
   const showCategory = age === null || age <= 23;
   const location = profile.city && profile.state ? `${profile.city}, ${profile.state}` : profile.city || profile.state || "";
+
+  const getSeasonLabel = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const startYear = month < 6 ? year - 1 : year;
+    const endYear = startYear + 1;
+    return `${String(startYear).slice(-2)}/${String(endYear).slice(-2)}`;
+  };
+  const currentSeason = getSeasonLabel();
+  const isGoalkeeper = profile.position === "Goleiro";
 
   const getYoutubeEmbedUrl = (url: string | null | undefined) => {
     if (!url) return null;
@@ -275,59 +287,25 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             </div>
             <h2 className="font-display font-black italic text-2xl mb-8 flex items-center gap-2 uppercase">
               <span className="w-2 h-8 bg-primary"></span>
-              RESUMO DA TEMPORADA <span className="text-white/40 text-sm">24/25</span>
+              TEMPORADA {currentSeason}
             </h2>
-            <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-2 gap-8 mb-4">
               <div className="flex flex-col">
-                <span className="font-stat text-[40px] font-bold text-primary leading-none">
-                  {profile.stats.goals}
+                <span className="font-stat text-[56px] font-bold text-white leading-none">
+                  {profile.stats.matches || 0}
                 </span>
-                <span className="font-stat text-[10px] font-semibold text-white/50 tracking-[0.2em] uppercase text-nowrap">
-                  Gols Marcados
+                <span className="font-stat text-xs font-semibold text-white/50 tracking-[0.2em] uppercase mt-2">
+                  Jogos
                 </span>
-                <div className="h-1 w-full bg-white/10 mt-2 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-primary to-white"
-                    style={{ width: `${Math.min((profile.stats.goals / 30) * 100, 100)}%` }}
-                  ></div>
-                </div>
               </div>
               <div className="flex flex-col">
-                <span className="font-stat text-[40px] font-bold text-white leading-none">
-                  {profile.stats.assists}
+                <span className="font-stat text-[56px] font-bold text-primary leading-none">
+                  {profile.stats.goals || 0}
                 </span>
-                <span className="font-stat text-[10px] font-semibold text-white/50 tracking-[0.2em] uppercase text-nowrap">
-                  Assistências Chave
+                <span className="font-stat text-xs font-semibold text-white/50 tracking-[0.2em] uppercase mt-2">
+                  {isGoalkeeper ? "Gols Sofridos" : "Gols Marcados"}
                 </span>
-                <div className="h-1 w-full bg-white/10 mt-2 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-white/40"
-                    style={{ width: `${Math.min((profile.stats.assists / 20) * 100, 100)}%` }}
-                  ></div>
-                </div>
               </div>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { label: "Ritmo", value: profile.stats.pace },
-                { label: "Finalização", value: profile.stats.shooting },
-                { label: "Passe", value: profile.stats.passing },
-                { label: "Drible", value: profile.stats.dribbling },
-                { label: "Defesa", value: profile.stats.defending },
-                { label: "Físico", value: profile.stats.physical },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="bg-white/5 rounded-xl p-3 text-center border border-white/5"
-                >
-                  <span className="block font-stat text-xl font-bold text-white">
-                    {stat.value}
-                  </span>
-                  <span className="block text-[8px] font-bold text-white/40 uppercase tracking-wider">
-                    {stat.label}
-                  </span>
-                </div>
-              ))}
             </div>
           </div>
         )}

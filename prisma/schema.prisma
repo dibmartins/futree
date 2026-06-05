@@ -95,6 +95,7 @@ model Stats {
   // Season metrics
   goals     Int     @default(0)
   assists   Int     @default(0)
+  matches   Int     @default(0)
   
   // Performance attributes (0-99)
   pace      Int     @default(0)

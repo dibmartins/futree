@@ -31,6 +31,7 @@ interface ProfileData {
   stats: {
     goals: number;
     assists: number;
+    matches: number;
     pace: number;
     shooting: number;
     passing: number;
@@ -681,33 +682,38 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* Estatísticas */}
+        {/* Estatísticas da Temporada */}
         <section className="glass-card p-6 rounded-2xl">
-          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Atributos de Performance</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {[
-              { id: "pace", label: "Ritmo" },
-              { id: "shooting", label: "Finalização" },
-              { id: "passing", label: "Passe" },
-              { id: "dribbling", label: "Drible" },
-              { id: "defending", label: "Defesa" },
-              { id: "physical", label: "Físico" }
-            ].map((stat) => (
-              <div key={stat.id}>
-                <label className="block text-[10px] uppercase font-stat text-white/50 mb-1">{stat.label}</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={profile.stats?.[stat.id as keyof typeof profile.stats] || 0}
-                  onChange={(e) => setProfile({
-                    ...profile,
-                    stats: { ...(profile.stats || {}), [stat.id]: parseInt(e.target.value) || 0 }
-                  } as unknown as ProfileData)}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors"
-                />
-              </div>
-            ))}
+          <h2 className="text-lg font-display font-bold mb-4 uppercase text-primary">Estatísticas da Temporada</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Jogos</label>
+              <input
+                type="number"
+                min="0"
+                value={profile.stats?.matches || 0}
+                onChange={(e) => setProfile({
+                  ...profile,
+                  stats: { ...(profile.stats || {}), matches: parseInt(e.target.value) || 0 }
+                })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">
+                {profile.position === "Goleiro" ? "Gols Sofridos" : "Gols Marcados"}
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={profile.stats?.goals || 0}
+                onChange={(e) => setProfile({
+                  ...profile,
+                  stats: { ...(profile.stats || {}), goals: parseInt(e.target.value) || 0 }
+                })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
+              />
+            </div>
           </div>
         </section>
 

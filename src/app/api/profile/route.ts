@@ -90,6 +90,7 @@ export async function PATCH(request: Request) {
             create: {
               goals: Number(stats.goals) || 0,
               assists: Number(stats.assists) || 0,
+              matches: Number(stats.matches) || 0,
               pace: Number(stats.pace) || 0,
               shooting: Number(stats.shooting) || 0,
               passing: Number(stats.passing) || 0,
@@ -100,6 +101,7 @@ export async function PATCH(request: Request) {
             update: {
               goals: Number(stats.goals) || 0,
               assists: Number(stats.assists) || 0,
+              matches: Number(stats.matches) || 0,
               pace: Number(stats.pace) || 0,
               shooting: Number(stats.shooting) || 0,
               passing: Number(stats.passing) || 0,
