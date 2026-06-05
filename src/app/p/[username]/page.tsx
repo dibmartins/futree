@@ -269,17 +269,19 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           </div>
         </div>
         <div className="absolute inset-0 z-20 flex flex-col justify-end p-8 pb-20 md:pb-24 bg-gradient-to-t from-black via-black/45 to-transparent">
-          <div className="space-y-0">
-            <span className="inline-block px-3 py-1 bg-primary text-black font-display font-black italic text-xs mb-2 angled-accent uppercase">
-              {showCategory ? `${category} • ` : ""}{profile.nickname || "PROMESSA"}
-            </span>
-            <h1 className="font-display font-black italic text-5xl sm:text-6xl md:text-7xl text-white leading-none tracking-tighter uppercase">
-              {profile.displayName.split(" ")[0]} <br />{" "}
-              <span className="text-primary">{profile.displayName.split(" ").slice(1).join(" ")}</span>
-            </h1>
-            <div className="flex items-center gap-4 mt-2">
+          <div className="flex flex-col gap-4 items-start">
+            {/* SUB Category with modern badge design */}
+            {showCategory && (
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md text-primary font-display font-black italic text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]">
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
+                <span>{category}</span>
+              </div>
+            )}
+
+            {/* Jersey Number & Position */}
+            <div className="flex items-center gap-4">
               {profile.jerseyNumber && (
-                <span className="font-display font-extrabold italic text-4xl text-white/40">
+                <span className="font-display font-extrabold italic text-4xl text-white/45 select-none">
                   {profile.jerseyNumber}
                 </span>
               )}
