@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 interface UserMenuProps {
   isLoggedIn?: boolean;
@@ -14,6 +15,7 @@ interface UserMenuProps {
 export default function UserMenu({ isLoggedIn, userImage, userName }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -60,14 +62,16 @@ export default function UserMenu({ isLoggedIn, userImage, userName }: UserMenuPr
                 </div>
               </div>
 
-              <Link
-                href="/settings"
-                className="flex items-center gap-3 px-4 py-3 text-sm text-white/70 hover:text-primary hover:bg-white/5 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="material-symbols-outlined text-lg">settings</span>
-                Configurações
-              </Link>
+              {pathname !== "/settings" && (
+                <Link
+                  href="/settings"
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-white/70 hover:text-primary hover:bg-white/5 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span className="material-symbols-outlined text-lg">settings</span>
+                  Configurações
+                </Link>
+              )}
 
               <button
                 onClick={() => signOut()}
