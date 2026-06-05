@@ -91,6 +91,7 @@ const menuCategories = [
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -393,8 +394,6 @@ export default function SettingsPage() {
       </div>
     );
   }
-
-  const { data: session } = useSession();
 
   const getSectionTitle = () => {
     switch (activeSection) {
