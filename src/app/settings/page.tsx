@@ -553,25 +553,37 @@ export default function SettingsPage() {
 
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Retrato)</label>
-              <div className="flex flex-col gap-3 items-start mt-1">
-                {profile.avatarUrl && (
-                  <div className="relative w-16 h-16 rounded-full overflow-hidden border border-primary flex-shrink-0">
-                    <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
-                  </div>
-                )}
-                <div className="w-full relative">
+              <div className="mt-1">
+                <label className="cursor-pointer group block relative w-32 h-32">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleFileUpload(e, "avatar")}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                    className="hidden"
                   />
-                  {uploadingAvatar && (
-                    <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
-                      PROCESSANDO...
+                  {profile.avatarUrl ? (
+                    <div className="relative w-full h-full rounded-full overflow-hidden border border-white/10 hover:border-primary-fixed/50 transition-all">
+                      <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                        <span className="material-symbols-outlined text-white text-2xl">edit</span>
+                      </div>
+                      <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+                        <span className="material-symbols-outlined text-lg">edit</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full h-full rounded-full border border-dashed border-white/20 hover:border-primary-fixed/50 hover:bg-white/5 transition-all flex flex-col items-center justify-center gap-1">
+                      <span className="material-symbols-outlined text-white/40 text-2xl group-hover:text-primary-fixed transition-colors">add_a_photo</span>
+                      <span className="text-[10px] font-stat text-white/40 group-hover:text-primary-fixed font-bold uppercase tracking-wider">SUBIR FOTO</span>
                     </div>
                   )}
-                </div>
+                  {uploadingAvatar && (
+                    <div className="absolute inset-0 bg-black/80 rounded-full flex flex-col items-center justify-center text-[10px] font-bold text-primary-fixed gap-1.5">
+                      <div className="w-4 h-4 border-2 border-primary-fixed border-t-transparent rounded-full animate-spin"></div>
+                      <span className="uppercase tracking-widest text-[8px]">Enviando...</span>
+                    </div>
+                  )}
+                </label>
               </div>
             </div>
 
@@ -588,25 +600,35 @@ export default function SettingsPage() {
 
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto de Impacto (Herói)</label>
-              <div className="flex flex-col gap-4 items-start mt-1">
-                {profile.heroImageUrl && (
-                  <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-black/40 border border-primary/20 flex-shrink-0">
-                    <Image src={profile.heroImageUrl} alt="Hero" fill className="object-contain" />
-                  </div>
-                )}
-                <div className="w-full relative">
+              <div className="mt-1">
+                <label className="cursor-pointer group block relative w-full max-w-md h-48">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleFileUpload(e, "hero")}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                    className="hidden"
                   />
-                  {uploadingHero && (
-                    <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center text-[10px] font-bold animate-pulse text-primary">
-                      REMOVENDO BACKGROUND...
+                  {profile.heroImageUrl ? (
+                    <div className="relative w-full h-full rounded-2xl border border-white/10 overflow-hidden bg-black/40 flex items-center justify-center hover:border-primary-fixed/50 transition-all">
+                      <Image src={profile.heroImageUrl} alt="Hero" fill className="object-contain p-2" />
+                      <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-all">
+                        <span className="material-symbols-outlined text-white text-3xl">edit</span>
+                        <span className="text-xs text-white/70 font-stat uppercase tracking-wider">Alterar Foto</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full h-full rounded-2xl border border-dashed border-white/20 hover:border-primary-fixed/50 hover:bg-white/5 transition-all flex flex-col items-center justify-center gap-2">
+                      <span className="material-symbols-outlined text-white/40 text-3xl group-hover:text-primary-fixed transition-colors">upload_file</span>
+                      <span className="text-[10px] font-stat text-white/40 group-hover:text-primary-fixed font-bold uppercase tracking-widest">SUBIR FOTO DE IMPACTO</span>
                     </div>
                   )}
-                </div>
+                  {uploadingHero && (
+                    <div className="absolute inset-0 bg-black/85 rounded-2xl flex flex-col items-center justify-center text-[10px] font-bold text-primary-fixed gap-2">
+                      <div className="w-5 h-5 border-2 border-primary-fixed border-t-transparent rounded-full animate-spin"></div>
+                      <span className="uppercase tracking-widest text-[9px] font-display font-black italic">REMOVENDO BACKGROUND...</span>
+                    </div>
+                  )}
+                </label>
               </div>
             </div>
           </div>
@@ -800,30 +822,38 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="flex flex-col gap-4 border-t border-white/5 pt-4">
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden bg-black/40 border border-white/10 flex-shrink-0 flex items-center justify-center p-2">
-                      {club.logoUrl ? (
-                        <Image src={club.logoUrl} alt="Club Logo" width={48} height={48} className="object-contain" />
-                      ) : (
-                        <div className="opacity-20">
-                          <span className="material-symbols-outlined text-2xl">sports_soccer</span>
-                        </div>
-                      )}
-                      {uploadingClubs[club.id] && (
-                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="flex-grow">
-                      <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Escudo / Logo do Clube</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileUpload(e, "club", club.id)}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
-                      />
+                  <div className="flex flex-col gap-1.5">
+                    <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Escudo / Logo do Clube</label>
+                    <div className="mt-1">
+                      <label className="cursor-pointer group block relative w-20 h-20">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, "club", club.id)}
+                          className="hidden"
+                        />
+                        {club.logoUrl ? (
+                          <div className="relative w-full h-full rounded-full overflow-hidden bg-black/40 border border-white/10 flex items-center justify-center p-2 hover:border-primary-fixed/50 transition-all">
+                            <Image src={club.logoUrl} alt="Club Logo" width={48} height={48} className="object-contain" />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                              <span className="material-symbols-outlined text-white text-xl">edit</span>
+                            </div>
+                            <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center shadow-lg">
+                              <span className="material-symbols-outlined text-xs font-bold">edit</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="w-full h-full rounded-full border border-dashed border-white/20 hover:border-primary-fixed/50 hover:bg-white/5 transition-all flex flex-col items-center justify-center">
+                            <span className="material-symbols-outlined text-white/40 text-xl group-hover:text-primary-fixed transition-colors">add</span>
+                            <span className="text-[8px] font-stat text-white/40 group-hover:text-primary-fixed font-bold uppercase tracking-wider">ESCUDO</span>
+                          </div>
+                        )}
+                        {uploadingClubs[club.id] && (
+                          <div className="absolute inset-0 bg-black/85 rounded-full flex flex-col items-center justify-center text-[10px] font-bold text-primary-fixed">
+                            <div className="w-4 h-4 border-2 border-primary-fixed border-t-transparent rounded-full animate-spin"></div>
+                          </div>
+                        )}
+                      </label>
                     </div>
                   </div>
 
@@ -937,22 +967,8 @@ export default function SettingsPage() {
 
                 <div className="space-y-3 border-t border-white/5 pt-4">
                   <label className="block text-[10px] uppercase font-stat text-white/50 mb-2">Imagem de Impacto (Com Parallax)</label>
-                  <div className="flex flex-col gap-4">
-                    <div className="relative w-full h-32 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
-                      {link.imageUrl ? (
-                        <Image src={link.imageUrl} alt="Link Hero" fill className="object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center opacity-20">
-                          <span className="material-symbols-outlined">image</span>
-                        </div>
-                      )}
-                      {uploadingLinks[link.id] && (
-                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="relative">
+                  <div>
+                    <label className="cursor-pointer group block relative w-full h-32">
                       <input
                         type="file"
                         accept="image/*"
@@ -979,9 +995,28 @@ export default function SettingsPage() {
                             setUploadingLinks(prev => ({ ...prev, [link.id]: false }));
                           }
                         }}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg p-2 focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-black hover:file:bg-primary/80 cursor-pointer transition-all"
+                        className="hidden"
                       />
-                    </div>
+                      {link.imageUrl ? (
+                        <div className="relative w-full h-full rounded-xl overflow-hidden bg-black/40 border border-white/10 hover:border-primary-fixed/50 transition-all">
+                          <Image src={link.imageUrl} alt="Link Hero" fill className="object-cover" />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-all">
+                            <span className="material-symbols-outlined text-white text-2xl">edit</span>
+                            <span className="text-[10px] text-white/70 font-stat uppercase tracking-wider">Alterar Imagem</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-full h-full rounded-xl border border-dashed border-white/20 hover:border-primary-fixed/50 hover:bg-white/5 transition-all flex flex-col items-center justify-center gap-1">
+                          <span className="material-symbols-outlined text-white/40 text-2xl group-hover:text-primary-fixed transition-colors">add</span>
+                          <span className="text-[9px] font-stat text-white/40 group-hover:text-primary-fixed font-bold uppercase tracking-wider">Subir Imagem de Sessão</span>
+                        </div>
+                      )}
+                      {uploadingLinks[link.id] && (
+                        <div className="absolute inset-0 bg-black/85 rounded-xl flex flex-col items-center justify-center text-[10px] font-bold text-primary-fixed gap-1.5">
+                          <div className="w-4 h-4 border-2 border-primary-fixed border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      )}
+                    </label>
                   </div>
                 </div>
               </div>
