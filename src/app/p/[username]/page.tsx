@@ -120,6 +120,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   };
 
   const category = calculateCategory(profile.birthDate);
+  const birthYear = profile.birthDate ? new Date(profile.birthDate).getFullYear() : null;
+  const currentYear = new Date().getFullYear();
+  const age = birthYear ? currentYear - birthYear : null;
+  const showCategory = age === null || age <= 23;
   const location = profile.city && profile.state ? `${profile.city}, ${profile.state}` : profile.city || profile.state || "";
 
   const getYoutubeEmbedUrl = (url: string | null | undefined) => {
@@ -170,7 +174,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         />
       </header>
 
-      <section className="relative h-[795px] overflow-hidden hero-clip bg-[#080808]">
+      <section className="relative h-[85dvh] min-h-[640px] md:h-[795px] overflow-hidden hero-clip bg-[#080808]">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-[100px]"></div>
           <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-primary/5 rounded-full blur-[100px]"></div>
@@ -198,12 +202,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             )}
           </div>
         </div>
-        <div className="absolute inset-0 z-20 flex flex-col justify-end p-8 bg-gradient-to-t from-black via-transparent to-transparent">
+        <div className="absolute inset-0 z-20 flex flex-col justify-end p-8 pb-20 md:pb-24 bg-gradient-to-t from-black via-transparent to-transparent">
           <div className="space-y-0">
             <span className="inline-block px-3 py-1 bg-primary text-black font-display font-black italic text-xs mb-2 angled-accent uppercase">
-              {category} • {profile.nickname || "PROMESSA"}
+              {showCategory ? `${category} • ` : ""}{profile.nickname || "PROMESSA"}
             </span>
-            <h1 className="font-display font-black italic text-6xl text-white leading-none tracking-tighter uppercase">
+            <h1 className="font-display font-black italic text-5xl sm:text-6xl md:text-7xl text-white leading-none tracking-tighter uppercase">
               {profile.displayName.split(" ")[0]} <br />{" "}
               <span className="text-primary">{profile.displayName.split(" ").slice(1).join(" ")}</span>
             </h1>
