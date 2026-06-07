@@ -1273,7 +1273,7 @@ export default function SettingsPage() {
               </button>
             )}
             <div className="text-xl font-display font-black italic text-primary tracking-widest uppercase leading-none">
-              {profile.displayName}
+              {activeSection !== null ? getSectionTitle() : profile.displayName}
             </div>
           </div>
           <UserMenu
@@ -1333,12 +1333,6 @@ export default function SettingsPage() {
           </div>
         ) : (
           <div className="space-y-6 animate-fadeIn">
-            <div className="mb-4">
-              <span className="text-[10px] font-stat font-bold uppercase tracking-widest text-white/40">Seção</span>
-              <h2 className="text-lg font-display font-black italic uppercase tracking-wider text-primary">
-                {getSectionTitle()}
-              </h2>
-            </div>
 
             <div className="glass-card p-6 rounded-3xl border border-white/5 space-y-6">
               {renderSectionContent()}
