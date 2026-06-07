@@ -86,7 +86,7 @@ const menuCategories = [
   {
     title: "Conteúdo",
     items: [
-      { id: "storytelling", label: "Sessões & Storytelling", subtitle: "Abas e links adicionais no perfil", icon: "layers" },
+      { id: "storytelling", label: "Minha História", subtitle: "Abas e links adicionais no perfil", icon: "layers" },
     ]
   },
   {
@@ -368,7 +368,7 @@ export default function SettingsPage() {
       case "history": return "Trajetória";
       case "clubs": return "Clubes & Escolinhas";
       case "stats": return "Estatísticas da Temporada";
-      case "storytelling": return "Sessões & Storytelling";
+      case "storytelling": return "Minha História";
       case "delete-account": return "Encerramento de Conta";
       default: return "";
     }
@@ -544,8 +544,8 @@ export default function SettingsPage() {
         return (
           <div className="space-y-6">
             <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar (Retrato)</label>
-              <div className="mt-1">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Avatar</label>
+              <div className="mt-1 flex justify-center">
                 <label className="cursor-pointer group block relative w-32 h-32">
                   <input
                     type="file"
@@ -692,16 +692,16 @@ export default function SettingsPage() {
                     const val = Math.max(0, (parseInt(profile.jerseyNumber || "0") || 0) - 1);
                     setProfile({ ...profile, jerseyNumber: String(val) });
                   }}
-                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                  className="flex-1 h-14 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-2xl cursor-pointer select-none text-white/70 hover:text-white"
                 >
-                  -
+                  −
                 </button>
                 <input
                   type="number"
                   min="0"
                   value={profile.jerseyNumber || ""}
                   onChange={(e) => setProfile({ ...profile, jerseyNumber: e.target.value })}
-                  className="flex-grow bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
+                  className="w-16 shrink-0 bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
                 />
                 <button
                   type="button"
@@ -709,7 +709,7 @@ export default function SettingsPage() {
                     const val = (parseInt(profile.jerseyNumber || "0") || 0) + 1;
                     setProfile({ ...profile, jerseyNumber: String(val) });
                   }}
-                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                  className="flex-1 h-14 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-2xl cursor-pointer select-none text-white/70 hover:text-white"
                 >
                   +
                 </button>
@@ -979,9 +979,9 @@ export default function SettingsPage() {
                       stats: { ...(profile.stats || {}), matches: val }
                     });
                   }}
-                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                  className="flex-1 h-14 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-2xl cursor-pointer select-none text-white/70 hover:text-white"
                 >
-                  -
+                  −
                 </button>
                 <input
                   type="number"
@@ -991,7 +991,7 @@ export default function SettingsPage() {
                     ...profile,
                     stats: { ...(profile.stats || {}), matches: parseInt(e.target.value) || 0 }
                   })}
-                  className="flex-grow bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
+                  className="w-20 shrink-0 bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
                 />
                 <button
                   type="button"
@@ -1002,7 +1002,7 @@ export default function SettingsPage() {
                       stats: { ...(profile.stats || {}), matches: val }
                     });
                   }}
-                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                  className="flex-1 h-14 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-2xl cursor-pointer select-none text-white/70 hover:text-white"
                 >
                   +
                 </button>
@@ -1024,9 +1024,9 @@ export default function SettingsPage() {
                       stats: { ...(profile.stats || {}), goals: val }
                     });
                   }}
-                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                  className="flex-1 h-14 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-2xl cursor-pointer select-none text-white/70 hover:text-white"
                 >
-                  -
+                  −
                 </button>
                 <input
                   type="number"
@@ -1036,7 +1036,7 @@ export default function SettingsPage() {
                     ...profile,
                     stats: { ...(profile.stats || {}), goals: parseInt(e.target.value) || 0 }
                   })}
-                  className="flex-grow bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
+                  className="w-20 shrink-0 bg-white/5 border border-white/10 rounded-xl p-3 text-center font-stat font-bold focus:border-primary focus:outline-none transition-colors text-lg"
                 />
                 <button
                   type="button"
@@ -1047,7 +1047,7 @@ export default function SettingsPage() {
                       stats: { ...(profile.stats || {}), goals: val }
                     });
                   }}
-                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-lg cursor-pointer select-none text-white/70 hover:text-white"
+                  className="flex-1 h-14 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all flex items-center justify-center font-bold text-2xl cursor-pointer select-none text-white/70 hover:text-white"
                 >
                   +
                 </button>
