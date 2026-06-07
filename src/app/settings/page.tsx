@@ -86,6 +86,12 @@ const menuCategories = [
     items: [
       { id: "storytelling", label: "Sessões & Storytelling", subtitle: "Abas e links adicionais no perfil", icon: "layers" },
     ]
+  },
+  {
+    title: "Segurança & LGPD",
+    items: [
+      { id: "delete-account", label: "Encerramento de Conta", subtitle: "Excluir permanentemente todos os seus dados pessoais do sistema", icon: "delete_forever" }
+    ]
   }
 ];
 
@@ -113,6 +119,11 @@ export default function SettingsPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  // Account deletion states
+  const [confirmDeleteCheckbox, setConfirmDeleteCheckbox] = useState(false);
+  const [confirmDeleteEmail, setConfirmDeleteEmail] = useState("");
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
@@ -335,6 +346,33 @@ export default function SettingsPage() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const userEmail = session?.user?.email || "";
+    if (!userEmail || confirmDeleteEmail !== userEmail || !confirmDeleteCheckbox) {
+      return;
+    }
+
+    setDeletingAccount(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        showToast("Sua conta foi encerrada e seus dados foram excluídos.", "success");
+        await signOut({ callbackUrl: "/" });
+      } else {
+        const errorData = await res.json();
+        showToast(errorData.error || "Erro ao encerrar conta", "error");
+        setDeletingAccount(false);
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Erro de rede ao encerrar conta", "error");
+      setDeletingAccount(false);
+    }
+  };
+
   if (loading) return <div className="p-8 text-white">Carregando...</div>;
 
   if (isOnboarding) {
@@ -404,6 +442,7 @@ export default function SettingsPage() {
       case "clubs": return "Clubes & Escolinhas";
       case "stats": return "Estatísticas da Temporada";
       case "storytelling": return "Sessões & Storytelling";
+      case "delete-account": return "Encerramento de Conta";
       default: return "";
     }
   };
@@ -1180,6 +1219,71 @@ export default function SettingsPage() {
           </div>
         );
 
+      case "delete-account":
+        return (
+          <div className="space-y-6 animate-fadeIn text-left">
+            <div className="p-5 bg-red-500/5 border border-red-500/20 rounded-2xl space-y-4">
+              <div className="flex items-start gap-3 text-red-500">
+                <span className="material-symbols-outlined mt-0.5">warning</span>
+                <div className="text-xs font-stat uppercase tracking-wider font-bold">
+                  Atenção: Ação Irreversível e Permanente
+                </div>
+              </div>
+              <p className="text-sm text-white/70 leading-relaxed font-stat">
+                Em conformidade com a <strong>LGPD (Lei Geral de Proteção de Dados)</strong>, ao encerrar sua conta:
+              </p>
+              <ul className="list-disc pl-5 text-xs text-white/60 space-y-2 font-stat">
+                <li>Todos os seus dados de cadastro (Nome, e-mail, senha) serão deletados permanentemente.</li>
+                <li>Seu perfil público e dados de performance (estatísticas, posições, histórico e habilidades) serão removidos do sistema.</li>
+                <li>Todas as fotos enviadas (avatar, foto de capa, logotipos de clubes e imagens de sessões) serão excluídas definitivamente do nosso servidor de armazenamento.</li>
+                <li>Qualquer conta de login social vinculada (como Google) será desvinculada.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-white/5">
+              <div className="flex flex-col gap-1.5">
+                <label className="block text-xs uppercase font-stat text-white/50 mb-1">
+                  Confirme digitando seu e-mail: <strong className="text-white select-all">{session?.user?.email}</strong>
+                </label>
+                <input
+                  type="email"
+                  value={confirmDeleteEmail}
+                  onChange={(e) => setConfirmDeleteEmail(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-red-500 text-sm font-stat text-white"
+                  placeholder="Digite seu e-mail para confirmar"
+                  disabled={deletingAccount}
+                />
+              </div>
+
+              <div className="flex items-start gap-3 mt-4">
+                <input
+                  type="checkbox"
+                  id="confirm-delete-checkbox"
+                  checked={confirmDeleteCheckbox}
+                  onChange={(e) => setConfirmDeleteCheckbox(e.target.checked)}
+                  className="w-4 h-4 mt-0.5 rounded border-white/10 text-red-600 focus:ring-red-500 bg-white/5 accent-red-600 cursor-pointer"
+                  disabled={deletingAccount}
+                />
+                <label htmlFor="confirm-delete-checkbox" className="text-xs uppercase font-stat text-white/70 cursor-pointer select-none leading-normal">
+                  Estou ciente de que esta ação é definitiva, permanente e que não poderei recuperar meus dados no futuro.
+                </label>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount || !confirmDeleteCheckbox || confirmDeleteEmail !== (session?.user?.email || "")}
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(220,38,38,0.15)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {deletingAccount && <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>}
+                {deletingAccount ? "EXCLUINDO CONTA..." : "ENCERRAR CONTA DEFINITIVAMENTE"}
+              </button>
+            </div>
+          </div>
+        );
+
       default:
         return null;
     }
@@ -1297,16 +1401,18 @@ export default function SettingsPage() {
             <div className="glass-card p-6 rounded-3xl border border-white/5 space-y-6">
               {renderSectionContent()}
 
-              <div className="pt-6 border-t border-white/10">
-                <button
-                  onClick={handleSave}
-                  disabled={saving || usernameAvailable === false}
-                  className="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  {saving && <span className="w-4 h-4 border-2 border-on-primary-fixed border-t-transparent rounded-full animate-spin"></span>}
-                  {saving ? "SALVANDO..." : "SALVAR"}
-                </button>
-              </div>
+              {activeSection !== "delete-account" && (
+                <div className="pt-6 border-t border-white/10">
+                  <button
+                    onClick={handleSave}
+                    disabled={saving || usernameAvailable === false}
+                    className="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {saving && <span className="w-4 h-4 border-2 border-on-primary-fixed border-t-transparent rounded-full animate-spin"></span>}
+                    {saving ? "SALVANDO..." : "SALVAR"}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}

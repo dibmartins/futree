@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { del } from "@vercel/blob";
 
 export async function GET() {
   const session = await auth();
@@ -165,3 +166,103 @@ export async function PATCH(request: Request) {
     }, { status: 500 });
   }
 }
+
+export async function DELETE() {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+
+    // Buscar o usuário e todo o perfil relacionado
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        profile: {
+          include: {
+            links: true,
+            clubs: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "Usuário não encontrado" }, { status: 404 });
+    }
+
+    // Coletar as URLs dos arquivos a serem removidos do storage
+    const urlsToDelete: string[] = [];
+    if (user.profile) {
+      if (user.profile.avatarUrl) {
+        urlsToDelete.push(user.profile.avatarUrl);
+      }
+      if (user.profile.heroImageUrl) {
+        urlsToDelete.push(user.profile.heroImageUrl);
+      }
+      user.profile.links.forEach((link) => {
+        if (link.imageUrl) {
+          urlsToDelete.push(link.imageUrl);
+        }
+      });
+      user.profile.clubs.forEach((club) => {
+        if (club.logoUrl) {
+          urlsToDelete.push(club.logoUrl);
+        }
+      });
+    }
+
+    // Filtrar apenas as URLs que são do Vercel Blob
+    const vercelBlobUrls = urlsToDelete.filter(
+      (url) => url.includes("vercel-storage.com") || url.includes("public.blob.vercel-storage.com")
+    );
+
+    // Deletar os arquivos no Vercel Blob se houver algum
+    if (vercelBlobUrls.length > 0) {
+      try {
+        await del(vercelBlobUrls, {
+          token: process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL_BLOB_READ_WRITE_TOKEN,
+        });
+      } catch (blobError) {
+        console.error("Erro ao deletar arquivos do storage Vercel Blob:", blobError);
+        // Continuamos com a exclusão no banco mesmo se houver erro no storage
+      }
+    }
+
+    // Deletar os dados do banco usando uma transação Prisma
+    const profileId = user.profile?.id;
+    const transactionTasks = [];
+
+    if (profileId) {
+      transactionTasks.push(
+        prisma.themeConfig.deleteMany({ where: { profileId } }),
+        prisma.stats.deleteMany({ where: { profileId } }),
+        prisma.link.deleteMany({ where: { profileId } }),
+        prisma.profileClub.deleteMany({ where: { profileId } }),
+        prisma.profile.delete({ where: { id: profileId } })
+      );
+    }
+
+    transactionTasks.push(
+      prisma.account.deleteMany({ where: { userId } }),
+      prisma.user.delete({ where: { id: userId } })
+    );
+
+    await prisma.$transaction(transactionTasks);
+
+    return NextResponse.json({ success: true, message: "Conta excluída com sucesso" });
+  } catch (error) {
+    console.error("ERRO CRITICO AO EXCLUIR CONTA:", error);
+    return NextResponse.json(
+      {
+        error: "Erro ao excluir conta",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
+}
+
