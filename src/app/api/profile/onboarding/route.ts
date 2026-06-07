@@ -24,11 +24,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Username já em uso" }, { status: 400 });
     }
 
+    // Buscar data de nascimento e responsável para preencher automaticamente
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: { guardian: true },
+    });
+
     const profile = await prisma.profile.create({
       data: {
         userId: session.user.id,
         username,
         displayName,
+        birthDate: user?.birthDate,
+        parentName: user?.guardian?.fullName,
         theme: {
           create: {
             primaryColor: "#DCFF1E",

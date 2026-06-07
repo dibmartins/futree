@@ -13,6 +13,10 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  birthDate     DateTime? // Data de nascimento para conformidade LGPD/Lei Felca
+  guardianId    String?   // ID do responsável se menor de idade
+  guardian      Guardian? @relation(fields: [guardianId], references: [id])
+  consentLogs   ConsentLog[]
   accounts      Account[]
   profile       Profile?
   createdAt     DateTime  @default(now())
@@ -129,3 +133,30 @@ model ProfileClub {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Guardian {
+  id           String       @id @default(cuid())
+  fullName     String
+  documentHash String       // Hash SHA-256 do CPF
+  email        String       @unique
+  verifiedAt   DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  users        User[]
+  consentLogs  ConsentLog[]
+}
+
+model ConsentLog {
+  id            String   @id @default(cuid())
+  guardianId    String
+  guardian      Guardian @relation(fields: [guardianId], references: [id])
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  action        String   // "GRANTED" ou "REVOKED"
+  policyVersion String
+  ipAddress     String
+  userAgent     String
+  permissions   String   // JSON com permissões granulares
+  createdAt     DateTime @default(now())
+}
+
