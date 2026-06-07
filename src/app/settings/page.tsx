@@ -177,7 +177,7 @@ export default function SettingsPage() {
         const resultBlob = await removeBackground(imageBlob, {
           model: "isnet_fp16",
           progress: (step, current, total) => {
-             console.log(`Progresso BG: ${step} - ${current}/${total}`);
+            console.log(`Progresso BG: ${step} - ${current}/${total}`);
           }
         });
         fileToUpload = resultBlob;
@@ -200,16 +200,16 @@ export default function SettingsPage() {
           if (type === "avatar") return { ...prev, avatarUrl: url };
           if (type === "hero") return { ...prev, heroImageUrl: url };
           if (type === "link" && targetId) {
-             const newLinks = [...prev.links];
-             const index = newLinks.findIndex(l => l.id === targetId);
-             if (index !== -1) newLinks[index].imageUrl = url;
-             return { ...prev, links: newLinks };
+            const newLinks = [...prev.links];
+            const index = newLinks.findIndex(l => l.id === targetId);
+            if (index !== -1) newLinks[index].imageUrl = url;
+            return { ...prev, links: newLinks };
           }
           if (type === "club" && targetId) {
-             const newClubs = [...(prev.clubs || [])];
-             const index = newClubs.findIndex(c => c.id === targetId);
-             if (index !== -1) newClubs[index].logoUrl = url;
-             return { ...prev, clubs: newClubs };
+            const newClubs = [...(prev.clubs || [])];
+            const index = newClubs.findIndex(c => c.id === targetId);
+            if (index !== -1) newClubs[index].logoUrl = url;
+            return { ...prev, clubs: newClubs };
           }
           return prev;
         });
@@ -460,13 +460,12 @@ export default function SettingsPage() {
                       checkUsernameAvailability(val);
                     }
                   }}
-                  className={`w-full bg-white/5 border ${
-                    usernameError || usernameAvailable === false
-                      ? "border-red-500"
-                      : usernameAvailable === true
+                  className={`w-full bg-white/5 border ${usernameError || usernameAvailable === false
+                    ? "border-red-500"
+                    : usernameAvailable === true
                       ? "border-primary"
                       : "border-white/10"
-                  } rounded-lg p-3 focus:outline-none text-sm font-bold`}
+                    } rounded-lg p-3 focus:outline-none text-sm font-bold`}
                 />
                 {checkingUsername && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -580,18 +579,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Vídeo de Highlights (YouTube)</label>
-              <input
-                type="text"
-                value={profile.youtubeUrl || ""}
-                placeholder="https://www.youtube.com/watch?v=..."
-                onChange={(e) => setProfile({ ...profile, youtubeUrl: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto de Impacto (Herói)</label>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Foto de Impacto</label>
               <div className="mt-1">
                 <label className="cursor-pointer group block relative w-full max-w-md h-48">
                   <input
@@ -627,7 +615,7 @@ export default function SettingsPage() {
             {/* Cores integradas na Aparência */}
             <div className="flex flex-col gap-4 border-t border-white/5 pt-4">
               <span className="text-[10px] font-stat font-bold uppercase tracking-widest text-primary">Paleta de Cores do Perfil</span>
-              
+
               <div className="flex flex-col gap-1.5">
                 <label className="block text-xs uppercase font-stat text-white/50 mb-1">Cor Primária (Identidade)</label>
                 <div className="flex gap-4 items-center">
@@ -799,7 +787,7 @@ export default function SettingsPage() {
                   {profile.characteristics?.map((char, i) => (
                     <span key={i} className="px-3 py-1 bg-primary text-black font-stat font-bold text-[10px] uppercase rounded-full flex items-center gap-2">
                       {char}
-                      <button 
+                      <button
                         type="button"
                         onClick={() => {
                           const newChars = profile.characteristics?.filter((_, idx) => idx !== i);
@@ -820,9 +808,9 @@ export default function SettingsPage() {
                       e.preventDefault();
                       const val = (e.target as HTMLInputElement).value.trim();
                       if (val && !profile.characteristics?.includes(val)) {
-                        setProfile({ 
-                          ...profile, 
-                          characteristics: [...(profile.characteristics || []), val] 
+                        setProfile({
+                          ...profile,
+                          characteristics: [...(profile.characteristics || []), val]
                         });
                         (e.target as HTMLInputElement).value = "";
                       }
@@ -846,6 +834,17 @@ export default function SettingsPage() {
                 onChange={(e) => setProfile({ ...profile, history: e.target.value })}
                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm resize-none"
                 placeholder="Fale sobre seus clubes anteriores e principais títulos..."
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Vídeo com seus melhores momentos</label>
+              <input
+                type="text"
+                value={profile.youtubeUrl || ""}
+                placeholder="https://www.youtube.com/watch?v=..."
+                onChange={(e) => setProfile({ ...profile, youtubeUrl: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm"
               />
             </div>
           </div>
@@ -1070,7 +1069,7 @@ export default function SettingsPage() {
                     Remover Sessão
                   </button>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1.5">
                     <label className="block text-[10px] uppercase font-stat text-white/40 mb-1">Título da Sessão</label>
@@ -1237,11 +1236,10 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-[#121414] text-white pt-24 p-6 pb-32 flex justify-center">
       {toast && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-fadeIn pointer-events-none">
-          <div className={`flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md border ${
-            toast.type === "success" 
-              ? "bg-[#1e2020]/90 border-primary-fixed/20 text-primary-fixed" 
-              : "bg-[#1e2020]/90 border-red-500/20 text-red-400"
-          }`}>
+          <div className={`flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md border ${toast.type === "success"
+            ? "bg-[#1e2020]/90 border-primary-fixed/20 text-primary-fixed"
+            : "bg-[#1e2020]/90 border-red-500/20 text-red-400"
+            }`}>
             <span className="material-symbols-outlined text-xl">
               {toast.type === "success" ? "check_circle" : "error"}
             </span>
