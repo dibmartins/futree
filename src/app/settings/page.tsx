@@ -110,6 +110,7 @@ export default function SettingsPage() {
   // Username check states
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
 
 
 
@@ -301,7 +302,7 @@ export default function SettingsPage() {
   };
 
   const checkUsernameAvailability = async (u: string) => {
-    if (!u) {
+    if (u.length < 5 || !/^[a-z0-9_-]+$/.test(u)) {
       setUsernameAvailable(null);
       return;
     }
@@ -436,17 +437,29 @@ export default function SettingsPage() {
 
             {/* Demais campos de Identificação */}
             <div className="flex flex-col gap-1.5">
-              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de usuário (Ficará visível na url do seu perfil)</label>
+              <label className="block text-xs uppercase font-stat text-white/50 mb-1">Nome de usuário</label>
               <div className="relative">
                 <input
                   type="text"
                   value={profile.username}
                   onChange={(e) => {
-                    const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
+                    const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_-]/g, "");
                     setProfile({ ...profile, username: val });
-                    checkUsernameAvailability(val);
+                    if (val.length < 5) {
+                      setUsernameError("Mínimo de 5 caracteres");
+                      setUsernameAvailable(null);
+                    } else {
+                      setUsernameError("");
+                      checkUsernameAvailability(val);
+                    }
                   }}
-                  className={`w-full bg-white/5 border ${usernameAvailable === false ? "border-red-500" : usernameAvailable === true ? "border-primary" : "border-white/10"} rounded-lg p-3 focus:outline-none text-sm font-bold`}
+                  className={`w-full bg-white/5 border ${
+                    usernameError || usernameAvailable === false
+                      ? "border-red-500"
+                      : usernameAvailable === true
+                      ? "border-primary"
+                      : "border-white/10"
+                  } rounded-lg p-3 focus:outline-none text-sm font-bold`}
                 />
                 {checkingUsername && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -454,7 +467,12 @@ export default function SettingsPage() {
                   </div>
                 )}
               </div>
-              {usernameAvailable === false && <p className="mt-1 text-[10px] text-red-500 font-bold uppercase px-1">Username já está sendo usado</p>}
+              {usernameAvailable === false && (
+                <p className="mt-1 text-[10px] text-red-500 font-bold uppercase px-1">Username já está sendo usado</p>
+              )}
+              {usernameError && (
+                <p className="mt-1 text-[10px] text-red-500 font-bold uppercase px-1">{usernameError}</p>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -1322,7 +1340,7 @@ export default function SettingsPage() {
                 <div className="pt-6 border-t border-white/10">
                   <button
                     onClick={handleSave}
-                    disabled={saving || usernameAvailable === false}
+                    disabled={saving || usernameAvailable === false || (profile?.username?.length || 0) < 5 || !!usernameError}
                     className="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {saving && <span className="w-4 h-4 border-2 border-on-primary-fixed border-t-transparent rounded-full animate-spin"></span>}

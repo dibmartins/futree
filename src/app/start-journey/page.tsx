@@ -17,6 +17,7 @@ export default function StartJourneyPage() {
   // Username check states
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function StartJourneyPage() {
   }, [status, router]);
 
   const checkUsernameAvailability = async (u: string) => {
-    if (!u) {
+    if (u.length < 5) {
       setUsernameAvailable(null);
       return;
     }
@@ -64,8 +65,32 @@ export default function StartJourneyPage() {
     }
   };
 
+  const handleUsernameChange = (val: string) => {
+    const cleaned = val.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_-]/g, "");
+    setUsername(cleaned);
+
+    if (cleaned.length === 0) {
+      setUsernameError("");
+      setUsernameAvailable(null);
+      return;
+    }
+
+    if (cleaned.length < 5) {
+      setUsernameError("Mínimo de 5 caracteres");
+      setUsernameAvailable(null);
+      return;
+    }
+
+    setUsernameError("");
+    checkUsernameAvailability(cleaned);
+  };
+
   const handleOnboarding = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (username.length < 5 || !/^[a-z0-9_-]+$/.test(username)) {
+      setError("Nome de usuário inválido. Deve ter pelo menos 5 caracteres e conter apenas letras, números, hífens e underlines.");
+      return;
+    }
     if (usernameAvailable === false) {
       setError("Username indisponível. Escolha outro.");
       return;
@@ -137,20 +162,16 @@ export default function StartJourneyPage() {
         <form onSubmit={handleOnboarding} className="space-y-6">
           <div>
             <label className="block text-xs uppercase font-stat text-white/50 mb-2">
-              Nome de usuário (Ficará visível na url do seu perfil)
+              Nome de usuário
             </label>
             <div className="relative">
               <input
                 type="text"
                 required
                 value={username}
-                onChange={(e) => {
-                  const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
-                  setUsername(val);
-                  checkUsernameAvailability(val);
-                }}
+                onChange={(e) => handleUsernameChange(e.target.value)}
                 className={`w-full bg-white/5 border ${
-                  usernameAvailable === false
+                  usernameError || usernameAvailable === false
                     ? "border-red-500"
                     : usernameAvailable === true
                     ? "border-primary-fixed"
@@ -164,15 +185,22 @@ export default function StartJourneyPage() {
                 </div>
               )}
             </div>
-            <div className="flex justify-between mt-1 px-1">
-              <p className="text-[10px] text-white/30 italic">
-                {cleanDomain}/p/{username || "..."}
-              </p>
-              {usernameAvailable === false && (
-                <p className="text-[10px] text-red-500 font-bold uppercase">Indisponível</p>
-              )}
-              {usernameAvailable === true && (
-                <p className="text-[10px] text-primary-fixed font-bold uppercase">Disponível</p>
+            <div className="flex flex-col gap-1 mt-1 px-1">
+              <div className="flex justify-between items-center text-[10px]">
+                <p className="text-white/30 italic">
+                  {cleanDomain}/p/{username || "..."}
+                </p>
+                {usernameAvailable === false && (
+                  <p className="text-red-500 font-bold uppercase">Indisponível</p>
+                )}
+                {usernameAvailable === true && (
+                  <p className="text-primary-fixed font-bold uppercase">Disponível</p>
+                )}
+              </div>
+              {usernameError && (
+                <p className="text-[10px] text-red-500 font-bold uppercase">
+                  {usernameError}
+                </p>
               )}
             </div>
           </div>
@@ -193,7 +221,7 @@ export default function StartJourneyPage() {
 
           <button
             type="submit"
-            disabled={saving || usernameAvailable === false}
+            disabled={saving || usernameAvailable !== true || username.length < 5}
             className="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
           >
             {saving ? "Configurando..." : "Criar Meu Perfil"}

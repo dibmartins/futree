@@ -55,6 +55,12 @@ export async function PATCH(request: Request) {
       avatarUrl, heroImageUrl, youtubeUrl, stats, theme, links, clubs 
     } = body;
 
+    if (username !== undefined) {
+      if (username.length < 5 || !/^[a-z0-9_-]+$/.test(username)) {
+        return NextResponse.json({ error: "Nome de usuário inválido. Deve ter pelo menos 5 caracteres e conter apenas letras minúsculas, números, hífens e underlines." }, { status: 400 });
+      }
+    }
+
     // Fazemos o update ignorando campos que possam dar erro de validação temporariamente
     const profile = await prisma.profile.update({
       where: { userId: session.user.id },

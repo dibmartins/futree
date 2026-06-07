@@ -16,6 +16,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Dados incompletos" }, { status: 400 });
     }
 
+    if (username.length < 5 || !/^[a-z0-9_-]+$/.test(username)) {
+      return NextResponse.json({ error: "Nome de usuário inválido. Deve ter pelo menos 5 caracteres e conter apenas letras minúsculas, números, hífens e underlines." }, { status: 400 });
+    }
+
     const existingProfile = await prisma.profile.findUnique({
       where: { username },
     });
