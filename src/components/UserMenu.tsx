@@ -31,7 +31,7 @@ export default function UserMenu({ isLoggedIn, userImage, userName }: UserMenuPr
     <div className="flex items-center gap-4 relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-white/70 hover:text-primary transition-colors active:scale-95 duration-150"
+        className="text-white/70 hover:text-primary-fixed transition-colors active:scale-95 duration-150"
       >
         <span className="material-symbols-outlined">menu</span>
       </button>
@@ -93,7 +93,7 @@ export default function UserMenu({ isLoggedIn, userImage, userName }: UserMenuPr
               </Link>
               <Link
                 href="/register"
-                className="flex items-center gap-3 px-4 py-3 text-sm text-primary hover:bg-white/5 transition-colors"
+                className="flex items-center gap-3 px-4 py-3 text-sm text-primary-fixed hover:text-primary-fixed-dim hover:bg-white/5 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 <span className="material-symbols-outlined text-lg">person_add</span>

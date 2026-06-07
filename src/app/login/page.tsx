@@ -39,8 +39,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#121414] p-6">
       <div className="w-full max-w-md glass-card p-8 rounded-[2rem] border-primary/20">
-        <h1 className="text-3xl font-display font-black italic text-primary text-center mb-8 uppercase tracking-widest">
-          Futree <br /> <span className="text-white text-sm opacity-40 font-stat not-italic tracking-[0.3em]">Login</span>
+        <h1 className="text-3xl font-display font-black italic text-primary-fixed text-neon text-center mb-8 uppercase tracking-widest">
+          FUTREE
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -71,7 +71,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest disabled:opacity-50"
+            className="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? "Entrando..." : "Entrar no Campo"}
           </button>
@@ -115,7 +115,7 @@ export default function LoginPage() {
 
         <p className="mt-8 text-center text-xs font-stat text-white/30 uppercase tracking-widest">
           Não tem uma conta?{" "}
-          <Link href="/register" className="text-primary hover:underline font-bold">
+          <Link href="/register" className="text-primary-fixed hover:text-primary-fixed-dim hover:underline font-bold">
             Crie seu perfil
           </Link>
         </p>

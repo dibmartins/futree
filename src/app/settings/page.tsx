@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
 import { removeBackground } from "@imgly/background-removal";
+import SpinnerDatePicker from "@/components/SpinnerDatePicker";
 
 interface Club {
   id: string;
@@ -469,11 +470,9 @@ export default function SettingsPage() {
             {/* Data de Nascimento no Topo */}
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs uppercase font-stat text-white/50 mb-1">Data de Nascimento</label>
-              <input
-                type="date"
+              <SpinnerDatePicker
                 value={profile.birthDate ? new Date(profile.birthDate).toISOString().split("T")[0] : ""}
-                onChange={(e) => setProfile({ ...profile, birthDate: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary text-sm font-stat font-bold"
+                onChange={(val) => setProfile({ ...profile, birthDate: val })}
               />
             </div>
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import SpinnerDatePicker from "@/components/SpinnerDatePicker";
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -144,22 +145,19 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#121414] p-6">
       <div className="w-full max-w-md glass-card p-8 rounded-[2rem] border-primary/20">
-        <h1 className="text-3xl font-display font-black italic text-primary text-center mb-6 uppercase tracking-widest">
-          Pitch Elite <br />
-          <span className="text-white text-sm opacity-40 font-stat not-italic tracking-[0.3em]">
-            {isAthleteMinor && step > 1 ? "Cadastro Menor" : "Cadastro"}
-          </span>
+        <h1 className="text-3xl font-display font-black italic text-primary-fixed text-neon text-center mb-8 uppercase tracking-widest">
+          PITCH ELITE
         </h1>
 
         {/* Barra de progresso visual */}
         <div className="flex justify-between items-center mb-8 px-4">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-stat ${step >= 1 ? "bg-primary text-black" : "bg-white/10 text-white/50"}`}>1</div>
-          <div className={`flex-1 h-[2px] mx-2 ${step >= 2 ? "bg-primary" : "bg-white/10"}`}></div>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-stat ${step >= 2 ? "bg-primary text-black" : "bg-white/10 text-white/50"}`}>2</div>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-stat ${step >= 1 ? "bg-primary-fixed text-on-primary-fixed" : "bg-white/10 text-white/50"}`}>1</div>
+          <div className={`flex-1 h-[2px] mx-2 ${step >= 2 ? "bg-primary-fixed" : "bg-white/10"}`}></div>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-stat ${step >= 2 ? "bg-primary-fixed text-on-primary-fixed" : "bg-white/10 text-white/50"}`}>2</div>
           {isAthleteMinor && (
             <>
-              <div className={`flex-1 h-[2px] mx-2 ${step >= 3 ? "bg-primary" : "bg-white/10"}`}></div>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-stat ${step >= 3 ? "bg-primary text-black" : "bg-white/10 text-white/50"}`}>3</div>
+              <div className={`flex-1 h-[2px] mx-2 ${step >= 3 ? "bg-primary-fixed" : "bg-white/10"}`}></div>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-stat ${step >= 3 ? "bg-primary-fixed text-on-primary-fixed" : "bg-white/10 text-white/50"}`}>3</div>
             </>
           )}
         </div>
@@ -177,17 +175,14 @@ export default function RegisterPage() {
             </div>
             <div>
               <label className="block text-xs uppercase font-stat text-white/50 mb-2">Sua Data de Nascimento</label>
-              <input
-                type="date"
-                required
+              <SpinnerDatePicker
                 value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:outline-none focus:border-primary text-white font-stat font-bold"
+                onChange={(val) => setBirthDate(val)}
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest cursor-pointer"
+              className="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
             >
               Continuar
             </button>
@@ -254,7 +249,7 @@ export default function RegisterPage() {
               </button>
               <button
                 type="submit"
-                className="flex-1 bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest cursor-pointer"
+                className="flex-1 bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
               >
                 Continuar
               </button>
@@ -360,7 +355,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading || !consentAuth || !consentName}
-                className="flex-1 bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest disabled:opacity-50 cursor-pointer"
+                className="flex-1 bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? "Cadastrando..." : "Cadastrar Atleta"}
               </button>
@@ -408,7 +403,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest disabled:opacity-50 cursor-pointer"
+                className="flex-1 bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed py-4 rounded-xl font-display font-black italic uppercase disabled:opacity-50 text-base shadow-[0_0_20px_rgba(207,241,0,0.2)] active:scale-95 transition-transform tracking-widest flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? "Criando Conta..." : "Entrar no Time"}
               </button>
@@ -418,7 +413,7 @@ export default function RegisterPage() {
 
         <p className="mt-8 text-center text-xs font-stat text-white/30 uppercase tracking-widest">
           Já tem uma conta?{" "}
-          <Link href="/login" className="text-primary hover:underline font-bold">
+          <Link href="/login" className="text-primary-fixed hover:text-primary-fixed-dim hover:underline font-bold">
             Faça Login
           </Link>
         </p>
@@ -426,4 +421,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
 
