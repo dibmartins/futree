@@ -111,10 +111,7 @@ export default function SettingsPage() {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
 
-  // Onboarding states
-  const [isOnboarding, setIsOnboarding] = useState(false);
-  const [username, setUsername] = useState("");
-  const [displayName, setDisplayName] = useState("");
+
 
   // UI states
   const [menuOpen, setMenuOpen] = useState(false);
@@ -146,41 +143,18 @@ export default function SettingsPage() {
       })
       .then((data) => {
         if (!data || data.error) {
-          setIsOnboarding(true);
+          router.push("/start-journey");
         } else {
           setProfile(data);
+          setLoading(false);
         }
-        setLoading(false);
       })
       .catch(() => {
-        setIsOnboarding(true);
-        setLoading(false);
+        router.push("/start-journey");
       });
   }, [router]);
 
-  const handleOnboarding = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      const res = await fetch("/api/profile/onboarding", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, displayName }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setProfile(data);
-        setIsOnboarding(false);
-      } else {
-        const err = await res.json();
-        showToast(err.error || "Erro no onboarding", "error");
-      }
-    } catch {
-      showToast("Erro ao processar onboarding", "error");
-    } finally {
-      setSaving(false);
-    }
-  };
+
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "avatar" | "hero" | "link" | "club", targetId?: string) => {
     const file = e.target.files?.[0];
@@ -376,63 +350,7 @@ export default function SettingsPage() {
 
   if (loading) return <div className="p-8 text-white">Carregando...</div>;
 
-  if (isOnboarding) {
-    return (
-      <div className="min-h-screen bg-[#121414] text-white p-6 flex items-center justify-center">
-        <div className="w-full max-w-md glass-card p-8 rounded-[2rem]">
-          <h2 className="text-2xl font-display font-black italic text-primary uppercase mb-6">Comece sua Jornada</h2>
-          <form onSubmit={handleOnboarding} className="space-y-6">
-            <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-2">Nome de usuário (Ficará visivel na url do seu perfil)</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  required
-                  value={username}
-                  onChange={(e) => {
-                    const val = e.target.value.toLowerCase().replace(/\s/g, "").replace(/[^a-z0-9_.-]/g, "");
-                    setUsername(val);
-                    checkUsernameAvailability(val);
-                  }}
-                  className={`w-full bg-white/5 border ${usernameAvailable === false ? "border-red-500" : usernameAvailable === true ? "border-primary" : "border-white/10"} rounded-xl p-4 focus:outline-none text-white`}
-                  placeholder="ex: neymarjr"
-                />
-                {checkingUsername && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-between mt-1 px-1">
-                <p className="text-[10px] text-white/30 italic">futree.com/p/{username || "..."}</p>
-                {usernameAvailable === false && <p className="text-[10px] text-red-500 font-bold uppercase">Indisponível</p>}
-                {usernameAvailable === true && <p className="text-[10px] text-primary font-bold uppercase">Disponível</p>}
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs uppercase font-stat text-white/50 mb-2">Nome de Exibição</label>
-              <input
-                type="text"
-                required
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:outline-none focus:border-primary text-white"
-                placeholder="ex: Neymar Jr"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full bg-primary text-black font-display font-black italic py-4 rounded-xl shadow-[0_0_20px_rgba(220,255,30,0.2)] active:scale-95 transition-transform uppercase tracking-widest disabled:opacity-50"
-            >
-              {saving ? "Configurando..." : "Criar Meu Perfil"}
-            </button>
-            <button onClick={() => signOut()} type="button" className="w-full text-white/30 text-[10px] uppercase font-stat hover:text-white transition-colors">Sair</button>
-          </form>
-        </div>
-      </div>
-    );
-  }
+
 
   const getSectionTitle = () => {
     switch (activeSection) {
