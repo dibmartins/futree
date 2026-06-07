@@ -25,6 +25,8 @@
   --animate-float-slow: floatSlow 25s ease-in-out infinite;
   --animate-float-medium: floatMedium 18s ease-in-out infinite;
   --animate-float-fast: floatFast 12s ease-in-out infinite;
+  --animate-bounce-physics: bouncePhysics 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+  --animate-shadow-physics: shadowPhysics 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
 
   @keyframes fadeIn {
     from {
@@ -34,6 +36,46 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes bouncePhysics {
+    0%, 100% {
+      transform: translateY(0) scale(1, 1);
+    }
+    45% {
+      transform: translateY(-60px) scale(0.9, 1.15);
+    }
+    50% {
+      transform: translateY(-60px) scale(1, 1);
+    }
+    55% {
+      transform: translateY(-60px) scale(0.9, 1.15);
+    }
+    90% {
+      transform: translateY(0) scale(1, 1);
+    }
+    95% {
+      transform: translateY(8px) scale(1.25, 0.75);
+    }
+  }
+
+  @keyframes shadowPhysics {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.25;
+    }
+    50% {
+      transform: scale(0.4);
+      opacity: 0.05;
+    }
+    90% {
+      transform: scale(1);
+      opacity: 0.25;
+    }
+    95% {
+      transform: scale(1.3);
+      opacity: 0.35;
     }
   }
 

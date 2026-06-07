@@ -7,6 +7,7 @@ import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
 import { removeBackground } from "@imgly/background-removal";
 import SpinnerDatePicker from "@/components/SpinnerDatePicker";
+import BouncingBallLoader from "@/components/BouncingBallLoader";
 
 interface Club {
   id: string;
@@ -349,7 +350,13 @@ export default function SettingsPage() {
     }
   };
 
-  if (loading) return <div className="p-8 text-white">Carregando...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#121414] text-white p-6 flex items-center justify-center">
+        <BouncingBallLoader />
+      </div>
+    );
+  }
 
 
 

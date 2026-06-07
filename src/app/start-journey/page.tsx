@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
+import BouncingBallLoader from "@/components/BouncingBallLoader";
 
 export default function StartJourneyPage() {
   const router = useRouter();
@@ -138,10 +139,7 @@ export default function StartJourneyPage() {
   if (loading || status === "loading") {
     return (
       <div className="min-h-screen bg-[#121414] text-white p-6 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-4 border-primary-fixed border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-xs font-stat uppercase tracking-widest text-white/50">Carregando...</span>
-        </div>
+        <BouncingBallLoader />
       </div>
     );
   }
